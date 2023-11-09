@@ -6,6 +6,8 @@ import 'package:shopnownow/modules/authentication/screens/signup.dart';
 import 'package:shopnownow/modules/orders/order_history.dart';
 import 'package:shopnownow/modules/profile/screens/profile.dart';
 import 'package:shopnownow/modules/reuseables/size_boxes.dart';
+import 'package:shopnownow/modules/specialrequest/quick_guide.dart';
+import 'package:shopnownow/modules/specialrequest/special_request.dart';
 import 'package:shopnownow/modules/wallet/wallet.dart';
 import 'package:shopnownow/utils/assets_path.dart';
 import 'package:shopnownow/utils/constants.dart';
@@ -163,7 +165,9 @@ class DrawerScaffoldContainer extends StatelessWidget {
               : YBox(0),
           DrawerContainer(
             text: specialRequest,
-            onTap: () {},
+            onTap: () {
+              pushTo(SpecialRequest());
+            },
           ),
           loggedIn!
               ? const Padding(
@@ -178,7 +182,9 @@ class DrawerScaffoldContainer extends StatelessWidget {
               ? kRegularPadding : 0),
           DrawerContainer(
             text: quickGuide,
-            onTap: () {},
+            onTap: () {
+              pushTo(QuickGuide());
+            },
           ),
           DrawerContainer(
             text: share,

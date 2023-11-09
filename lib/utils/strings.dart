@@ -15,6 +15,7 @@ String getIt = "GET IT ON";
 String menu = "Menu";
 String specialRequest = "Special request";
 String quickGuide = "Quick guide";
+String quickGuideCaps = "Quick Guide";
 String share = "Share with friends";
 String helpCenter = "Help center";
 String logIn = "Log in";
@@ -64,5 +65,9 @@ String fundWallet = "Fund Wallet";
 String loyaltyPoint = "Loyalty points";
 String convertPoint = "Convert Points";
 String transActivity = "Transaction activity";
+String specialRequestCaps = "Special Request";
+String request = "Request";
+String comment = "Comment";
+String submitRequest = "Submit request";
 
 

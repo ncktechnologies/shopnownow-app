@@ -123,18 +123,14 @@ const Color kLightAsh300 = Color(0xffF7F7FB);
 const Color kDark100 = Color(0xff64748B);
 const Color kError900 = Color(0xffFF545E);
 const Color kGreen10 = Color(0xff7AD8B1);
-
-
-
-const Color kError = Color(0xff96250F);
-const Color kLight500 = Color(0xffEEEFEF);
-
-
-
-
-
-
+const Color kLight500 = Color(0xffF3F3F3);
 const Color kTransparent = Colors.transparent;
+const Color kDark300 = Color(0xff262626);
+const Color kDarkColor200 = Color(0xff363636);
+
+
+
+
 
 
 

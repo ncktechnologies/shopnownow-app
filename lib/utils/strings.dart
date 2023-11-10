@@ -69,5 +69,10 @@ String specialRequestCaps = "Special Request";
 String request = "Request";
 String comment = "Comment";
 String submitRequest = "Submit request";
+String faq = "FAQ";
+String contactUs = "Contact Us";
+String socialMedia =  "Social Media";
+String home = "Home";
+
 
 

@@ -7,6 +7,7 @@ class AssetPaths {
   static String shopLogo = "${imgPath}shop_now_logo.png";
   static String logo = "${imgPath}logo.png";
   static String chopLogo = "${imgPath}chop.png";
+  static String cartImage = "${imgPath}cart.png";
 
 
   static String moreLogo = "${iconPath}more.svg";

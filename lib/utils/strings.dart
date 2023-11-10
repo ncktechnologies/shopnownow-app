@@ -78,6 +78,7 @@ String subject = "Subject";
 String message = "Message";
 String instagram = "Instagram";
 String facebook = "Facebook";
+String checkout ="Checkout";
 
 
 

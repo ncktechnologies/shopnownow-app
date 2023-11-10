@@ -7,6 +7,7 @@ import 'package:shopnownow/modules/orders/order_history.dart';
 import 'package:shopnownow/modules/profile/screens/profile.dart';
 import 'package:shopnownow/modules/reuseables/size_boxes.dart';
 import 'package:shopnownow/modules/helpcenter/screens/help_center.dart';
+import 'package:shopnownow/modules/savedlist/saved_list.dart';
 import 'package:shopnownow/modules/specialrequest/quick_guide.dart';
 import 'package:shopnownow/modules/specialrequest/special_request.dart';
 import 'package:shopnownow/modules/wallet/wallet.dart';
@@ -161,7 +162,7 @@ class DrawerScaffoldContainer extends StatelessWidget {
           loggedIn!
               ? DrawerContainer(
                   text: savedList,
-                  onTap: () {},
+                  onTap: () {pushTo(SavedList());},
                 )
               : YBox(0),
           DrawerContainer(

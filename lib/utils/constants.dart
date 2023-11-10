@@ -126,7 +126,11 @@ const Color kGreen10 = Color(0xff7AD8B1);
 const Color kLight500 = Color(0xffF3F3F3);
 const Color kTransparent = Colors.transparent;
 const Color kDark300 = Color(0xff262626);
+const Color kDark400 = Color(0xff3C3C3C);
 const Color kDarkColor200 = Color(0xff363636);
+const Color kLightAsh100 = Color(0xffE5E5E5);
+const Color kLightAsh400 = Color(0xffD9DBE4);
+const Color kLightRed100 = Color(0xffFEF2F2);
 
 
 

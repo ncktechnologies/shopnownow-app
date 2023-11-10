@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shopnownow/app/navigators/navigators.dart';
 import 'package:shopnownow/modules/helpcenter/screens/contact_us.dart';
 import 'package:shopnownow/modules/helpcenter/screens/faq.dart';
+import 'package:shopnownow/modules/helpcenter/screens/social_media.dart';
 import 'package:shopnownow/modules/reuseables/size_boxes.dart';
 import 'package:shopnownow/modules/reuseables/widgets.dart';
 import 'package:shopnownow/utils/constants.dart';
@@ -34,16 +35,17 @@ class HelpCenter extends StatelessWidget {
           DrawerContainer(
             text: faq,
             onTap: () {
-              pushTo(FAQ());
+              pushTo(const FAQ());
             },
           ),DrawerContainer(
             text: contactUs,
             onTap: () {
-              pushTo(ContactUs());
+              pushTo(const ContactUs());
             },
           ),DrawerContainer(
             text: socialMedia,
             onTap: () {
+              pushTo(const SocialMedia());
             },
           ),
         ],

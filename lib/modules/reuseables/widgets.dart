@@ -459,25 +459,27 @@ class InitialPage extends StatelessWidget {
 // }
 //
 class OrWidget extends StatelessWidget {
+  final Color? color;
   const OrWidget({
     super.key,
+    this.color = k200
   });
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        const Expanded(
+         Expanded(
           child: Divider(
             thickness: 0.8,
-            color: k200,
+            color: color,
           ),
         ),
         Text("   $orText   ", style: textTheme.headlineMedium),
-        const Expanded(
+         Expanded(
           child: Divider(
             thickness: 0.8,
-            color: k200,
+            color: color,
           ),
         )
       ],

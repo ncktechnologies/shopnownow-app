@@ -30,6 +30,11 @@ class AssetPaths {
   static String copy = "${iconPath}copy.svg";
   static String pointLogo = "${iconPath}point_logo.svg";
   static String failTrans = "${iconPath}fail_trans.svg";
+  static String whatsappLogo = "${iconPath}whatsapp.svg";
+  static String liveChat = "${iconPath}live_chat.svg";
+  static String instagram = "${iconPath}insta.svg";
+  static String facebook = "${iconPath}facebook.svg";
+  static String x = "${iconPath}x.svg";
 
   static String yourProfile = "${iconPath}your_profile.svg";
 

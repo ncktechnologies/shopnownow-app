@@ -132,7 +132,11 @@ const Color kDark400 = Color(0xff3C3C3C);
 const Color kDarkColor200 = Color(0xff363636);
 const Color kLightAsh100 = Color(0xffE5E5E5);
 const Color kLightAsh400 = Color(0xffD9DBE4);
+const Color kLightGrey400 = Color(0xffF5F7F9);
+const Color kLightAsh50 = Color(0xffF2F3F4);
+const Color kDark900 = Color(0xff101828);
 const Color kLightRed100 = Color(0xffFEF2F2);
+const Color kLightPurple100 = Color(0xffF9FAFB);
 
 
 

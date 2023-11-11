@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:shopnownow/app/navigators/navigators.dart';
+import 'package:shopnownow/modules/homepage/screens/checkout.dart';
 import 'package:shopnownow/modules/reuseables/size_boxes.dart';
 import 'package:shopnownow/modules/reuseables/widgets.dart';
 import 'package:shopnownow/utils/assets_path.dart';
@@ -64,18 +66,23 @@ class SavedList extends StatelessWidget {
                               style: textTheme.titleSmall,
                             ),
                           ),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: kRegularPadding,
-                                vertical: kSmallPadding),
-                            decoration: BoxDecoration(
-                              color: kGreen100,
-                              borderRadius: BorderRadius.circular(500),
-                            ),
-                            child: Text(
-                              checkout,
-                              style: textTheme.bodyLarge!
-                                  .copyWith(color: kGreen200, fontSize: 14),
+                          InkWellNoShadow(
+                            onTap: (){
+                              pushTo(const CheckOut());
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: kRegularPadding,
+                                  vertical: kSmallPadding),
+                              decoration: BoxDecoration(
+                                color: kGreen100,
+                                borderRadius: BorderRadius.circular(500),
+                              ),
+                              child: Text(
+                                checkout,
+                                style: textTheme.bodyLarge!
+                                    .copyWith(color: kGreen200, fontSize: 14),
+                              ),
                             ),
                           )
                         ],

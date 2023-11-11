@@ -78,7 +78,30 @@ String subject = "Subject";
 String message = "Message";
 String instagram = "Instagram";
 String facebook = "Facebook";
-String checkout ="Checkout";
+String checkout = "Checkout";
+String noProd = "No products found";
+String addItem = "Search and add item to list";
+String addList = "Add to list";
+String yourItem = "Your items";
+String showLess = "Show less";
+String delInfo =  "Delivery Information";
+String mobNo = "Mobile Number";
+String location = "Location";
+String selLocation = "Select location";
+String address = "Address";
+String delTime = "Delivery time";
+String enterDelAddress = "Enter delivery address";
+String selectSlot = "Select time slot";
+String applyDiscount = "Apply Discount";
+String enterCoupon = "Enter Coupon Code";
+String apply = "Apply";
+String payWith = "Pay With";
+String debitCard = "Debit or Credit Card";
+String payWallet = "Pay with MyWallet";
+String minOrder = "Minimum order is ";
+String accept = "Accept";
+String terms = "Terms and Condition";
+
 
 
 

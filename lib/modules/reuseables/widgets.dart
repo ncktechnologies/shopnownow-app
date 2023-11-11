@@ -162,7 +162,7 @@ class DrawerScaffoldContainer extends StatelessWidget {
           loggedIn!
               ? DrawerContainer(
                   text: savedList,
-                  onTap: () {pushTo(SavedList());},
+                  onTap: () {pushTo(const SavedList());},
                 )
               : YBox(0),
           DrawerContainer(
@@ -315,33 +315,6 @@ class InitialPage extends StatelessWidget {
         leadingWidth: 40,
         title: Image.asset(AssetPaths.logo, height: 40),
         centerTitle: true,
-        actions: [
-         loggedIn! ? Center(
-           child: Padding(
-             padding: const EdgeInsets.only(right: kRegularPadding),
-             child: Column(
-               mainAxisAlignment: MainAxisAlignment.center,
-               children: [
-                 Container(
-                   padding: const EdgeInsets.symmetric( horizontal: 5),
-                   decoration: BoxDecoration(
-                     color: kPrimaryColor,
-                     borderRadius: BorderRadius.circular(kSmallPadding)
-                   ),
-                   child: Text("0", style: textTheme.displayMedium!.copyWith(
-                     fontWeight: FontWeight.w500,
-                     fontSize: 10,
-                   ),),
-                 ),
-                 Padding(
-                   padding: const EdgeInsets.only(right: kSmallPadding),
-                   child: SvgPicture.asset(AssetPaths.cart),
-                 ),
-               ],
-             ),
-           ),
-         ) : YBox(0)
-        ],
       ),
       body: SafeArea(
         child: SingleChildScrollView(

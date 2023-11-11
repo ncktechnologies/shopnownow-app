@@ -77,7 +77,6 @@ class TextInputNoIcon extends StatelessWidget {
           readOnly: read,
           style: textTheme.headlineMedium!.copyWith(
             color:kDarkColor400
-
           ),
           obscuringCharacter: ".",
           cursorColor: kPrimaryColor,
@@ -152,6 +151,7 @@ class SearchTextInputNoIcon extends StatelessWidget {
       this.controller,
       this.inputFormatters,
       this.prefixIcon,
+        this.noBorder  = true,
       this.read = false,
       this.filled = false,
       this.validator,
@@ -190,6 +190,7 @@ class SearchTextInputNoIcon extends StatelessWidget {
   final String? Function(String?)? validator;
   final TextCapitalization? textCapitalize;
   final FocusNode? focusNode;
+  final bool? noBorder;
   final VoidCallback? onTap;
   final Color? fillColor;
   final String? hintText;
@@ -204,9 +205,8 @@ class SearchTextInputNoIcon extends StatelessWidget {
         TextFormField(
           keyboardType: inputType,
           readOnly: read,
-          style: textTheme.bodyLarge!.copyWith(
-            fontWeight: FontWeight.w400,
-            fontSize: 18,
+          style: textTheme.headlineMedium!.copyWith(
+              color:kDarkColor400
           ),
           obscuringCharacter: ".",
           cursorColor: kPrimaryColor,
@@ -229,7 +229,7 @@ class SearchTextInputNoIcon extends StatelessWidget {
             prefixIcon: prefixIcon,
             hintText: hintText,
             filled: true,
-            fillColor: kLight400,
+            fillColor: noBorder! ?  kLight400 : kLightPurple100,
             hintStyle: textTheme.displayMedium!.copyWith(color: kGrey200),
             helperStyle: textTheme.bodyMedium!.copyWith(
               fontWeight: FontWeight.w400,
@@ -248,12 +248,12 @@ class SearchTextInputNoIcon extends StatelessWidget {
             errorMaxLines: 2,
             errorStyle: textTheme.titleMedium!
                 .copyWith(color: kPrimaryColor, overflow: TextOverflow.visible),
-            enabledBorder: const OutlineInputBorder(
-                borderSide: BorderSide(width: 1, color: kLight300),
+            enabledBorder:  OutlineInputBorder(
+                borderSide: BorderSide(width: noBorder! ? 1 : 0, color: kLight300),
                 borderRadius: BorderRadius.all(Radius.circular(500))),
-            focusedBorder: const OutlineInputBorder(
+            focusedBorder:  OutlineInputBorder(
                 borderSide: BorderSide(
-                  width: 1,
+                  width: noBorder! ? 1 : 0,
                   color: kPrimaryColor,
                 ),
                 borderRadius: BorderRadius.all(Radius.circular(500))),
@@ -271,3 +271,108 @@ class SearchTextInputNoIcon extends StatelessWidget {
     );
   }
 }
+
+class FormDropdown<T> extends StatelessWidget {
+  final String? hint, text, extraTextString;
+  final Color borderColor;
+  final Color? hintColor, fillColor;
+  final bool requiredField,
+      enableIcon,
+      enable,
+      outlinedBorder,
+      extraText,
+      extraIsWidget;
+  final T? value;
+  final Function(T?)? onChanged;
+  final Widget? selectedItemWidget;
+  final Widget extraWidget;
+  final double? bottomPadding;
+  final List<DropdownMenuItem<T>> items;
+  final String? Function(T?)? validator;
+
+  const FormDropdown({
+    Key? key,
+    required this.value,
+    required this.onChanged,
+    this.hintColor,
+    this.text,
+    this.extraTextString,
+    this.validator,
+    this.enable = true,
+    required this.extraWidget,
+    this.borderColor = kTransparent,
+    this.requiredField = false,
+    this.extraIsWidget = false,
+    this.extraText = false,
+    this.enableIcon = true,
+    required this.items,
+    this.hint,
+    this.selectedItemWidget,
+    this.fillColor,
+    this.bottomPadding,
+    this.outlinedBorder = false,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    var textTheme = Theme.of(context).textTheme;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          text!,
+          style: textTheme.headlineMedium!.copyWith(
+              color: kPurple50,
+              fontWeight: FontWeight.w500
+          ),
+        ),
+        if (text != null) YBox(5),
+        DropdownButtonFormField<T>(
+          value: value,
+          isExpanded: true,
+          isDense: true,
+          selectedItemBuilder: selectedItemWidget == null
+              ? null
+              : (ctx) => [selectedItemWidget!],
+          alignment: Alignment.center,
+          style: textTheme.displaySmall!.copyWith(
+            color: kGrey500,
+          ),
+          icon: const Icon(Icons.keyboard_arrow_down_rounded, color: kGrey800),
+          validator: validator,
+          autovalidateMode: AutovalidateMode.onUserInteraction,
+          decoration: InputDecoration(
+            filled: extraText ? false : true,
+            hintText: hint,
+            // isDense: isDensetrue,
+            hintStyle: textTheme.headlineMedium!.copyWith(color: kGrey200),
+            border: OutlineInputBorder(),
+            errorMaxLines: 2,
+            errorStyle: textTheme.titleMedium!
+                .copyWith(color: kPrimaryColor, overflow: TextOverflow.visible),
+            enabledBorder: const OutlineInputBorder(
+                borderSide: BorderSide(width: 1, color: kTextInputBorderColor),
+                borderRadius: BorderRadius.all(Radius.circular(kSmallPadding))),
+            focusedBorder: const OutlineInputBorder(
+                borderSide: BorderSide(
+                  width: 1,
+                  color: kTextInputBorderColor,
+                ),
+                borderRadius: BorderRadius.all(Radius.circular(kSmallPadding))),
+            errorBorder: const OutlineInputBorder(
+              borderSide: BorderSide(color: kPrimaryColor),
+            ),
+            focusedErrorBorder: const OutlineInputBorder(
+              borderSide: BorderSide(color: kPrimaryColor),
+            ),
+          ),
+          menuMaxHeight: MediaQuery.of(context).size.height / 2,
+          onChanged: onChanged,
+          items: items,
+        ),
+        YBox(kRegularPadding)
+      ],
+    );
+  }
+}
+

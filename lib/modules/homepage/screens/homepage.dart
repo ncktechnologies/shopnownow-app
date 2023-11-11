@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:shopnownow/app/navigators/navigators.dart';
+import 'package:shopnownow/modules/homepage/screens/home_page_detail.dart';
 import 'package:shopnownow/modules/homepage/screens/home_widget_constant.dart';
 import 'package:shopnownow/modules/reuseables/size_boxes.dart';
 import 'package:shopnownow/modules/reuseables/widgets.dart';
@@ -61,38 +63,43 @@ class _HomePageState extends State<HomePage> {
                   crossAxisSpacing: kRegularPadding,
                   mainAxisSpacing: kRegularPadding,
                   itemBuilder: (ctx, index) {
-                    return Container(
-                      height: screenSize.height / 4.6,
-                      padding: const EdgeInsets.only(
-                          top: kRegularPadding,
-                          left: kMediumPadding,
-                          right: kMediumPadding,
-                          bottom: kMicroPadding),
-                      decoration: BoxDecoration(
-                        borderRadius:
-                            BorderRadius.circular(kRegularPadding),
-                        color: kSecondaryColor,
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Align(
-                              alignment: Alignment.topRight,
-                              child: index == 4
-                                  ? Image.asset(
-                                      menuItems[index].icon,
-                                      height: 40,
-                                      width: 40,
-                                    )
-                                  : SvgPicture.asset(
-                                      menuItems[index].icon,
-                                    )),
-                          Text(
-                            menuItems[index].text,
-                            style: textTheme.displayLarge!,
-                          )
-                        ],
+                    return InkWellNoShadow(
+                      onTap: (){
+                        pushTo(HomePageDetail(menuItems: menuItems[index]));
+                      },
+                      child: Container(
+                        height: screenSize.height / 4.6,
+                        padding: const EdgeInsets.only(
+                            top: kRegularPadding,
+                            left: kMediumPadding,
+                            right: kMediumPadding,
+                            bottom: kMicroPadding),
+                        decoration: BoxDecoration(
+                          borderRadius:
+                              BorderRadius.circular(kRegularPadding),
+                          color: kSecondaryColor,
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Align(
+                                alignment: Alignment.topRight,
+                                child: index == 4
+                                    ? Image.asset(
+                                        menuItems[index].icon,
+                                        height: 40,
+                                        width: 40,
+                                      )
+                                    : SvgPicture.asset(
+                                        menuItems[index].icon,
+                                      )),
+                            Text(
+                              menuItems[index].text,
+                              style: textTheme.displayLarge!,
+                            )
+                          ],
+                        ),
                       ),
                     );
                   }),

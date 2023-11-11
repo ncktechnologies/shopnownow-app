@@ -8,6 +8,7 @@ class AssetPaths {
   static String logo = "${imgPath}logo.png";
   static String chopLogo = "${imgPath}chop.png";
   static String cartImage = "${imgPath}cart.png";
+  static String emptyProd = "${imgPath}empty_prod.png";
 
 
   static String moreLogo = "${iconPath}more.svg";
@@ -36,6 +37,7 @@ class AssetPaths {
   static String instagram = "${iconPath}insta.svg";
   static String facebook = "${iconPath}facebook.svg";
   static String x = "${iconPath}x.svg";
+  static String delete = "${iconPath}delete.svg";
 
   static String yourProfile = "${iconPath}your_profile.svg";
 

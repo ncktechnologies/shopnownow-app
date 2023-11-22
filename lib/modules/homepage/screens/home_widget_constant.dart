@@ -1,4 +1,8 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:shopnownow/modules/reuseables/size_boxes.dart';
 import 'package:shopnownow/utils/assets_path.dart';
+import 'package:shopnownow/utils/constants.dart';
 import 'package:shopnownow/utils/strings.dart';
 
 class HomeMenuItems{
@@ -58,3 +62,80 @@ List<String> naijaState = [
   "Yobe",
   "Zamfara"
 ];
+
+class EmptyHomeProduct extends StatelessWidget {
+  final String text, subText;
+  const EmptyHomeProduct({
+    super.key,
+    required this.text,
+    required this.subText
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Image.asset(AssetPaths.emptyProd),
+        Text(
+          text,
+          style: textTheme.bodyLarge!.copyWith(color: kDark900, fontSize: 16),
+        ),
+        YBox(kPadding),
+        Text(
+          subText,
+          style: textTheme.displaySmall!.copyWith(
+            fontSize: 14,
+          ),
+        )
+      ],
+    );
+  }
+}
+
+class AppleGoogleWidget extends StatelessWidget {
+  final String icon;
+  final String text, subText;
+
+  const AppleGoogleWidget({
+    required this.text,
+    required this.subText,
+    required this.icon,
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.all(kSmallPadding),
+        decoration: BoxDecoration(
+            borderRadius: kBorderSmallRadius,
+            color: Colors.black,
+            border: Border.all(width: 1, color: kGrey800)),
+        child: Row(
+          children: [
+            SvgPicture.asset(icon),
+            XBox(kSmallPadding),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  text,
+                  style: textTheme.displayMedium!.copyWith(
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+                Text(
+                  subText,
+                  style: textTheme.displayMedium!
+                      .copyWith(fontWeight: FontWeight.w600, fontSize: 20),
+                ),
+              ],
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}
+

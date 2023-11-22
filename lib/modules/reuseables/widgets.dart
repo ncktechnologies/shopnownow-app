@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:shopnownow/app/helpers/session_manager.dart';
 import 'package:shopnownow/app/navigators/navigators.dart';
 import 'package:shopnownow/modules/authentication/screens/login.dart';
 import 'package:shopnownow/modules/authentication/screens/signup.dart';
@@ -8,8 +9,8 @@ import 'package:shopnownow/modules/profile/screens/profile.dart';
 import 'package:shopnownow/modules/reuseables/size_boxes.dart';
 import 'package:shopnownow/modules/helpcenter/screens/help_center.dart';
 import 'package:shopnownow/modules/savedlist/saved_list.dart';
-import 'package:shopnownow/modules/specialrequest/quick_guide.dart';
-import 'package:shopnownow/modules/specialrequest/special_request.dart';
+import 'package:shopnownow/modules/specialrequest/screens/quick_guide.dart';
+import 'package:shopnownow/modules/specialrequest/screens/special_request.dart';
 import 'package:shopnownow/modules/wallet/wallet.dart';
 import 'package:shopnownow/utils/assets_path.dart';
 import 'package:shopnownow/utils/constants.dart';
@@ -93,11 +94,49 @@ class LargeButton extends StatelessWidget {
   }
 }
 
+class InitialPage extends StatelessWidget {
+  final Widget child;
+  final bool noScroll;
+
+  const InitialPage({
+    required this.child,
+    this.noScroll = false,
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      drawer: const Drawer(child: DrawerScaffoldContainer()),
+      resizeToAvoidBottomInset: noScroll ? false : true,
+      appBar: AppBar(
+        leading: Builder(
+          builder: (context) => InkWellNoShadow(
+            onTap: () => Scaffold.of(context).openDrawer(),
+            child: Padding(
+              padding: const EdgeInsets.only(left: kRegularPadding),
+              child: SvgPicture.asset(
+                AssetPaths.moreLogo,
+              ),
+            ),
+          ),
+        ),
+        leadingWidth: 40,
+        title: Image.asset(AssetPaths.logo, height: 40),
+        centerTitle: true,
+      ),
+      body: SafeArea(
+        child: noScroll ? child : SingleChildScrollView(
+          child: child,
+        ),
+      ),
+    );
+  }
+}
+
 class DrawerScaffoldContainer extends StatelessWidget {
-  final bool? loggedIn;
 
   const DrawerScaffoldContainer({
-    this.loggedIn = false,
     Key? key,
   }) : super(key: key);
 
@@ -135,35 +174,35 @@ class DrawerScaffoldContainer extends StatelessWidget {
             ],
           ),
           YBox(kLargePadding),
-          loggedIn!
+          SessionManager.getToken() != null
               ? DrawerContainer(
-                  text: profile,
-                  onTap: () {
-                    pushTo(const Profile());
-                  },
-                )
+            text: profile,
+            onTap: () {
+              pushTo(const Profile());
+            },
+          )
               : YBox(0),
-          loggedIn!
+          SessionManager.getToken() != null
               ? DrawerContainer(
-                  text: wallet,
-                  onTap: () {
-                    pushTo(const MyWallet());
-                  },
-                )
+            text: wallet,
+            onTap: () {
+              pushTo(const MyWallet());
+            },
+          )
               : YBox(0),
-          loggedIn!
+          SessionManager.getToken() != null
               ? DrawerContainer(
-                  text: orders,
-                  onTap: () {
-                    pushTo(const OrderHistory());
-                  },
-                )
+            text: orders,
+            onTap: () {
+              pushTo(const OrderHistory());
+            },
+          )
               : YBox(0),
-          loggedIn!
+          SessionManager.getToken() != null
               ? DrawerContainer(
-                  text: savedList,
-                  onTap: () {pushTo(const SavedList());},
-                )
+            text: savedList,
+            onTap: () {pushTo(const SavedList());},
+          )
               : YBox(0),
           DrawerContainer(
             text: specialRequest,
@@ -171,7 +210,7 @@ class DrawerScaffoldContainer extends StatelessWidget {
               pushTo(const SpecialRequest());
             },
           ),
-          loggedIn!
+          SessionManager.getToken() != null
               ? const Padding(
             padding: EdgeInsets.only(right: kMacroPadding),
             child: Divider(
@@ -180,7 +219,7 @@ class DrawerScaffoldContainer extends StatelessWidget {
               height: 0,
             ),
           ): YBox(0),
-          YBox(loggedIn!
+          YBox(SessionManager.getToken() != null
               ? kRegularPadding : 0),
           DrawerContainer(
             text: quickGuide,
@@ -207,46 +246,46 @@ class DrawerScaffoldContainer extends StatelessWidget {
             ),
           ),
           YBox(kFullPadding),
-     loggedIn!
-          ?   InkWellNoShadow(
-          onTap: (){
-            pushToAndClearStack(const LogIn());
-          },
-          child: Container(
-            margin: const EdgeInsets.only(bottom: kMediumPadding),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  signOut,
-                  style: textTheme.displayLarge!.copyWith(color: kPurple50),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(right: kMacroPadding),
-                  child: SvgPicture.asset(AssetPaths.downArrow),
-                )
-              ],
+          SessionManager.getToken() != null
+              ?   InkWellNoShadow(
+            onTap: (){
+              pushToAndClearStack(const LogIn());
+            },
+            child: Container(
+              margin: const EdgeInsets.only(bottom: kMediumPadding),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    signOut,
+                    style: textTheme.displayLarge!.copyWith(color: kPurple50),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(right: kMacroPadding),
+                    child: SvgPicture.asset(AssetPaths.downArrow),
+                  )
+                ],
+              ),
             ),
-          ),
-        ) :
+          ) :
           Row(
             children: [
               Expanded(
                   child: LargeButton(
-                onPressed: () {
-                  pushTo(const LogIn());
-                },
-                title: logIn,
-                outlineButton: true,
-              )),
+                    onPressed: () {
+                      pushTo(const LogIn());
+                    },
+                    title: logIn,
+                    outlineButton: true,
+                  )),
               XBox(kRegularPadding),
               Expanded(
                   child: LargeButton(
-                onPressed: () {
-                  pushTo(const SignUp());
-                },
-                title: signUp,
-              )),
+                    onPressed: () {
+                      pushTo(const SignUp());
+                    },
+                    title: signUp,
+                  )),
             ],
           )
         ],
@@ -280,45 +319,6 @@ class DrawerContainer extends StatelessWidget {
               child: SvgPicture.asset(AssetPaths.arrow),
             )
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class InitialPage extends StatelessWidget {
-  final Widget child;
-  final bool? loggedIn;
-
-  const InitialPage({
-    required this.child,
-    this.loggedIn = false,
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      drawer: Drawer(child: DrawerScaffoldContainer(loggedIn: loggedIn)),
-      appBar: AppBar(
-        leading: Builder(
-          builder: (context) => InkWellNoShadow(
-            onTap: () => Scaffold.of(context).openDrawer(),
-            child: Padding(
-              padding: const EdgeInsets.only(left: kRegularPadding),
-              child: SvgPicture.asset(
-                AssetPaths.moreLogo,
-              ),
-            ),
-          ),
-        ),
-        leadingWidth: 40,
-        title: Image.asset(AssetPaths.logo, height: 40),
-        centerTitle: true,
-      ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: child,
         ),
       ),
     );
@@ -462,10 +462,10 @@ class OrWidget extends StatelessWidget {
 }
 
 Widget makeDismissible(
-        {required Widget child, required BuildContext context}) =>
+        {required Widget child, required BuildContext context, required Function() onTap}) =>
     GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onTap: () => Navigator.pop(context),
+      onTap: onTap,
       child: GestureDetector(
         onTap: () {},
         child: child,

@@ -1,20 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:intl/intl.dart';
+import 'package:shopnownow/app/helpers/session_manager.dart';
+import 'package:shopnownow/modules/homepage/screens/home_widget_constant.dart';
 import 'package:shopnownow/modules/reuseables/size_boxes.dart';
 import 'package:shopnownow/modules/reuseables/widgets.dart';
+import 'package:shopnownow/modules/wallet/provider/wallet_provider.dart';
 import 'package:shopnownow/utils/assets_path.dart';
 import 'package:shopnownow/utils/constants.dart';
+import 'package:shopnownow/utils/flushbar.dart';
 import 'package:shopnownow/utils/strings.dart';
+import 'package:shopnownow/utils/widgets.dart';
 
-class MyWallet extends StatefulWidget {
+class MyWallet extends ConsumerStatefulWidget {
   const MyWallet({Key? key}) : super(key: key);
 
   @override
-  State<MyWallet> createState() => _MyWalletState();
+  ConsumerState<MyWallet> createState() => _MyWalletState();
 }
 
-class _MyWalletState extends State<MyWallet> {
+class _MyWalletState extends ConsumerState<MyWallet> {
   bool obscure = true;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      ref.read(getTransactionProvider.notifier).getTransaction();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +74,7 @@ class _MyWalletState extends State<MyWallet> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      obscure ? "********" : "₦2,000.00",
+                      obscure ? "********" : "₦${SessionManager.getWallet()}",
                       style: textTheme.displayMedium!
                           .copyWith(fontWeight: FontWeight.w900, fontSize: 38),
                     ),
@@ -131,7 +147,7 @@ class _MyWalletState extends State<MyWallet> {
                       ),
                       YBox(kPadding),
                       Text(
-                        "2,000 pts",
+                        "${SessionManager.getLoyaltyPoints()} pts",
                         style: textTheme.displayLarge!
                             .copyWith(fontSize: 18, color: kBlack600),
                       ),
@@ -143,18 +159,32 @@ class _MyWalletState extends State<MyWallet> {
                     ],
                   ),
                 ),
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(500),
-                      color: kOrange500),
-                  child: Text(
-                    convertPoint,
-                    style: textTheme.displayMedium!
-                        .copyWith(fontSize: 12, fontWeight: FontWeight.w600),
-                  ),
-                ),
+                Consumer(builder: (context, ref, _) {
+                  var widget = InkWellNoShadow(
+                    onTap: () {
+                      ref.read(convertPointsProvider.notifier).convertPoints(
+                            then: (val) => showSuccessBar(context, val),
+                            error: (val) => showErrorBar(context, val),
+                          );
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 10),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(500),
+                          color: kOrange500),
+                      child: Text(
+                        convertPoint,
+                        style: textTheme.displayMedium!.copyWith(
+                            fontSize: 12, fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                  );
+                  return ref.watch(convertPointsProvider).when(
+                      done: (done) => widget,
+                      loading: () => const SpinKitDemo(),
+                      error: (val) => widget);
+                })
               ],
             ),
           ),
@@ -164,70 +194,115 @@ class _MyWalletState extends State<MyWallet> {
             style: textTheme.bodyLarge!.copyWith(color: kBlue, fontSize: 16),
           ),
           YBox(kRegularPadding),
-          ...List.generate(
-            4,
-            (index) => Container(
-              width: double.infinity,
-              margin: const EdgeInsets.only(bottom: kSmallPadding),
-              padding: const EdgeInsets.all(kRegularPadding),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(kRegularPadding),
-                  color: kLightGrey200),
-              child: Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(10),
-                    decoration: const BoxDecoration(
-                      color: kLightAsh300,
-                      shape: BoxShape.circle,
-                    ),
-                    child: SvgPicture.asset( AssetPaths.failTrans, color: index == 1 ? kGreen10: kError900),
-                  ),
-                  XBox(kSmallPadding),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Order Payment",
-                          style:
-                              textTheme.headlineMedium!.copyWith(color: kBlue),
-                        ),
-                        YBox(8),
-                        Row(
-                          children: [
-                            Text(
-                              "12.03.2022  ",
-                              style: textTheme.bodyLarge!.copyWith(
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.w400,
-                                  color: kDark100),
+          Consumer(builder: (context, ref, _) {
+            return ref.watch(getTransactionProvider).when(
+                done: (data) {
+                  if (data != null) {
+                    return data.transactions!.isEmpty
+                        ? EmptyHomeProduct(
+                            text: noTrans,
+                            subText: noTransSub,
+                          )
+                        : Column(
+                            children: List.generate(
+                              data.transactions!.length,
+                              (index) => Container(
+                                width: double.infinity,
+                                margin: const EdgeInsets.only(
+                                    bottom: kSmallPadding),
+                                padding: const EdgeInsets.all(kRegularPadding),
+                                decoration: BoxDecoration(
+                                    borderRadius:
+                                        BorderRadius.circular(kRegularPadding),
+                                    color: kLightGrey200),
+                                child: Row(
+                                  children: [
+                                    Container(
+                                      padding: const EdgeInsets.all(10),
+                                      decoration: const BoxDecoration(
+                                        color: kLightAsh300,
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: SvgPicture.asset(
+                                          AssetPaths.failTrans,
+                                          color:
+                                              data.transactions![index].type ==
+                                                      "debit"
+                                                  ? kError900
+                                                  : kGreen10),
+                                    ),
+                                    XBox(kSmallPadding),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            data.transactions![index].message ??
+                                                "",
+                                            style: textTheme.headlineMedium!
+                                                .copyWith(color: kBlue),
+                                          ),
+                                          YBox(8),
+                                          Row(
+                                            children: [
+                                              Text(
+                                                DateFormat("dd.MM.yyyy").format(
+                                                    data.transactions![index]
+                                                        .createdAt!),
+                                                style: textTheme.bodyLarge!
+                                                    .copyWith(
+                                                        fontSize: 10,
+                                                        fontWeight:
+                                                            FontWeight.w400,
+                                                        color: kDark100),
+                                              ),
+                                              XBox(kPadding),
+                                              Container(
+                                                height: kPadding,
+                                                width: kPadding,
+                                                decoration: const BoxDecoration(
+                                                    shape: BoxShape.circle,
+                                                    color: kDark100),
+                                              ),
+                                              XBox(kPadding),
+                                              Text(
+                                                DateFormat().add_jm().format(
+                                                    data.transactions![index]
+                                                        .createdAt!),
+                                                style: textTheme.bodyLarge!
+                                                    .copyWith(
+                                                        fontSize: 10,
+                                                        fontWeight:
+                                                            FontWeight.w400,
+                                                        color: kDark100),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Text(
+                                      data.transactions![index].type ==
+                                          "debit"
+                                          ?     "- ₦ ${data.transactions![index].amount}" : "+ ₦ ${data.transactions![index].amount}",
+                                      style: textTheme.displayLarge!.copyWith(
+                                          color:   data.transactions![index].type ==
+                                              "debit"
+                                              ? kError900
+                                              : kGreen10),
+                                    ),
+                                  ],
+                                ),
+                              ),
                             ),
-                            Container(
-                              height: kPadding,
-                              width: kPadding,
-                              decoration: const BoxDecoration(
-                                  shape: BoxShape.circle, color: kDark100),
-                            ),
-                            Text("  12:54 PM",
-                              style: textTheme.bodyLarge!.copyWith(
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.w400,
-                                  color: kDark100),),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                  Text(
-                    "- ₦ 5,000.00",
-                    style: textTheme.displayLarge!
-                        .copyWith(color: index == 1 ? kGreen10: kError900),
-                  ),
-                ],
-              ),
-            ),
-          )
+                          );
+                  } else {
+                    return const SizedBox();
+                  }
+                },
+                loading: () => const SpinKitDemo());
+          })
         ],
       ),
     ));

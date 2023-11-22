@@ -1,19 +1,23 @@
 // import 'package:flutter/material.dart';
 //
-// class SpinKitDemo extends StatelessWidget {
-//   final double? size;
-//   final Color? color;
-//
-//   const SpinKitDemo({Key? key, this.size, this.color}) : super(key: key);
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return SpinKitThreeBounce(
-//       color: color ?? kPrimaryColor,
-//       size: size ?? 35,
-//     );
-//   }
-// }
+import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:shopnownow/utils/constants.dart';
+
+class SpinKitDemo extends StatelessWidget {
+  final double? size;
+  final Color? color;
+
+  const SpinKitDemo({Key? key, this.size, this.color}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SpinKitFadingFour(
+      color: color ?? kPrimaryColor,
+      size: size ?? 35,
+    );
+  }
+}
 //
 // class GlobalErrorWidget extends StatelessWidget {
 //   const GlobalErrorWidget({Key? key, required this.onTap, this.message})

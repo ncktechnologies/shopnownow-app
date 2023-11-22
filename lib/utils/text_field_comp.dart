@@ -66,18 +66,14 @@ class TextInputNoIcon extends StatelessWidget {
             ? const SizedBox()
             : Text(
                 text,
-                style: textTheme.headlineMedium!.copyWith(
-                  color: kPurple50,
-                  fontWeight: FontWeight.w500
-                ),
+                style: textTheme.headlineMedium!
+                    .copyWith(color: kPurple50, fontWeight: FontWeight.w500),
               ),
         YBox(kPadding),
         TextFormField(
           keyboardType: inputType,
           readOnly: read,
-          style: textTheme.headlineMedium!.copyWith(
-            color:kDarkColor400
-          ),
+          style: textTheme.headlineMedium!.copyWith(color: kDarkColor400),
           obscuringCharacter: ".",
           cursorColor: kPrimaryColor,
           focusNode: focusNode,
@@ -89,7 +85,7 @@ class TextInputNoIcon extends StatelessWidget {
           validator: validator,
           controller: controller,
           onChanged: onChanged,
-          // autovalidateMode: AutovalidateMode.,
+          autovalidateMode: AutovalidateMode.onUserInteraction,
           inputFormatters: inputFormatters,
           maxLines: maxLine ?? 1,
           cursorWidth: 1,
@@ -99,7 +95,8 @@ class TextInputNoIcon extends StatelessWidget {
             prefixIcon: prefixIcon,
             hintText: hintText,
             filled: true,
-            fillColor: read ? kTextInputBorderColor.withOpacity(0.4) : kPrimaryWhite,
+            fillColor:
+                read ? kTextInputBorderColor.withOpacity(0.4) : kPrimaryWhite,
             hintStyle: textTheme.headlineMedium!.copyWith(color: kGrey200),
             helperStyle: textTheme.bodyMedium!.copyWith(
               fontWeight: FontWeight.w400,
@@ -116,7 +113,7 @@ class TextInputNoIcon extends StatelessWidget {
             suffixIcon: icon,
             border: const OutlineInputBorder(),
             errorMaxLines: 2,
-            errorStyle: textTheme.titleMedium!
+            errorStyle: textTheme.headlineMedium!
                 .copyWith(color: kPrimaryColor, overflow: TextOverflow.visible),
             enabledBorder: const OutlineInputBorder(
                 borderSide: BorderSide(width: 1, color: kTextInputBorderColor),
@@ -143,34 +140,35 @@ class TextInputNoIcon extends StatelessWidget {
 }
 
 class SearchTextInputNoIcon extends StatelessWidget {
-  const SearchTextInputNoIcon(
-      {super.key, this.icon,
-      this.onSaved,
-      this.onChanged,
-      this.inputType,
-      this.controller,
-      this.inputFormatters,
-      this.prefixIcon,
-        this.noBorder  = true,
-      this.read = false,
-      this.filled = false,
-      this.validator,
-      this.suffixIcon,
-      this.textCapitalize,
-      this.maxLine,
-      this.obscure = false,
-      this.addSpace = false,
-      this.labelText,
-      this.focusNode,
-      this.onTap,
-      this.fillColor,
-      this.helperText,
-      this.outlinedBorder = false,
-      this.roundBorders = false,
-      this.extraText = false,
-      this.hintText,
-      this.extraTextString,
-      });
+  const SearchTextInputNoIcon({
+    super.key,
+    this.icon,
+    this.onSaved,
+    this.onChanged,
+    this.inputType,
+    this.controller,
+    this.inputFormatters,
+    this.prefixIcon,
+    this.noBorder = true,
+    this.read = false,
+    this.filled = false,
+    this.validator,
+    this.suffixIcon,
+    this.textCapitalize,
+    this.maxLine,
+    this.obscure = false,
+    this.addSpace = false,
+    this.labelText,
+    this.focusNode,
+    this.onTap,
+    this.fillColor,
+    this.helperText,
+    this.outlinedBorder = false,
+    this.roundBorders = false,
+    this.extraText = false,
+    this.hintText,
+    this.extraTextString,
+  });
 
   final String? labelText, extraTextString, helperText;
   final Widget? icon, suffixIcon, prefixIcon;
@@ -205,9 +203,7 @@ class SearchTextInputNoIcon extends StatelessWidget {
         TextFormField(
           keyboardType: inputType,
           readOnly: read,
-          style: textTheme.headlineMedium!.copyWith(
-              color:kDarkColor400
-          ),
+          style: textTheme.headlineMedium!.copyWith(color: kDarkColor400),
           obscuringCharacter: ".",
           cursorColor: kPrimaryColor,
           focusNode: focusNode,
@@ -229,7 +225,7 @@ class SearchTextInputNoIcon extends StatelessWidget {
             prefixIcon: prefixIcon,
             hintText: hintText,
             filled: true,
-            fillColor: noBorder! ?  kLight400 : kLightPurple100,
+            fillColor: noBorder! ? kLight400 : kLightPurple100,
             hintStyle: textTheme.displayMedium!.copyWith(color: kGrey200),
             helperStyle: textTheme.bodyMedium!.copyWith(
               fontWeight: FontWeight.w400,
@@ -248,10 +244,11 @@ class SearchTextInputNoIcon extends StatelessWidget {
             errorMaxLines: 2,
             errorStyle: textTheme.titleMedium!
                 .copyWith(color: kPrimaryColor, overflow: TextOverflow.visible),
-            enabledBorder:  OutlineInputBorder(
-                borderSide: BorderSide(width: noBorder! ? 1 : 0, color: kLight300),
+            enabledBorder: OutlineInputBorder(
+                borderSide:
+                    BorderSide(width: noBorder! ? 1 : 0, color: kLight300),
                 borderRadius: BorderRadius.all(Radius.circular(500))),
-            focusedBorder:  OutlineInputBorder(
+            focusedBorder: OutlineInputBorder(
                 borderSide: BorderSide(
                   width: noBorder! ? 1 : 0,
                   color: kPrimaryColor,
@@ -321,10 +318,8 @@ class FormDropdown<T> extends StatelessWidget {
       children: [
         Text(
           text!,
-          style: textTheme.headlineMedium!.copyWith(
-              color: kPurple50,
-              fontWeight: FontWeight.w500
-          ),
+          style: textTheme.headlineMedium!
+              .copyWith(color: kPurple50, fontWeight: FontWeight.w500),
         ),
         if (text != null) YBox(5),
         DropdownButtonFormField<T>(
@@ -375,4 +370,3 @@ class FormDropdown<T> extends StatelessWidget {
     );
   }
 }
-

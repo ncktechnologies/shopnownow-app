@@ -101,6 +101,10 @@ String payWallet = "Pay with MyWallet";
 String minOrder = "Minimum order is ";
 String accept = "Accept";
 String terms = "Terms and Condition";
+String emptyField = "Field cannot be empty";
+String invalidEmail = "Invalid Email";
+String noTrans = "No Transaction";
+String noTransSub = "All Transactions will appear here";
 
 
 

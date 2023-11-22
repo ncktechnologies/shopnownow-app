@@ -27,6 +27,23 @@ class WalletRepository{
         .toNotifierState();
   }
 
+  static Future<NotifierState<String>> fundWallet({
+  required String amount, required String reference
+}) async {
+    return (await ApiService<String>().postCall(
+        "/user/wallet/fund_wallet",
+        ServiceRequest(serviceRequest: {
+          "amount" : amount,
+          "payment_reference" : reference
+        }),
+        hasToken: true,
+        onReturn: (response) => logResponse(response),
+        getDataFromResponse: (data) {
+          return data["message"];
+        }))
+        .toNotifierState();
+  }
+
   static Future<NotifierState<TransactionResponse>> getTransactions() async {
     return (await ApiService<TransactionResponse>().getCall(
         "/user/wallet/transactions",

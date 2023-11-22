@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_paystack/flutter_paystack.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
@@ -22,11 +23,14 @@ class MyWallet extends ConsumerStatefulWidget {
 
 class _MyWalletState extends ConsumerState<MyWallet> {
   bool obscure = true;
+  var publicKey = 'pk_test_25e249297133695de0f477d314a9d2658c967446';
+  final plugin = PaystackPlugin();
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    plugin.initialize(publicKey: publicKey);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       ref.read(getTransactionProvider.notifier).getTransaction();
     });
@@ -98,16 +102,23 @@ class _MyWalletState extends ConsumerState<MyWallet> {
                   ],
                 ),
                 YBox(kRegularPadding),
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(kMediumPadding),
-                      color: kPrimaryColor),
-                  child: Text(
-                    fundWallet,
-                    style: textTheme.displayMedium!.copyWith(
-                      fontWeight: FontWeight.w600,
+                InkWellNoShadow(
+                  onTap: () {
+                    checkOut(
+                      100,
+                    );
+                  },
+                  child: Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(kMediumPadding),
+                        color: kPrimaryColor),
+                    child: Text(
+                      fundWallet,
+                      style: textTheme.displayMedium!.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
                 ),
@@ -283,14 +294,15 @@ class _MyWalletState extends ConsumerState<MyWallet> {
                                       ),
                                     ),
                                     Text(
-                                      data.transactions![index].type ==
-                                          "debit"
-                                          ?     "- ₦ ${data.transactions![index].amount}" : "+ ₦ ${data.transactions![index].amount}",
+                                      data.transactions![index].type == "debit"
+                                          ? "- ₦ ${data.transactions![index].amount}"
+                                          : "+ ₦ ${data.transactions![index].amount}",
                                       style: textTheme.displayLarge!.copyWith(
-                                          color:   data.transactions![index].type ==
-                                              "debit"
-                                              ? kError900
-                                              : kGreen10),
+                                          color:
+                                              data.transactions![index].type ==
+                                                      "debit"
+                                                  ? kError900
+                                                  : kGreen10),
                                     ),
                                   ],
                                 ),
@@ -306,5 +318,28 @@ class _MyWalletState extends ConsumerState<MyWallet> {
         ],
       ),
     ));
+  }
+
+  checkOut(int cost) async {
+    Charge charge = Charge()
+      ..amount = cost * 100
+      ..reference = "${DateTime.now().millisecondsSinceEpoch}"
+      ..email = SessionManager.getEmail();
+    CheckoutResponse response = await plugin.checkout(
+      context,
+      method: CheckoutMethod.card,
+      charge: charge,
+    );
+    if (response.status) {
+      ref.read(fundWalletProvider.notifier).fundWallet(
+          amount: cost.toString(),
+          reference: response.reference!,
+          then: () {
+            ref.read(getTransactionProvider.notifier).getTransaction();
+            ref.read(getWalletProvider.notifier).getWallet(then: () {
+              setState(() {});
+            });
+          });
+    }
   }
 }

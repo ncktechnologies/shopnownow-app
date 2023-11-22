@@ -19,6 +19,11 @@ final convertPointsProvider = StateNotifierProvider<
   return ConvertPointsNotifier();
 });
 
+final fundWalletProvider = StateNotifierProvider<
+    FundWalletNotifier, NotifierState<String>>((ref) {
+  return FundWalletNotifier();
+});
+
 class GetWalletNotifier extends StateNotifier<NotifierState<WalletResponse>> {
   GetWalletNotifier() : super(NotifierState());
 
@@ -64,6 +69,25 @@ class GetTransactionNotifier extends StateNotifier<NotifierState<TransactionResp
         Function(String?)? error}) async {
     state = notifyLoading();
     state = await WalletRepository.getTransactions();
+    if (state.status == NotifierStatus.done) {
+      if (then != null) then();
+    } else if (state.status == NotifierStatus.error) {
+      if (error != null) error(state.message);
+    }
+  }
+}
+
+class FundWalletNotifier extends StateNotifier<NotifierState<String>> {
+  FundWalletNotifier() : super(NotifierState());
+
+  void fundWallet(
+      {
+        required String amount,
+        required String reference,
+        Function()? then,
+        Function(String?)? error}) async {
+    state = notifyLoading();
+    state = await WalletRepository.fundWallet(amount: amount, reference: reference);
     if (state.status == NotifierStatus.done) {
       if (then != null) then();
     } else if (state.status == NotifierStatus.error) {

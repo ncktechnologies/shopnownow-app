@@ -3,9 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shopnownow/app/helpers/session_manager.dart';
+import 'package:shopnownow/app/navigators/navigators.dart';
 import 'package:shopnownow/modules/homepage/model/homepage_model.dart';
 import 'package:shopnownow/modules/homepage/provider/homepage_provider.dart';
+import 'package:shopnownow/modules/homepage/screens/checkout.dart';
 import 'package:shopnownow/modules/homepage/screens/home_widget_constant.dart';
+import 'package:shopnownow/modules/orders/order_widget.dart';
 import 'package:shopnownow/modules/reuseables/size_boxes.dart';
 import 'package:shopnownow/modules/reuseables/widgets.dart';
 import 'package:shopnownow/utils/assets_path.dart';
@@ -14,6 +17,7 @@ import 'package:shopnownow/utils/flushbar.dart';
 import 'package:shopnownow/utils/strings.dart';
 import 'package:shopnownow/utils/text_field_comp.dart';
 import 'package:shopnownow/utils/widgets.dart';
+import 'package:collection/collection.dart';
 
 class HomePageDetail extends ConsumerStatefulWidget {
   final GetCategories menuItems;
@@ -31,7 +35,10 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
   TextEditingController controller = TextEditingController();
   List<Product> searchResult = [];
   OverlayEntry? overlayEntry;
+  OverlayEntry? overlaySearchEntry;
   GetCategories? categoryName;
+
+  List<Product> productList = [];
 
   void _showOverlay(BuildContext context) async {
     OverlayState overlayState = Overlay.of(context);
@@ -69,7 +76,8 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
                               overlayEntry = null;
                             },
                             child: Container(
-                              margin: const EdgeInsets.only(bottom: kSmallPadding),
+                              margin:
+                                  const EdgeInsets.only(bottom: kSmallPadding),
                               child: Row(
                                 children: [
                                   SvgPicture.network(
@@ -103,11 +111,172 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
     overlayState.insert(overlayEntry!);
   }
 
+  void _showSearchOverlay(BuildContext context) async {
+    OverlayState overlayState = Overlay.of(context);
+    overlaySearchEntry = OverlayEntry(builder: (context) {
+      // You can return any widget you like here
+      // to be displayed on the Overlay
+      return Positioned(
+        left: kRegularPadding,
+        right: kRegularPadding,
+        top: MediaQuery.of(context).size.height * 0.38,
+        child: Container(
+            height: searchResult.length == 1 ? 150 : 250,
+            padding: const EdgeInsets.all(kSmallPadding),
+            decoration: BoxDecoration(
+              color: kPrimaryWhite,
+              borderRadius: BorderRadius.circular(kSmallPadding),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey[200]!,
+                  spreadRadius: 0,
+                  blurRadius: 15,
+                  offset: const Offset(0, 0), // changes position of shadow
+                )
+              ],
+            ),
+            child: ListView.builder(
+                itemCount: searchResult.length,
+                itemBuilder: (context, index) {
+                  return Material(
+                    child: Container(
+                      margin: const EdgeInsets.only(bottom: kSmallPadding),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              CachedNetworkImage(
+                                height: 80,
+                                width: 80,
+                                imageUrl: searchResult[index].thumbnailUrl ??
+                                    "https://us.123rf.com/450wm/mathier/mathier1905/mathier190500002/mathier190500002-no-thumbnail-image-placeholder-for-forums-blogs-and-websites.jpg?ver=6",
+                                fit: BoxFit.cover,
+                                imageBuilder: (context, prov) {
+                                  return Container(
+                                    decoration: BoxDecoration(
+                                        border: Border.all(
+                                            width: 1, color: kLight300),
+                                        borderRadius: kBorderSmallRadius,
+                                        image: DecorationImage(
+                                            image: prov, fit: BoxFit.cover)),
+                                  );
+                                },
+                                errorWidget: (context, url, error) =>
+                                    Image.asset(
+                                  "assets/images/img.png",
+                                  height: 80,
+                                  width: 80,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                              XBox(kSmallPadding),
+                              Expanded(
+                                  child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    searchResult[index].name ?? "",
+                                    style: textTheme.titleMedium!.copyWith(
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 12,
+                                    ),
+                                    softWrap: true,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  YBox(kPadding),
+                                  Text(
+                                    widget.menuItems.name ?? "",
+                                    style: textTheme.displaySmall!.copyWith(
+                                        color: kDarkPurple, fontSize: 10),
+                                    softWrap: true,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  YBox(kPadding),
+                                  Row(
+                                    children: [
+                                      Text(
+                                        "₦",
+                                        softWrap: true,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: textTheme.displayLarge!.copyWith(
+                                          fontSize: 10,
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.only(top: 8),
+                                        child: Text(
+                                          searchResult[index].price ?? "0",
+                                          softWrap: true,
+                                          style:
+                                              textTheme.displayLarge!.copyWith(
+                                            fontSize: 10,
+                                          ),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                                ],
+                              )),
+                              InkWellNoShadow(
+                                onTap: () {
+                                  setState(() {
+                                    productList.add(
+                                      Product(
+                                          id: searchResult[index].id!,
+                                          name: searchResult[index].name!,
+                                          quantity: 1,
+                                          price: searchResult[index].price,
+                                          thumbnailUrl:
+                                              searchResult[index].thumbnailUrl),
+                                    );
+                                  });
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 12, vertical: 8),
+                                  decoration: BoxDecoration(
+                                      borderRadius:
+                                          BorderRadius.circular(kMicroPadding),
+                                      border: Border.all(
+                                          color: kLightAsh50, width: 1.5)),
+                                  child: Text(
+                                    addList,
+                                    style: textTheme.displayLarge!.copyWith(
+                                        color: kGrey600, fontSize: 14),
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                          YBox(kSmallPadding),
+                          index == searchResult.length - 1
+                              ? YBox(0)
+                              : const Divider(
+                                  thickness: 1,
+                                  color: kDividerColor,
+                                ),
+                          YBox(index == searchResult.length - 1
+                              ? 0
+                              : kSmallPadding),
+                        ],
+                      ),
+                    ),
+                  );
+                })),
+      );
+    });
+
+    // Inserting the OverlayEntry into the Overlay
+    overlayState.insert(overlaySearchEntry!);
+  }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    categoryName = widget.menuItems!;
+    categoryName = widget.menuItems;
   }
 
   @override
@@ -115,261 +284,232 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
     return WillPopScope(
       onWillPop: () async {
         overlayEntry?.remove();
+        overlaySearchEntry?.remove();
         return true;
       },
-      child: InitialPage(
-        child: GestureDetector(
-          onTap: () {
-            overlayEntry?.remove();
-            overlayEntry = null;
-          },
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: kRegularPadding),
-            child: Column(
-              children: [
-                YBox(kMediumPadding),
-                InkWellNoShadow(
-                  onTap: () {
-                    if (overlayEntry == null) {
-                      _showOverlay(context);
-                    } else {}
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.all(kRegularPadding),
-                    decoration: BoxDecoration(
-                        color: kSecondaryColor,
-                        borderRadius: BorderRadius.circular(kMacroPadding)),
-                    child: Row(
-                      children: [
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: Container(
-                            padding: const EdgeInsets.all(8),
-                            decoration: const BoxDecoration(
-                                shape: BoxShape.circle, color: kPrimaryWhite),
-                            child: SvgPicture.network(
-                              widget.menuItems.thumbnail ?? "",
-                              fit: BoxFit.scaleDown,
-                              height: kRegularPadding,
-                              width: kRegularPadding,
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          child: Text(
-                            categoryName?.name ?? "",
-                            style: textTheme.displayLarge!.copyWith(
-                              fontWeight: FontWeight.w500,
-                              color: kPrimaryColor,
-                              fontSize: 14,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                        const Icon(
-                          Icons.keyboard_arrow_down,
-                          size: 25,
-                          color: kPrimaryColor,
-                        )
-                      ],
-                    ),
-                  ),
+      child: Scaffold(
+        drawer: const Drawer(child: DrawerScaffoldContainer()),
+        bottomSheet: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: kRegularPadding),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Divider(
+                thickness: 2,
+                color: k200,
+              ),
+              YBox(kRegularPadding),
+              Text(
+                "$minOrder₦2,500",
+                style: textTheme.headlineMedium!.copyWith(color: kOrange500),
+              ),
+              YBox(kMediumPadding),
+              PaymentRow(
+                  text: subTotal,
+                  subText: (productList.fold<int>(0, (previousValue, element) {
+                    return (previousValue +
+                        int.parse(element.price?.replaceAll(".00", "") ?? "0"));
+                  }).toString())),
+              YBox(kRegularPadding),
+              LargeButton(
+                  title: checkout,
+                  onPressed: productList.isEmpty ? (){
+                    showErrorBar(context, "Please add a Product");
+                  }: () {
+                    pushTo(
+                       CheckOut(
+                        productList: productList
+                      ),
+                    );
+                  }),
+              YBox(kRegularPadding),
+            ],
+          ),
+        ),
+        appBar: AppBar(
+          leading: Builder(
+            builder: (context) => InkWellNoShadow(
+              onTap: () => Scaffold.of(context).openDrawer(),
+              child: Padding(
+                padding: const EdgeInsets.only(left: kRegularPadding),
+                child: SvgPicture.asset(
+                  AssetPaths.moreLogo,
                 ),
-                YBox(kRegularPadding),
-                SearchTextInputNoIcon(
-                  prefixIcon: SvgPicture.asset(
-                    AssetPaths.search,
-                    fit: BoxFit.scaleDown,
-                  ),
-                  // icon: InkWellNoShadow(
-                  //   onTap: (){},
-                  //   child: const Icon(
-                  //     Icons.send,
-                  //     color: kPrimaryColor,
-                  //   ),
-                  // ),
-                  controller: controller,
-                  onChanged: (val) {
-                    onSearchTextChanged(val ?? "");
-                  },
-                  hintText: searchText,
-                ),
-                searchResult.isEmpty
-                    ? Container(
-                        width: double.infinity,
-                        height: screenSize.height,
-                        color: kPrimaryWhite,
-                        child:  EmptyHomeProduct(
-                          text: noProd,
-                          subText: addItem,
-                        ))
-                    : Container(
+              ),
+            ),
+          ),
+          leadingWidth: 40,
+          title: Image.asset(AssetPaths.logo, height: 40),
+          centerTitle: true,
+        ),
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: GestureDetector(
+              onTap: () {
+                overlayEntry?.remove();
+                overlaySearchEntry?.remove();
+                overlayEntry = null;
+                overlaySearchEntry = null;
+              },
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: kRegularPadding),
+                child: Column(
+                  children: [
+                    YBox(kMediumPadding),
+                    InkWellNoShadow(
+                      onTap: () {
+                        if (overlayEntry == null) {
+                          _showOverlay(context);
+                        } else {}
+                      },
+                      child: Container(
                         padding: const EdgeInsets.all(kRegularPadding),
                         decoration: BoxDecoration(
-                            color: kPrimaryWhite,
-                            borderRadius:
-                                BorderRadius.circular(kRegularPadding),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey[200]!,
-                                spreadRadius: 0,
-                                blurRadius: 2,
-                                offset: const Offset(
-                                    0, 2), // changes position of shadow
-                              )
-                            ],
-                            border: Border.all(width: 1, color: kLight300)),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: List.generate(
-                            searchResult.length,
-                            (index) => Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  children: [
-                                    CachedNetworkImage(
-                                      height: 80,
-                                      width: 80,
-                                      imageUrl: searchResult[index]
-                                              .thumbnailUrl ??
-                                          "https://us.123rf.com/450wm/mathier/mathier1905/mathier190500002/mathier190500002-no-thumbnail-image-placeholder-for-forums-blogs-and-websites.jpg?ver=6",
-                                      fit: BoxFit.cover,
-                                      imageBuilder: (context, prov) {
-                                        return Container(
-                                          decoration: BoxDecoration(
-                                              border: Border.all(
-                                                  width: 1, color: kLight300),
-                                              borderRadius: kBorderSmallRadius,
-                                              image: DecorationImage(
-                                                  image: prov,
-                                                  fit: BoxFit.cover)),
-                                        );
-                                      },
-                                      errorWidget: (context, url, error) =>
-                                          Image.asset(
-                                        "assets/images/img.png",
-                                        height: 80,
-                                        width: 80,
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
-                                    XBox(kSmallPadding),
-                                    Expanded(
-                                        child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          searchResult[index].name ?? "",
-                                          style:
-                                              textTheme.titleMedium!.copyWith(
-                                            fontWeight: FontWeight.w500,
-                                            fontSize: 12,
-                                          ),
-                                          softWrap: true,
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                        YBox(kPadding),
-                                        Text(
-                                          widget.menuItems.name ?? "",
-                                          style: textTheme.displaySmall!
-                                              .copyWith(
-                                                  color: kDarkPurple,
-                                                  fontSize: 10),
-                                          softWrap: true,
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                        YBox(kPadding),
-                                        Row(
-                                          children: [
-                                            Text(
-                                              "₦",
-                                              softWrap: true,
-                                              overflow: TextOverflow.ellipsis,
-                                              style: textTheme.displayLarge!
-                                                  .copyWith(
-                                                fontSize: 10,
-                                              ),
-                                            ),
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.only(top: 8),
-                                              child: Text(
-                                                searchResult[index].price ??
-                                                    "0",
-                                                softWrap: true,
-                                                style: textTheme.displayLarge!
-                                                    .copyWith(
-                                                  fontSize: 10,
-                                                ),
-                                                overflow: TextOverflow.ellipsis,
-                                              ),
-                                            ),
-                                          ],
-                                        )
-                                      ],
-                                    )),
-                                    SessionManager.getToken() == null ? YBox(0) :
-                                    InkWellNoShadow(
-                                      onTap: () {
-                                        AddProductRequest request =
-                                            AddProductRequest(products: [
-                                          ProductRequest(
-                                              id: searchResult[index].id!,
-                                              quantity: 1)
-                                        ]);
-                                        ref
-                                            .read(addToListProvider(
-                                                    searchResult[index]
-                                                        .id
-                                                        .toString())
-                                                .notifier)
-                                            .addToList(request: request, then: (val){
-                                              showSuccessBar(context, val);
-                                        });
-
-                                      },
-                                      child: ref.watch(addToListProvider(searchResult[index]
-                                          .id
-                                          .toString())).when(done: (data)=> Container(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 12, vertical: 8),
-                                        decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(
-                                                kMicroPadding),
-                                            border: Border.all(
-                                                color: kLightAsh50,
-                                                width: 1.5)),
-                                        child: Text(
-                                          addList,
-                                          style: textTheme.displayLarge!
-                                              .copyWith(
-                                              color: kGrey600,
-                                              fontSize: 14),
-                                        ),
-                                      ),loading: ()=> const SpinKitDemo())
-
-                                    )
-                                  ],
+                            color: kSecondaryColor,
+                            borderRadius: BorderRadius.circular(kMacroPadding)),
+                        child: Row(
+                          children: [
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: Container(
+                                padding: const EdgeInsets.all(8),
+                                decoration: const BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: kPrimaryWhite),
+                                child: SvgPicture.network(
+                                  widget.menuItems.thumbnail ?? "",
+                                  fit: BoxFit.scaleDown,
+                                  height: kRegularPadding,
+                                  width: kRegularPadding,
                                 ),
-                                YBox(kSmallPadding),
-                                index == searchResult.length - 1
-                                    ? YBox(0)
-                                    : const Divider(
-                                        thickness: 1,
-                                        color: kDividerColor,
-                                      ),
-                                YBox(index == searchResult.length - 1
-                                    ? 0
-                                    : kSmallPadding),
-                              ],
+                              ),
                             ),
-                          ).toList(),
+                            Expanded(
+                              child: Text(
+                                categoryName?.name ?? "",
+                                style: textTheme.displayLarge!.copyWith(
+                                  fontWeight: FontWeight.w500,
+                                  color: kPrimaryColor,
+                                  fontSize: 14,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                            const Icon(
+                              Icons.keyboard_arrow_down,
+                              size: 25,
+                              color: kPrimaryColor,
+                            )
+                          ],
                         ),
                       ),
-                YBox(kRegularPadding),
-              ],
+                    ),
+                    YBox(kRegularPadding),
+                    SearchTextInputNoIcon(
+                      prefixIcon: SvgPicture.asset(
+                        AssetPaths.search,
+                        fit: BoxFit.scaleDown,
+                      ),
+                      controller: controller,
+                      onChanged: (val) {
+                        if (val!.isEmpty) {
+                          overlaySearchEntry?.remove();
+                          overlaySearchEntry = null;
+                        } else {
+                          onSearchTextChanged(val ?? "");
+                        }
+                      },
+                      hintText: searchText,
+                    ),
+                    productList.isEmpty
+                        ? YBox(0)
+                        : Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                shoppingList,
+                                style: textTheme.displayLarge!.copyWith(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 14,
+                                ),
+                              ),
+                              Consumer(builder: (context, ref, _) {
+                                var widget = InkWellNoShadow(
+                                  onTap: () {
+                                    List<ProductRequest> prodRequest = [];
+                                    for (var element in productList) {
+                                      setState(() {
+                                        prodRequest.add(ProductRequest(
+                                            id: element.id!,
+                                            quantity: element.quantity!));
+                                      });
+                                    }
+                                    ref
+                                        .read(addToListProvider.notifier)
+                                        .addToList(
+                                            request: AddProductRequest(
+                                                products: prodRequest),
+                                            then: (val) {
+                                              showSuccessBar(context, val);
+                                            });
+                                  },
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: kRegularPadding,
+                                        vertical: kPadding),
+                                    decoration: BoxDecoration(
+                                        borderRadius:
+                                            BorderRadius.circular(500),
+                                        color: kLightPurple200),
+                                    child: Text(
+                                      saveList,
+                                      style: textTheme.bodyLarge!.copyWith(
+                                          fontSize: 14, color: kLightBlue400),
+                                    ),
+                                  ),
+                                );
+                                return ref.watch(addToListProvider).when(
+                                    done: (data) => widget,
+                                    error: (val) => widget,
+                                    loading: () => const SpinKitDemo());
+                              })
+                            ],
+                          ),
+                    YBox(productList.isEmpty ? 0 : kMicroPadding),
+                    productList.isEmpty
+                        ? Container(
+                            width: double.infinity,
+                            height: screenSize.height,
+                            color: kPrimaryWhite,
+                            child: EmptyHomeProduct(
+                              text: noProd,
+                              subText: addItem,
+                            ))
+                        : Align(
+                            alignment: Alignment.topLeft,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: List.generate(
+                                productList.length,
+                                (index) => HomeCartList(
+                                  product: productList[index],
+                                  category: categoryName!,
+                                  onTap: () {
+                                    setState(() {
+                                      productList.removeAt(index);
+                                    });
+                                  },
+                                ),
+                              ).toList(),
+                            ),
+                          ),
+                    YBox(170),
+                  ],
+                ),
+              ),
             ),
           ),
         ),
@@ -390,12 +530,178 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
         categoryId: categoryName!.id.toString(),
         then: (val) {
           searchResult.clear();
+
           for (var element in val) {
             setState(() {
               searchResult.add(element);
+              if (searchResult.isNotEmpty) {
+                if (overlaySearchEntry == null) {
+                  _showSearchOverlay(context);
+                }
+              }
             });
           }
         });
     setState(() {});
+  }
+}
+
+class HomeCartList extends StatefulWidget {
+  final Product product;
+  final GetCategories category;
+  final Function() onTap;
+
+  const HomeCartList(
+      {Key? key,
+      required this.product,
+      required this.category,
+      required this.onTap})
+      : super(key: key);
+
+  @override
+  State<HomeCartList> createState() => _HomeCartListState();
+}
+
+class _HomeCartListState extends State<HomeCartList> {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            CachedNetworkImage(
+              height: 105,
+              width: 108,
+              imageUrl: widget.product.thumbnailUrl ??
+                  "https://us.123rf.com/450wm/mathier/mathier1905/mathier190500002/mathier190500002-no-thumbnail-image-placeholder-for-forums-blogs-and-websites.jpg?ver=6",
+              fit: BoxFit.cover,
+              imageBuilder: (context, prov) {
+                return Container(
+                  decoration: BoxDecoration(
+                      border: Border.all(width: 1, color: kLight300),
+                      borderRadius: kBorderSmallRadius,
+                      image: DecorationImage(image: prov, fit: BoxFit.cover)),
+                );
+              },
+              errorWidget: (context, url, error) => Image.asset(
+                "assets/images/img.png",
+                height: 80,
+                width: 80,
+                fit: BoxFit.cover,
+              ),
+            ),
+            XBox(kSmallPadding),
+            Expanded(
+                child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  widget.product.name ?? "",
+                  style: textTheme.titleMedium!.copyWith(
+                    fontWeight: FontWeight.w500,
+                    fontSize: 12,
+                  ),
+                  softWrap: true,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                YBox(kPadding),
+                Text(
+                  widget.category.name ?? "",
+                  style: textTheme.displaySmall!
+                      .copyWith(color: kDarkPurple, fontSize: 10),
+                  softWrap: true,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                YBox(kPadding),
+                Row(
+                  children: [
+                    Text(
+                      "₦",
+                      softWrap: true,
+                      overflow: TextOverflow.ellipsis,
+                      style: textTheme.displayLarge!
+                          .copyWith(fontSize: 10, fontWeight: FontWeight.w700),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8),
+                      child: Text(
+                        "${widget.product.price}",
+                        softWrap: true,
+                        style: textTheme.displayLarge!.copyWith(
+                          fontSize: 14,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
+                YBox(kPadding),
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: kRegularPadding, vertical: kSmallPadding),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(kMicroPadding),
+                          border: Border.all(color: kLightAsh50, width: 1.5)),
+                      child: Row(
+                        children: [
+                          InkWellNoShadow(
+                            onTap: () {
+                              if (widget.product.quantity != 1) {
+                                setState(() {
+                                  widget.product.quantity =
+                                      widget.product.quantity! - 1;
+                                });
+                              }
+                            },
+                            child: Text(
+                              "-",
+                              style: textTheme.displayLarge!.copyWith(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 12,
+                                  color: widget.product.quantity != 1
+                                      ? kPrimaryColor
+                                      : kLight700),
+                            ),
+                          ),
+                          XBox(kMediumPadding),
+                          Text(
+                            widget.product.quantity.toString(),
+                            style: textTheme.displayLarge!.copyWith(
+                                fontWeight: FontWeight.w500, fontSize: 12),
+                          ),
+                          XBox(kMediumPadding),
+                          InkWellNoShadow(
+                            onTap: () {
+                              setState(() {
+                                widget.product.quantity =
+                                    widget.product.quantity! + 1;
+                              });
+                            },
+                            child: Text(
+                              "+",
+                              style: textTheme.displayLarge!.copyWith(
+                                  fontWeight: FontWeight.w500, fontSize: 12),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    XBox(kFullPadding),
+                    InkWellNoShadow(
+                      child: SvgPicture.asset(AssetPaths.delete),
+                      onTap: widget.onTap,
+                    )
+                  ],
+                )
+              ],
+            )),
+          ],
+        ),
+        YBox(kMediumPadding),
+      ],
+    );
   }
 }

@@ -105,6 +105,8 @@ String emptyField = "Field cannot be empty";
 String invalidEmail = "Invalid Email";
 String noTrans = "No Transaction";
 String noTransSub = "All Transactions will appear here";
+String shoppingList = "Your shopping list";
+String saveList = "Save list";
 
 
 

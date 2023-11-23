@@ -13,8 +13,8 @@ final getProductsBySearchProvider = StateNotifierProvider<GetProductsBySearchNot
   return GetProductsBySearchNotifier();
 });
 
-final addToListProvider = StateNotifierProvider.family<AddToListNotifier,
-    NotifierState<String>, String>((ref, id) {
+final addToListProvider = StateNotifierProvider<AddToListNotifier,
+    NotifierState<String>>((ref) {
   return AddToListNotifier();
 });
 

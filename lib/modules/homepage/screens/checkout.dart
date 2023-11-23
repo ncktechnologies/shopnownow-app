@@ -1,16 +1,24 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:shopnownow/modules/homepage/model/homepage_model.dart';
+import 'package:shopnownow/modules/homepage/provider/homepage_provider.dart';
 import 'package:shopnownow/modules/homepage/screens/home_widget_constant.dart';
 import 'package:shopnownow/modules/orders/order_widget.dart';
 import 'package:shopnownow/modules/reuseables/size_boxes.dart';
 import 'package:shopnownow/modules/reuseables/widgets.dart';
 import 'package:shopnownow/utils/assets_path.dart';
 import 'package:shopnownow/utils/constants.dart';
+import 'package:shopnownow/utils/flushbar.dart';
 import 'package:shopnownow/utils/strings.dart';
 import 'package:shopnownow/utils/text_field_comp.dart';
+import 'package:shopnownow/utils/widgets.dart';
 
 class CheckOut extends StatefulWidget {
-  const CheckOut({Key? key}) : super(key: key);
+  final List<Product> productList;
+
+  const CheckOut({Key? key, required this.productList}) : super(key: key);
 
   @override
   State<CheckOut> createState() => _CheckOutState();
@@ -45,7 +53,7 @@ class _CheckOutState extends State<CheckOut> {
                   decoration: const BoxDecoration(
                       color: kPrimaryColor, shape: BoxShape.circle),
                   child: Text(
-                    "2",
+                    widget.productList.length.toString(),
                     style: textTheme.displayMedium!.copyWith(
                       fontWeight: FontWeight.w600,
                       fontSize: 18,
@@ -76,7 +84,7 @@ class _CheckOutState extends State<CheckOut> {
                       decoration: const BoxDecoration(
                           color: kPrimaryColor, shape: BoxShape.circle),
                       child: Text(
-                        "2",
+                        widget.productList.length.toString(),
                         style: textTheme.displayMedium!.copyWith(
                           fontWeight: FontWeight.w600,
                           fontSize: 18,
@@ -100,20 +108,35 @@ class _CheckOutState extends State<CheckOut> {
           ),
           YBox(kRegularPadding),
           ...List.generate(
-            2,
+            widget.productList.length,
             (index) => Padding(
               padding: const EdgeInsets.only(bottom: 8.0),
               child: Column(
                 children: [
                   Row(
                     children: [
-                      Container(
+                      CachedNetworkImage(
                         height: 80,
                         width: 80,
-                        decoration: BoxDecoration(
-                            border: Border.all(width: 1.5, color: kGrey700),
-                            borderRadius:
-                                BorderRadius.circular(kRegularPadding)),
+                        imageUrl: widget.productList[index].thumbnailUrl ??
+                            "https://us.123rf.com/450wm/mathier/mathier1905/mathier190500002/mathier190500002-no-thumbnail-image-placeholder-for-forums-blogs-and-websites.jpg?ver=6",
+                        fit: BoxFit.cover,
+                        imageBuilder: (context, prov) {
+                          return Container(
+                            decoration: BoxDecoration(
+                                border: Border.all(width: 1.5, color: kGrey700),
+                                borderRadius:
+                                    BorderRadius.circular(kRegularPadding),
+                                image: DecorationImage(
+                                    image: prov, fit: BoxFit.cover)),
+                          );
+                        },
+                        errorWidget: (context, url, error) => Image.asset(
+                          "assets/images/img.png",
+                          height: 80,
+                          width: 80,
+                          fit: BoxFit.cover,
+                        ),
                       ),
                       XBox(kSmallPadding),
                       Expanded(
@@ -126,7 +149,7 @@ class _CheckOutState extends State<CheckOut> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    "Knorr Chicken Seasoning Cubes",
+                                    widget.productList[index].name ?? "",
                                     style: textTheme.titleMedium!.copyWith(
                                         fontWeight: FontWeight.w500,
                                         fontSize: 12,
@@ -139,7 +162,7 @@ class _CheckOutState extends State<CheckOut> {
                                   Padding(
                                     padding: const EdgeInsets.only(top: 8),
                                     child: Text(
-                                      "X1",
+                                      "X${widget.productList[index].quantity}",
                                       softWrap: true,
                                       style: textTheme.titleSmall!.copyWith(
                                           fontSize: 10, color: kDarkPurple),
@@ -150,7 +173,12 @@ class _CheckOutState extends State<CheckOut> {
                               ),
                             ),
                             Text(
-                              "₦750",
+                              "₦${(widget.productList.fold<int>(0, (previousValue, element) {
+                                return (previousValue +
+                                    int.parse(
+                                        element.price?.replaceAll(".00", "") ??
+                                            "0"));
+                              }).toString())}",
                               style: textTheme.displayLarge!.copyWith(
                                 color: kDarkColor400,
                               ),
@@ -161,7 +189,7 @@ class _CheckOutState extends State<CheckOut> {
                     ],
                   ),
                   YBox(kRegularPadding),
-                  index == 2 - 1
+                  index == widget.productList.length - 1
                       ? YBox(0)
                       : Divider(
                           color: kLightGrey400,
@@ -173,13 +201,35 @@ class _CheckOutState extends State<CheckOut> {
             ),
           ),
           YBox(kRegularPadding),
-          Text(
-            addList,
-            style: textTheme.displayLarge!.copyWith(
-              fontWeight: FontWeight.w400,
-              fontSize: 14,
-            ),
-          ),
+          Consumer(builder: (context, ref, _) {
+            var addToListWidget = InkWellNoShadow(
+              onTap: () {
+                List<ProductRequest> prodRequest = [];
+                for (var element in widget.productList) {
+                  setState(() {
+                    prodRequest.add(ProductRequest(
+                        id: element.id!, quantity: element.quantity!));
+                  });
+                }
+                ref.read(addToListProvider.notifier).addToList(
+                    request: AddProductRequest(products: prodRequest),
+                    then: (val) {
+                      showSuccessBar(context, val);
+                    });
+              },
+              child: Text(
+                addList,
+                style: textTheme.displayLarge!.copyWith(
+                  fontWeight: FontWeight.w400,
+                  fontSize: 14,
+                ),
+              ),
+            );
+            return ref.watch(addToListProvider).when(
+                done: (data) => addToListWidget,
+                loading: () => const SpinKitDemo(),
+                error: (val) => addToListWidget);
+          }),
           YBox(54),
           Text(
             delInfo,
@@ -189,7 +239,9 @@ class _CheckOutState extends State<CheckOut> {
             ),
           ),
           YBox(kRegularPadding),
-          TextInputNoIcon(text: recipientName),
+          TextInputNoIcon(
+            text: recipientName,
+          ),
           TextInputNoIcon(text: mobNo),
           TextInputNoIcon(text: emailAddress),
           FormDropdown<String>(
@@ -417,109 +469,110 @@ class _CheckOutState extends State<CheckOut> {
                   XBox(kSmallPadding),
                   Expanded(
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Knorr Chicken Seasoning Cubes",
+                        style: textTheme.titleMedium!.copyWith(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 12,
+                        ),
+                        softWrap: true,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      YBox(kPadding),
+                      Text(
+                        "Groceries",
+                        style: textTheme.displaySmall!
+                            .copyWith(color: kDarkPurple, fontSize: 10),
+                        softWrap: true,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      YBox(kPadding),
+                      Row(
                         children: [
                           Text(
-                            "Knorr Chicken Seasoning Cubes",
-                            style: textTheme.titleMedium!.copyWith(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 12,
+                            "₦",
+                            softWrap: true,
+                            overflow: TextOverflow.ellipsis,
+                            style: textTheme.displayLarge!.copyWith(
+                                fontSize: 10, fontWeight: FontWeight.w700),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 8),
+                            child: Text(
+                              "817",
+                              softWrap: true,
+                              style: textTheme.displayLarge!.copyWith(
+                                fontSize: 14,
+                              ),
+                              overflow: TextOverflow.ellipsis,
                             ),
-                            softWrap: true,
-                            overflow: TextOverflow.ellipsis,
                           ),
-                          YBox(kPadding),
-                          Text(
-                            "Groceries",
-                            style: textTheme.displaySmall!
-                                .copyWith(color: kDarkPurple, fontSize: 10),
-                            softWrap: true,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          YBox(kPadding),
-                          Row(
-                            children: [
-                              Text(
-                                "₦",
-                                softWrap: true,
-                                overflow: TextOverflow.ellipsis,
-                                style: textTheme.displayLarge!.copyWith(
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.w700
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(top: 8),
-                                child: Text(
-                                  "817",
-                                  softWrap: true,
-                                  style: textTheme.displayLarge!.copyWith(
-                                    fontSize: 14,
-                                  ),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                            ],
-                          ),
-                          YBox(kPadding),
-                          Row(
-                            children: [
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: kRegularPadding, vertical: kSmallPadding),
-                                decoration: BoxDecoration(
-                                    borderRadius:
-                                        BorderRadius.circular(kMicroPadding),
-                                    border: Border.all(
-                                        color: kLightAsh50, width: 1.5)),
-                                child: Row(
-                                  children: [
-                                    InkWellNoShadow(
-                                      onTap: (){
-                                        if(itemCount != 1){
-                                          setState(() {
-                                            itemCount--;
-                                          });
-                                        }
-
-                                      },
-                                      child: Text(
-                                        "-",
-                                        style: textTheme.displayLarge!.copyWith(
-                                            fontWeight: FontWeight.w500,
-                                            fontSize: 12, color: itemCount != 1 ? kPrimaryColor : kLight700),
-                                      ),
-                                    ),
-                                    XBox(kMediumPadding),
-                                    Text(
-                                      itemCount.toString(),
-                                      style: textTheme.displayLarge!.copyWith(
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: 12),
-                                    ),
-                                    XBox(kMediumPadding),
-                                    InkWellNoShadow(
-                                      onTap: (){
-                                        setState(() {
-                                          itemCount++;
-                                        });
-                                      },
-                                      child: Text(
-                                        "+",
-                                        style: textTheme.displayLarge!.copyWith(
-                                            fontWeight: FontWeight.w500,
-                                            fontSize: 12),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              XBox(kFullPadding),
-                              SvgPicture.asset(AssetPaths.delete)
-                            ],
-                          )
                         ],
-                      )),
+                      ),
+                      YBox(kPadding),
+                      Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: kRegularPadding,
+                                vertical: kSmallPadding),
+                            decoration: BoxDecoration(
+                                borderRadius:
+                                    BorderRadius.circular(kMicroPadding),
+                                border:
+                                    Border.all(color: kLightAsh50, width: 1.5)),
+                            child: Row(
+                              children: [
+                                InkWellNoShadow(
+                                  onTap: () {
+                                    if (itemCount != 1) {
+                                      setState(() {
+                                        itemCount--;
+                                      });
+                                    }
+                                  },
+                                  child: Text(
+                                    "-",
+                                    style: textTheme.displayLarge!.copyWith(
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 12,
+                                        color: itemCount != 1
+                                            ? kPrimaryColor
+                                            : kLight700),
+                                  ),
+                                ),
+                                XBox(kMediumPadding),
+                                Text(
+                                  itemCount.toString(),
+                                  style: textTheme.displayLarge!.copyWith(
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 12),
+                                ),
+                                XBox(kMediumPadding),
+                                InkWellNoShadow(
+                                  onTap: () {
+                                    setState(() {
+                                      itemCount++;
+                                    });
+                                  },
+                                  child: Text(
+                                    "+",
+                                    style: textTheme.displayLarge!.copyWith(
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 12),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          XBox(kFullPadding),
+                          SvgPicture.asset(AssetPaths.delete)
+                        ],
+                      )
+                    ],
+                  )),
                 ],
               ),
               YBox(kSmallPadding),

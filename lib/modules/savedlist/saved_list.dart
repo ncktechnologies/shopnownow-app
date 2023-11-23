@@ -68,7 +68,7 @@ class SavedList extends StatelessWidget {
                           ),
                           InkWellNoShadow(
                             onTap: (){
-                              pushTo(const CheckOut());
+                              // pushTo(const CheckOut());
                             },
                             child: Container(
                               padding: const EdgeInsets.symmetric(

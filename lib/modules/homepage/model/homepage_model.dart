@@ -96,6 +96,7 @@ class Product {
   int? categoryId;
   DateTime? createdAt;
   DateTime? updatedAt;
+  int? quantity;
 
   Product({
       this.id,
@@ -107,6 +108,7 @@ class Product {
       this.categoryId,
       this.createdAt,
       this.updatedAt,
+    this.quantity
   });
 
   factory Product.fromJson(Map<String, dynamic> json) => Product(
@@ -117,6 +119,7 @@ class Product {
     unitOfMeasurement: json["unit_of_measurement"],
     availability: json["availability"],
     categoryId: json["category_id"],
+    quantity: 1,
     createdAt: DateTime.parse(json["created_at"]),
     updatedAt: DateTime.parse(json["updated_at"]),
   );
@@ -132,6 +135,11 @@ class Product {
     "created_at": createdAt!.toIso8601String(),
     "updated_at": updatedAt!.toIso8601String(),
   };
+
+  @override
+  String toString() {
+    return 'Product{id: $id, quantity:$quantity, name: $name, thumbnailUrl: $thumbnailUrl, price: $price, unitOfMeasurement: $unitOfMeasurement, availability: $availability, categoryId: $categoryId, createdAt: $createdAt, updatedAt: $updatedAt}';
+  }
 }
 
 class AddProductRequest {

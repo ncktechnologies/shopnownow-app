@@ -107,6 +107,8 @@ String noTrans = "No Transaction";
 String noTransSub = "All Transactions will appear here";
 String shoppingList = "Your shopping list";
 String saveList = "Save list";
+String fundAmount = "Fund amount";
+String enterAmount = "Enter amount";
 
 
 

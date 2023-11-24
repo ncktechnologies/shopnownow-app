@@ -178,4 +178,216 @@ class ProductRequest {
   };
 }
 
+class GetLocation {
+  List<Location>? locations;
+
+  GetLocation({
+      this.locations,
+  });
+
+  factory GetLocation.fromJson(Map<String, dynamic> json) => GetLocation(
+    locations: List<Location>.from(json["locations"].map((x) => Location.fromJson(x))),
+  );
+
+  Map<String, dynamic> toJson() => {
+    "locations": List<dynamic>.from(locations!.map((x) => x.toJson())),
+  };
+}
+
+class Location {
+  int? id;
+  int? bandId;
+  String? location;
+  String? price;
+  int? hidden;
+  DateTime? createdAt;
+  DateTime? updatedAt;
+
+  Location({
+      this.id,
+      this.bandId,
+      this.location,
+      this.price,
+      this.hidden,
+      this.createdAt,
+      this.updatedAt,
+  });
+
+  factory Location.fromJson(Map<String, dynamic> json) => Location(
+    id: json["id"],
+    bandId: json["band_id"],
+    location: json["location"],
+    price: json["price"],
+    hidden: json["hidden"],
+    createdAt: DateTime.parse(json["created_at"]),
+    updatedAt: DateTime.parse(json["updated_at"]),
+  );
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "band_id": bandId,
+    "location": location,
+    "price": price,
+    "hidden": hidden,
+    "created_at": createdAt!.toIso8601String(),
+    "updated_at": updatedAt!.toIso8601String(),
+  };
+}
+
+class GetTimeSlot {
+  List<TimeSlot>? timeSlots;
+
+  GetTimeSlot({
+      this.timeSlots,
+  });
+
+  factory GetTimeSlot.fromJson(Map<String, dynamic> json) => GetTimeSlot(
+    timeSlots: List<TimeSlot>.from(json["timeSlots"].map((x) => TimeSlot.fromJson(x))),
+  );
+
+  Map<String, dynamic> toJson() => {
+    "timeSlots": List<dynamic>.from(timeSlots!.map((x) => x.toJson())),
+  };
+}
+
+class TimeSlot {
+  int? id;
+  String? deliveryTime;
+  int? isAvailable;
+  DateTime? createdAt;
+  DateTime? updatedAt;
+
+  TimeSlot({
+      this.id,
+      this.deliveryTime,
+      this.isAvailable,
+      this.createdAt,
+      this.updatedAt,
+  });
+
+  factory TimeSlot.fromJson(Map<String, dynamic> json) => TimeSlot(
+    id: json["id"],
+    deliveryTime: json["delivery_time"],
+    isAvailable: json["is_available"],
+    createdAt: DateTime.parse(json["created_at"]),
+    updatedAt: DateTime.parse(json["updated_at"]),
+  );
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "delivery_time": deliveryTime,
+    "is_available": isAvailable,
+    "created_at": createdAt!.toIso8601String(),
+    "updated_at": updatedAt!.toIso8601String(),
+  };
+}
+
+
+class CreateOrderRequest {
+  int? userId;
+  List<ProductRequest> products;
+  int price;
+  int tax;
+  String status;
+  String deliveryInfo;
+  String paymentType;
+  String recipientName;
+  String recipientPhone;
+  String recipientEmail;
+  int deliveryFee;
+  String deliveryTimeSlot;
+
+  CreateOrderRequest({
+      this.userId,
+    required this.products,
+    required this.price,
+    required this.tax,
+    required this.status,
+    required this.deliveryInfo,
+    required this.paymentType,
+    required this.recipientName,
+    required this.recipientPhone,
+    required this.recipientEmail,
+    required this.deliveryFee,
+    required this.deliveryTimeSlot,
+  });
+
+  factory CreateOrderRequest.fromJson(Map<String, dynamic> json) => CreateOrderRequest(
+    userId: json["user_id"],
+    products: List<ProductRequest>.from(json["products"].map((x) => ProductRequest.fromJson(x))),
+    price: json["price"],
+    tax: json["tax"],
+    status: json["status"],
+    deliveryInfo: json["delivery_info"],
+    paymentType: json["payment_type"],
+    recipientName: json["recipient_name"],
+    recipientPhone: json["recipient_phone"],
+    recipientEmail: json["recipient_email"],
+    deliveryFee: json["delivery_fee"],
+    deliveryTimeSlot: json["delivery_time_slot"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    if (userId != 0) 'user_id': userId,
+    "products": List<dynamic>.from(products.map((x) => x.toJson())),
+    "price": price,
+    "tax": tax,
+    "status": status,
+    "delivery_info": deliveryInfo,
+    "payment_type": paymentType,
+    "recipient_name": recipientName,
+    "recipient_phone": recipientPhone,
+    "recipient_email": recipientEmail,
+    "delivery_fee": deliveryFee,
+    "delivery_time_slot": deliveryTimeSlot,
+  };
+}
+
+class ProcessPaymentRequest {
+  int? userId;
+  String amount;
+  String status;
+  int? orderId;
+  String reference;
+  String paymentType;
+  String paymentGateway;
+  String paymentGatewayReference;
+
+  ProcessPaymentRequest({
+     this.userId,
+    required this.amount,
+    required this.status,
+    required this.orderId,
+    required this.reference,
+    required this.paymentType,
+    required this.paymentGateway,
+    required this.paymentGatewayReference,
+  });
+
+  factory ProcessPaymentRequest.fromJson(Map<String, dynamic> json) => ProcessPaymentRequest(
+    userId: json["user_id"],
+    amount: json["amount"],
+    status: json["status"],
+    orderId: json["order_id"].toInt(),
+    reference: json["reference"],
+    paymentType: json["payment_type"],
+    paymentGateway: json["payment_gateway"],
+    paymentGatewayReference: json["payment_gateway_reference"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    if(userId != null)"user_id": userId.toString(),
+    "amount": amount,
+    "status": status,
+    "order_id": orderId.toString(),
+    "reference": reference,
+    "payment_type": paymentType,
+    "payment_gateway": paymentGateway,
+    "payment_gateway_reference": paymentGatewayReference,
+  };
+}
+
+
+
+
 

@@ -289,42 +289,51 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
       },
       child: Scaffold(
         drawer: const Drawer(child: DrawerScaffoldContainer()),
+        resizeToAvoidBottomInset: false,
         bottomSheet: Padding(
           padding: const EdgeInsets.symmetric(horizontal: kRegularPadding),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Divider(
-                thickness: 2,
-                color: k200,
-              ),
-              YBox(kRegularPadding),
-              Text(
-                "$minOrder₦2,500",
-                style: textTheme.headlineMedium!.copyWith(color: kOrange500),
-              ),
-              YBox(kMediumPadding),
-              PaymentRow(
-                  text: subTotal,
-                  subText: (productList.fold<int>(0, (previousValue, element) {
-                    return (previousValue +
-                        int.parse(element.price?.replaceAll(".00", "") ?? "0"));
-                  }).toString())),
-              YBox(kRegularPadding),
-              LargeButton(
-                  title: checkout,
-                  onPressed: productList.isEmpty ? (){
-                    showErrorBar(context, "Please add a Product");
-                  }: () {
-                    pushTo(
-                       CheckOut(
-                        productList: productList
-                      ),
-                    );
-                  }),
-              YBox(kRegularPadding),
-            ],
+          child: InkWellNoShadow(
+            onTap: (){
+              overlayEntry?.remove();
+              overlaySearchEntry?.remove();
+              overlayEntry = null;
+              overlaySearchEntry = null;
+            },
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Divider(
+                  thickness: 2,
+                  color: k200,
+                ),
+                YBox(kRegularPadding),
+                Text(
+                  "$minOrder₦2,500",
+                  style: textTheme.headlineMedium!.copyWith(color: kOrange500),
+                ),
+                YBox(kMediumPadding),
+                PaymentRow(
+                    text: subTotal,
+                    subText: (productList.fold<int>(0, (previousValue, element) {
+                      return (previousValue +
+                          int.parse(element.price?.replaceAll(".00", "") ?? "0"));
+                    }).toString())),
+                YBox(kRegularPadding),
+                LargeButton(
+                    title: checkout,
+                    onPressed: productList.isEmpty ? (){
+                      showErrorBar(context, "Please add a Product");
+                    }: () {
+                      pushTo(
+                         CheckOut(
+                          productList: productList
+                        ),
+                      );
+                    }),
+                YBox(kRegularPadding),
+              ],
+            ),
           ),
         ),
         appBar: AppBar(
@@ -344,171 +353,168 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
           centerTitle: true,
         ),
         body: SafeArea(
-          child: SingleChildScrollView(
-            child: GestureDetector(
-              onTap: () {
-                overlayEntry?.remove();
-                overlaySearchEntry?.remove();
-                overlayEntry = null;
-                overlaySearchEntry = null;
-              },
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: kRegularPadding),
-                child: Column(
-                  children: [
-                    YBox(kMediumPadding),
-                    InkWellNoShadow(
-                      onTap: () {
-                        if (overlayEntry == null) {
-                          _showOverlay(context);
-                        } else {}
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.all(kRegularPadding),
-                        decoration: BoxDecoration(
-                            color: kSecondaryColor,
-                            borderRadius: BorderRadius.circular(kMacroPadding)),
-                        child: Row(
+          child: GestureDetector(
+            onTap: () {
+              overlayEntry?.remove();
+              overlaySearchEntry?.remove();
+              overlayEntry = null;
+              overlaySearchEntry = null;
+            },
+            child: Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: kRegularPadding),
+              child: Column(
+                children: [
+                  YBox(kMediumPadding),
+                  InkWellNoShadow(
+                    onTap: () {
+                      if (overlayEntry == null) {
+                        _showOverlay(context);
+                      } else {}
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.all(kRegularPadding),
+                      decoration: BoxDecoration(
+                          color: kSecondaryColor,
+                          borderRadius: BorderRadius.circular(kMacroPadding)),
+                      child: Row(
+                        children: [
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: const BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: kPrimaryWhite),
+                              child: SvgPicture.network(
+                                widget.menuItems.thumbnail ?? "",
+                                fit: BoxFit.scaleDown,
+                                height: kRegularPadding,
+                                width: kRegularPadding,
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: Text(
+                              categoryName?.name ?? "",
+                              style: textTheme.displayLarge!.copyWith(
+                                fontWeight: FontWeight.w500,
+                                color: kPrimaryColor,
+                                fontSize: 14,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                          const Icon(
+                            Icons.keyboard_arrow_down,
+                            size: 25,
+                            color: kPrimaryColor,
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                  YBox(kRegularPadding),
+                  SearchTextInputNoIcon(
+                    prefixIcon: SvgPicture.asset(
+                      AssetPaths.search,
+                      fit: BoxFit.scaleDown,
+                    ),
+                    controller: controller,
+                    onChanged: (val) {
+                      if (val!.isEmpty) {
+                        overlaySearchEntry?.remove();
+                        overlaySearchEntry = null;
+                      } else {
+                        onSearchTextChanged(val ?? "");
+                      }
+                    },
+                    hintText: searchText,
+                  ),
+                  productList.isEmpty
+                      ? YBox(0)
+                      : Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Align(
-                              alignment: Alignment.centerLeft,
-                              child: Container(
-                                padding: const EdgeInsets.all(8),
-                                decoration: const BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: kPrimaryWhite),
-                                child: SvgPicture.network(
-                                  widget.menuItems.thumbnail ?? "",
-                                  fit: BoxFit.scaleDown,
-                                  height: kRegularPadding,
-                                  width: kRegularPadding,
-                                ),
+                            Text(
+                              shoppingList,
+                              style: textTheme.displayLarge!.copyWith(
+                                fontWeight: FontWeight.w500,
+                                fontSize: 14,
                               ),
                             ),
-                            Expanded(
-                              child: Text(
-                                categoryName?.name ?? "",
-                                style: textTheme.displayLarge!.copyWith(
-                                  fontWeight: FontWeight.w500,
-                                  color: kPrimaryColor,
-                                  fontSize: 14,
+                            Consumer(builder: (context, ref, _) {
+                              var widget = InkWellNoShadow(
+                                onTap: () {
+                                  List<ProductRequest> prodRequest = [];
+                                  for (var element in productList) {
+                                    setState(() {
+                                      prodRequest.add(ProductRequest(
+                                          id: element.id!,
+                                          quantity: element.quantity!));
+                                    });
+                                  }
+                                  ref
+                                      .read(addToListProvider.notifier)
+                                      .addToList(
+                                          request: AddProductRequest(
+                                              products: prodRequest),
+                                          then: (val) {
+                                            showSuccessBar(context, val);
+                                          });
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: kRegularPadding,
+                                      vertical: kPadding),
+                                  decoration: BoxDecoration(
+                                      borderRadius:
+                                          BorderRadius.circular(500),
+                                      color: kLightPurple200),
+                                  child: Text(
+                                    saveList,
+                                    style: textTheme.bodyLarge!.copyWith(
+                                        fontSize: 14, color: kLightBlue400),
+                                  ),
                                 ),
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                            const Icon(
-                              Icons.keyboard_arrow_down,
-                              size: 25,
-                              color: kPrimaryColor,
-                            )
+                              );
+                              return ref.watch(addToListProvider).when(
+                                  done: (data) => widget,
+                                  error: (val) => widget,
+                                  loading: () => const SpinKitDemo());
+                            })
                           ],
                         ),
-                      ),
-                    ),
-                    YBox(kRegularPadding),
-                    SearchTextInputNoIcon(
-                      prefixIcon: SvgPicture.asset(
-                        AssetPaths.search,
-                        fit: BoxFit.scaleDown,
-                      ),
-                      controller: controller,
-                      onChanged: (val) {
-                        if (val!.isEmpty) {
-                          overlaySearchEntry?.remove();
-                          overlaySearchEntry = null;
-                        } else {
-                          onSearchTextChanged(val ?? "");
-                        }
-                      },
-                      hintText: searchText,
-                    ),
-                    productList.isEmpty
-                        ? YBox(0)
-                        : Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                shoppingList,
-                                style: textTheme.displayLarge!.copyWith(
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 14,
-                                ),
-                              ),
-                              Consumer(builder: (context, ref, _) {
-                                var widget = InkWellNoShadow(
-                                  onTap: () {
-                                    List<ProductRequest> prodRequest = [];
-                                    for (var element in productList) {
-                                      setState(() {
-                                        prodRequest.add(ProductRequest(
-                                            id: element.id!,
-                                            quantity: element.quantity!));
-                                      });
-                                    }
-                                    ref
-                                        .read(addToListProvider.notifier)
-                                        .addToList(
-                                            request: AddProductRequest(
-                                                products: prodRequest),
-                                            then: (val) {
-                                              showSuccessBar(context, val);
-                                            });
-                                  },
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: kRegularPadding,
-                                        vertical: kPadding),
-                                    decoration: BoxDecoration(
-                                        borderRadius:
-                                            BorderRadius.circular(500),
-                                        color: kLightPurple200),
-                                    child: Text(
-                                      saveList,
-                                      style: textTheme.bodyLarge!.copyWith(
-                                          fontSize: 14, color: kLightBlue400),
-                                    ),
-                                  ),
-                                );
-                                return ref.watch(addToListProvider).when(
-                                    done: (data) => widget,
-                                    error: (val) => widget,
-                                    loading: () => const SpinKitDemo());
-                              })
-                            ],
-                          ),
-                    YBox(productList.isEmpty ? 0 : kMicroPadding),
-                    productList.isEmpty
-                        ? Container(
-                            width: double.infinity,
-                            height: screenSize.height,
-                            color: kPrimaryWhite,
-                            child: EmptyHomeProduct(
-                              text: noProd,
-                              subText: addItem,
-                            ))
-                        : Align(
-                            alignment: Alignment.topLeft,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
-                              children: List.generate(
-                                productList.length,
-                                (index) => HomeCartList(
-                                  product: productList[index],
-                                  category: categoryName!,
-                                  onTap: () {
-                                    setState(() {
-                                      productList.removeAt(index);
-                                    });
-                                  },
-                                ),
-                              ).toList(),
+                  YBox(productList.isEmpty ? 0 : kMicroPadding),
+                  productList.isEmpty
+                      ? Container(
+                          width: double.infinity,
+                          height: screenSize.height,
+                          color: kPrimaryWhite,
+                          child: EmptyHomeProduct(
+                            text: noProd,
+                            subText: addItem,
+                          ))
+                      : Expanded(
+                        child: ListView(
+                          // crossAxisAlignment: CrossAxisAlignment.start,
+                          // mainAxisSize: MainAxisSize.min,
+                          children: List.generate(
+                            productList.length,
+                            (index) => HomeCartList(
+                              product: productList[index],
+                              category: categoryName!,
+                              onTap: () {
+                                setState(() {
+                                  productList.removeAt(index);
+                                });
+                              },
                             ),
-                          ),
-                    YBox(170),
-                  ],
-                ),
+                          ).toList(),
+                        ),
+                      ),
+                   YBox(170),
+                ],
               ),
             ),
           ),

@@ -8,14 +8,41 @@ final getCategoriesProvider = StateNotifierProvider<GetCategoriesNotifier,
   return GetCategoriesNotifier();
 });
 
-final getProductsBySearchProvider = StateNotifierProvider<GetProductsBySearchNotifier,
-    NotifierState<GetProductsBySearch>>((ref) {
+final getProductsBySearchProvider = StateNotifierProvider<
+    GetProductsBySearchNotifier, NotifierState<GetProductsBySearch>>((ref) {
   return GetProductsBySearchNotifier();
 });
 
-final addToListProvider = StateNotifierProvider<AddToListNotifier,
-    NotifierState<String>>((ref) {
+final addToListProvider =
+    StateNotifierProvider<AddToListNotifier, NotifierState<String>>((ref) {
   return AddToListNotifier();
+});
+
+final getLocationsProvider =
+    StateNotifierProvider<GetLocationsNotifier, NotifierState<GetLocation>>(
+        (ref) {
+  return GetLocationsNotifier();
+});
+
+final getTimeSlotProvider =
+    StateNotifierProvider<GetTimeSlotNotifier, NotifierState<GetTimeSlot>>(
+        (ref) {
+  return GetTimeSlotNotifier();
+});
+
+final createOrderProvider = StateNotifierProvider<CreateOrderNotifier,
+    NotifierState<Map<String, dynamic>>>((ref) {
+  return CreateOrderNotifier();
+});
+
+final processPaymentProvider = StateNotifierProvider<ProcessPaymentNotifier,
+    NotifierState<String>>((ref) {
+  return ProcessPaymentNotifier();
+});
+
+final loadCouponProvider = StateNotifierProvider<LoadCouponNotifier,
+    NotifierState<String>>((ref) {
+  return LoadCouponNotifier();
 });
 
 class GetCategoriesNotifier
@@ -54,8 +81,7 @@ class GetProductsBySearchNotifier
   }
 }
 
-class AddToListNotifier
-    extends StateNotifier<NotifierState<String>> {
+class AddToListNotifier extends StateNotifier<NotifierState<String>> {
   AddToListNotifier() : super(NotifierState());
 
   void addToList(
@@ -64,6 +90,90 @@ class AddToListNotifier
       Function(String?)? error}) async {
     state = notifyLoading();
     state = await HomePageRepository.addToList(request: request);
+    if (state.status == NotifierStatus.done) {
+      if (then != null) then(state.data!);
+    } else if (state.status == NotifierStatus.error) {
+      if (error != null) error(state.message);
+    }
+  }
+}
+
+class GetLocationsNotifier extends StateNotifier<NotifierState<GetLocation>> {
+  GetLocationsNotifier() : super(NotifierState());
+
+  void getLocations(
+      {Function(List<Location>)? then, Function(String?)? error}) async {
+    state = notifyLoading();
+    state = await HomePageRepository.getLocations();
+    if (state.status == NotifierStatus.done) {
+      if (then != null) then(state.data!.locations!);
+    } else if (state.status == NotifierStatus.error) {
+      if (error != null) error(state.message);
+    }
+  }
+}
+
+class GetTimeSlotNotifier extends StateNotifier<NotifierState<GetTimeSlot>> {
+  GetTimeSlotNotifier() : super(NotifierState());
+
+  void getTimeSlot(
+      {Function(List<TimeSlot>)? then, Function(String?)? error}) async {
+    state = notifyLoading();
+    state = await HomePageRepository.getTimeSlot();
+    if (state.status == NotifierStatus.done) {
+      if (then != null) then(state.data!.timeSlots!);
+    } else if (state.status == NotifierStatus.error) {
+      if (error != null) error(state.message);
+    }
+  }
+}
+
+class CreateOrderNotifier
+    extends StateNotifier<NotifierState<Map<String, dynamic>>> {
+  CreateOrderNotifier() : super(NotifierState());
+
+  void createOrder(
+      {required CreateOrderRequest orderRequest,
+      Function(Map<String, dynamic>)? then,
+      Function(String?)? error}) async {
+    state = notifyLoading();
+    state = await HomePageRepository.createOrder(orderRequest: orderRequest);
+    if (state.status == NotifierStatus.done) {
+      if (then != null) then(state.data!);
+    } else if (state.status == NotifierStatus.error) {
+      if (error != null) error(state.message);
+    }
+  }
+}
+
+class ProcessPaymentNotifier extends StateNotifier<NotifierState<String>> {
+  ProcessPaymentNotifier() : super(NotifierState());
+
+  void processPayment(
+      {required ProcessPaymentRequest paymentRequest,
+      Function(String)? then,
+      Function(String?)? error}) async {
+    state = notifyLoading();
+    state =
+        await HomePageRepository.processPayment(paymentRequest: paymentRequest);
+    if (state.status == NotifierStatus.done) {
+      if (then != null) then(state.data!);
+    } else if (state.status == NotifierStatus.error) {
+      if (error != null) error(state.message);
+    }
+  }
+}
+
+class LoadCouponNotifier extends StateNotifier<NotifierState<String>> {
+  LoadCouponNotifier() : super(NotifierState());
+
+  void loadCoupon(
+      {required String coupon,
+      Function(String)? then,
+      Function(String?)? error}) async {
+    state = notifyLoading();
+    state =
+        await HomePageRepository.loadCoupon(coupon: coupon);
     if (state.status == NotifierStatus.done) {
       if (then != null) then(state.data!);
     } else if (state.status == NotifierStatus.error) {

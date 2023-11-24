@@ -48,4 +48,68 @@ class HomePageRepository {
         }))
         .toNotifierState();
   }
+
+  static Future<NotifierState<GetLocation>> getLocations() async {
+    return (await ApiService<GetLocation>().getCall(
+        "/user/delivery-locations",
+        // hasToken: true,
+        onReturn: (response) => logResponse(response),
+        getDataFromResponse: (data) {
+          return GetLocation.fromJson(data);
+        }))
+        .toNotifierState();
+  }
+
+  static Future<NotifierState<GetTimeSlot>> getTimeSlot() async {
+    return (await ApiService<GetTimeSlot>().getCall(
+        "/user/delivery-time-slots/list",
+        // hasToken: true,
+        onReturn: (response) => logResponse(response),
+        getDataFromResponse: (data) {
+          return GetTimeSlot.fromJson(data);
+        }))
+        .toNotifierState();
+  }
+
+  static Future<NotifierState<Map<String, dynamic>>> createOrder({required CreateOrderRequest orderRequest}) async {
+    return (await ApiService<Map<String, dynamic>>().postCallNoForm(
+        "/user/order-noauth/orders",
+        ServiceRequest(serviceRequest: orderRequest.toJson()),
+        // hasToken: true,
+        onReturn: (response) => logResponse(response),
+        getDataFromResponse: (data) {
+          Map<String, dynamic> myResult = {
+            "message" : data["message"],
+            "orderId" : data["order"]["id"]
+          };
+          return myResult;
+        }))
+        .toNotifierState();
+  }
+
+  static Future<NotifierState<String>> processPayment({required ProcessPaymentRequest paymentRequest}) async {
+    return (await ApiService<String>().postCall(
+        "/user/payment/process",
+        ServiceRequest(serviceRequest: paymentRequest.toJson()),
+        // hasToken: true,
+        onReturn: (response) => logResponse(response),
+        getDataFromResponse: (data) {
+          return data["message"];
+        }))
+        .toNotifierState();
+  }
+
+  static Future<NotifierState<String>> loadCoupon({required String coupon}) async {
+    return (await ApiService<String>().postCall(
+        "/user/coupons/load",
+        ServiceRequest(serviceRequest: {
+          "code" : coupon
+        }),
+        // hasToken: true,
+        onReturn: (response) => logResponse(response),
+        getDataFromResponse: (data) {
+          return data["message"];
+        }))
+        .toNotifierState();
+  }
 }

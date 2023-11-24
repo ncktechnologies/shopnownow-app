@@ -4,9 +4,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:shopnownow/app/helpers/session_manager.dart';
+import 'package:shopnownow/app/navigators/navigators.dart';
 import 'package:shopnownow/modules/homepage/screens/home_widget_constant.dart';
 import 'package:shopnownow/modules/reuseables/size_boxes.dart';
 import 'package:shopnownow/modules/reuseables/widgets.dart';
+import 'package:shopnownow/modules/wallet/fund_wallet.dart';
 import 'package:shopnownow/modules/wallet/provider/wallet_provider.dart';
 import 'package:shopnownow/utils/assets_path.dart';
 import 'package:shopnownow/utils/constants.dart';
@@ -23,14 +25,12 @@ class MyWallet extends ConsumerStatefulWidget {
 
 class _MyWalletState extends ConsumerState<MyWallet> {
   bool obscure = true;
-  var publicKey = 'pk_test_25e249297133695de0f477d314a9d2658c967446';
-  final plugin = PaystackPlugin();
+
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    plugin.initialize(publicKey: publicKey);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       ref.read(getTransactionProvider.notifier).getTransaction();
     });
@@ -104,9 +104,7 @@ class _MyWalletState extends ConsumerState<MyWallet> {
                 YBox(kRegularPadding),
                 InkWellNoShadow(
                   onTap: () {
-                    checkOut(
-                      100,
-                    );
+                    pushTo(const FundWalletScreen()).then((value) => setState((){}));
                   },
                   child: Container(
                     padding:
@@ -320,26 +318,4 @@ class _MyWalletState extends ConsumerState<MyWallet> {
     ));
   }
 
-  checkOut(int cost) async {
-    Charge charge = Charge()
-      ..amount = cost * 100
-      ..reference = "${DateTime.now().millisecondsSinceEpoch}"
-      ..email = SessionManager.getEmail();
-    CheckoutResponse response = await plugin.checkout(
-      context,
-      method: CheckoutMethod.card,
-      charge: charge,
-    );
-    if (response.status) {
-      ref.read(fundWalletProvider.notifier).fundWallet(
-          amount: cost.toString(),
-          reference: response.reference!,
-          then: () {
-            ref.read(getTransactionProvider.notifier).getTransaction();
-            ref.read(getWalletProvider.notifier).getWallet(then: () {
-              setState(() {});
-            });
-          });
-    }
-  }
 }

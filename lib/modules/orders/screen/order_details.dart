@@ -1,18 +1,23 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:intl/intl.dart';
+import 'package:shopnownow/modules/orders/model/order_model.dart';
 import 'package:shopnownow/modules/orders/screen/order_widget.dart';
 import 'package:shopnownow/modules/reuseables/size_boxes.dart';
 import 'package:shopnownow/modules/reuseables/widgets.dart';
 import 'package:shopnownow/utils/assets_path.dart';
 import 'package:shopnownow/utils/constants.dart';
+import 'package:shopnownow/utils/extensions.dart';
 import 'package:shopnownow/utils/flushbar.dart';
 import 'package:shopnownow/utils/strings.dart';
 
 class OrderDetails extends StatelessWidget {
-  final bool? isPending;
+  // final bool? isPending;
+  final Order order;
 
-  const OrderDetails({Key? key, this.isPending = false}) : super(key: key);
+  const OrderDetails({Key? key, required this.order}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -44,14 +49,13 @@ class OrderDetails extends StatelessWidget {
                         Row(
                           children: [
                             Text(
-                              "$orderId#KD1890 ",
+                              "$orderId${order.orderId} ",
                               style: textTheme.displayLarge!
                                   .copyWith(color: Colors.black),
                             ),
                             InkWellNoShadow(
                               onTap: () {
-                                Clipboard.setData(
-                                    const ClipboardData(text: "#KD1890"));
+                                Clipboard.setData(ClipboardData(text: "${order.orderId}"));
                                 showSuccessBar(context, "Copied");
                               },
                               child: SvgPicture.asset(
@@ -62,7 +66,7 @@ class OrderDetails extends StatelessWidget {
                         ),
                         YBox(kPadding),
                         Text(
-                          "$dateOrdered 18 Oct, 2023",
+                          "$dateOrdered ${DateFormat("dd MMM, yyyy").format(order.createdAt!)}",
                           style: textTheme.headlineMedium!
                               .copyWith(color: kPurple100),
                         )
@@ -75,12 +79,12 @@ class OrderDetails extends StatelessWidget {
                         horizontal: kSmallPadding, vertical: kPadding),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(kSmallPadding),
-                        color: isPending! ? kSuccess : kLight800),
+                        color: order.status != "paid" ? kSuccess : kLight800),
                     child: Text(
-                      isPending! ? "Delivered" : "Pending",
+                      order.status != "paid"? "Delivered" : "Paid",
                       style: textTheme.headlineMedium!.copyWith(
                           fontSize: 10,
-                          color: isPending! ? kToastColor2 : kYellow),
+                          color: order.status != "paid" ? kToastColor2 : kYellow),
                     ),
                   ),
                 ],
@@ -116,7 +120,7 @@ class OrderDetails extends StatelessWidget {
                         width: 2,
                         decoration: BoxDecoration(
                             color:
-                                isPending! ? kGreen300 : kTextInputBorderColor),
+                            order.status != "paid"? kGreen300 : kTextInputBorderColor),
                         child: Container(
                           height: 22,
                           width: 2,
@@ -130,7 +134,7 @@ class OrderDetails extends StatelessWidget {
                         decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             color:
-                                isPending! ? kGreen300 : kTextInputBorderColor),
+                            order.status != "paid"? kGreen300 : kTextInputBorderColor),
                       )
                     ],
                   ),
@@ -147,7 +151,7 @@ class OrderDetails extends StatelessWidget {
                         ),
                         YBox(kPadding),
                         Text(
-                          "18 Oct, 2023",
+                          DateFormat("dd MMM, yyyy").format(order.createdAt!),
                           style: textTheme.displaySmall!.copyWith(
                               fontWeight: FontWeight.w500,
                               color: kToastColor2,
@@ -158,12 +162,13 @@ class OrderDetails extends StatelessWidget {
                           orderDelivered,
                           style: textTheme.displaySmall!.copyWith(
                               fontWeight: FontWeight.w500,
-                              color: isPending! ? kDarkColor300 : kLight700),
+                              color: order.status != "paid"?kDarkColor300 : kLight700),
                         ),
                         YBox(kPadding),
-                        isPending!
+                        order.status != "paid"
                             ? Text(
-                                "18 Oct, 2023",
+
+                          DateFormat("dd MMM, yyyy").format(order.updatedAt!),
                                 style: textTheme.displaySmall!.copyWith(
                                     fontWeight: FontWeight.w500,
                                     color: kToastColor2,
@@ -195,19 +200,19 @@ class OrderDetails extends StatelessWidget {
               YBox(kSmallPadding),
               PaymentRow(
                 text: subTotal,
-                subText: "13,350",
+                subText: order.price!,
               ),
               PaymentRow(
                 text: tax,
-                subText: "150",
+                subText: order.tax!,
               ),
               PaymentRow(
                 text: delivery,
-                subText: "13,350",
+                subText: order.deliveryFee!,
               ),
               PaymentRow(
                 text: total,
-                subText: "13,350",
+                subText: (int.parse(order.price!.replaceAll(".00", "")) + int.parse(order.tax!.replaceAll(".00", "")) + int.parse(order.deliveryFee!.replaceAll(".00", ""))).toString(),
               ),
               YBox(kSmallPadding),
               const Divider(
@@ -223,15 +228,15 @@ class OrderDetails extends StatelessWidget {
               YBox(kRegularPadding),
               DeliveryDetails(
                 text: recipientName,
-                subText: "Josh Osazuwa",
+                subText: order.recipientName!.toTitleCase(),
               ),
               DeliveryDetails(
                 text: phoneNo,
-                subText: "(+234) 8031 889558",
+                subText: "(+234) ${order.recipientPhone!.substring(1)}",
               ),
               DeliveryDetails(
                 text: deliveryAdd,
-                subText: "124, Oyediran Estate, Lagos, Nigeria, 5432",
+                subText: order.deliveryInfo!.toTitleCase(),
               ),
               YBox(kPadding),
               const Divider(
@@ -239,24 +244,43 @@ class OrderDetails extends StatelessWidget {
                 color: kDividerColor,
               ),
               YBox(kMediumPadding),
-              Text("2 item(s)",
+              Text("${order.products!.length} item(s)",
                   style: textTheme.titleMedium!.copyWith(
                     fontWeight: FontWeight.w500,
                     fontSize: 14,
                   )),
               YBox(kRegularPadding),
               ...List.generate(
-                2,
+                order.products!.length,
                 (index) => Column(
                   children: [
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Container(
+                        CachedNetworkImage(
                           height: 65,
                           width: 65,
-                          decoration: const BoxDecoration(
-                              color: Colors.grey, borderRadius: kBorderSmallRadius),
+                          imageUrl: order.products![index].thumbnailUrl ??
+                              "https://us.123rf.com/450wm/mathier/mathier1905/mathier190500002/mathier190500002-no-thumbnail-image-placeholder-for-forums-blogs-and-websites.jpg?ver=6",
+                          fit: BoxFit.cover,
+                          imageBuilder: (context, prov) {
+                            return Container(
+                              decoration: BoxDecoration(
+                                  border: Border.all(
+                                      width: 1.5, color: kGrey700),
+                                  borderRadius: BorderRadius.circular(
+                                      10),
+                                  image: DecorationImage(
+                                      image: prov, fit: BoxFit.cover)),
+                            );
+                          },
+                          errorWidget: (context, url, error) =>
+                              Image.asset(
+                                "assets/images/img.png",
+                                height: 80,
+                                width: 80,
+                                fit: BoxFit.cover,
+                              ),
                         ),
                         XBox(kSmallPadding),
                         Expanded(
@@ -264,21 +288,14 @@ class OrderDetails extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                "Nike Blazer Low ‘77",
+                                order.products![index].name!,
                                 style: textTheme.headlineMedium!.copyWith(
                                   color: kDarkColor300
                                 ),
                               ),
-                              YBox(kPadding),
+                              YBox(kRegularPadding),
                               Text(
-                                "XM345 Vintage",
-                                style: textTheme.headlineMedium!.copyWith(
-                                    color: kDarkColor300
-                                ),
-                              ),
-                              YBox(kPadding),
-                              Text(
-                                "X2",
+                                "X${order.products![index].quantity}",
                                 style: textTheme.bodyLarge
                               ),
 
@@ -286,7 +303,7 @@ class OrderDetails extends StatelessWidget {
                             ],
                           ),
                         ),
-                        Text("₦ 64,500", style: textTheme.displayLarge!.copyWith(
+                        Text("₦ ${order.products![index].price}", style: textTheme.displayLarge!.copyWith(
                           color: kDarkPurple,
                           fontSize: 14,
                           fontWeight: FontWeight.w600

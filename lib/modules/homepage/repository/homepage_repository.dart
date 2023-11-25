@@ -87,9 +87,9 @@ class HomePageRepository {
         .toNotifierState();
   }
 
-  static Future<NotifierState<String>> processPayment({required ProcessPaymentRequest paymentRequest}) async {
+  static Future<NotifierState<String>> processPayment({bool noToken = false, required ProcessPaymentRequest paymentRequest}) async {
     return (await ApiService<String>().postCall(
-        "/user/payment/process",
+      noToken ? "/user/payment/process-payment-non-auth" :  "/user/payment/process",
         ServiceRequest(serviceRequest: paymentRequest.toJson()),
         // hasToken: true,
         onReturn: (response) => logResponse(response),

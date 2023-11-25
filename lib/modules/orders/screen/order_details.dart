@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:shopnownow/modules/orders/order_widget.dart';
+import 'package:shopnownow/modules/orders/screen/order_widget.dart';
 import 'package:shopnownow/modules/reuseables/size_boxes.dart';
 import 'package:shopnownow/modules/reuseables/widgets.dart';
 import 'package:shopnownow/utils/assets_path.dart';

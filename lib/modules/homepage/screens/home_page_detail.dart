@@ -2,13 +2,12 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:shopnownow/app/helpers/session_manager.dart';
 import 'package:shopnownow/app/navigators/navigators.dart';
 import 'package:shopnownow/modules/homepage/model/homepage_model.dart';
 import 'package:shopnownow/modules/homepage/provider/homepage_provider.dart';
 import 'package:shopnownow/modules/homepage/screens/checkout.dart';
 import 'package:shopnownow/modules/homepage/screens/home_widget_constant.dart';
-import 'package:shopnownow/modules/orders/order_widget.dart';
+import 'package:shopnownow/modules/orders/screen/order_widget.dart';
 import 'package:shopnownow/modules/reuseables/size_boxes.dart';
 import 'package:shopnownow/modules/reuseables/widgets.dart';
 import 'package:shopnownow/utils/assets_path.dart';
@@ -325,6 +324,10 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
                     onPressed: productList.isEmpty ? (){
                       showErrorBar(context, "Please add a Product");
                     }: () {
+                      overlayEntry?.remove();
+                      overlaySearchEntry?.remove();
+                      overlayEntry = null;
+                      overlaySearchEntry = null;
                       pushTo(
                          CheckOut(
                           productList: productList

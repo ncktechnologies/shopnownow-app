@@ -152,10 +152,11 @@ class ProcessPaymentNotifier extends StateNotifier<NotifierState<String>> {
   void processPayment(
       {required ProcessPaymentRequest paymentRequest,
       Function(String)? then,
+        bool noToken = false,
       Function(String?)? error}) async {
     state = notifyLoading();
     state =
-        await HomePageRepository.processPayment(paymentRequest: paymentRequest);
+        await HomePageRepository.processPayment(paymentRequest: paymentRequest, noToken: noToken);
     if (state.status == NotifierStatus.done) {
       if (then != null) then(state.data!);
     } else if (state.status == NotifierStatus.error) {

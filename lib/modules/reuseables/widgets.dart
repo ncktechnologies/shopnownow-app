@@ -4,7 +4,7 @@ import 'package:shopnownow/app/helpers/session_manager.dart';
 import 'package:shopnownow/app/navigators/navigators.dart';
 import 'package:shopnownow/modules/authentication/screens/login.dart';
 import 'package:shopnownow/modules/authentication/screens/signup.dart';
-import 'package:shopnownow/modules/orders/order_history.dart';
+import 'package:shopnownow/modules/orders/screen/order_history.dart';
 import 'package:shopnownow/modules/profile/screens/profile.dart';
 import 'package:shopnownow/modules/reuseables/size_boxes.dart';
 import 'package:shopnownow/modules/helpcenter/screens/help_center.dart';

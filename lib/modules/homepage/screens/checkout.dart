@@ -3,17 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_paystack/flutter_paystack.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shopnownow/app/helpers/session_manager.dart';
 import 'package:shopnownow/app/navigators/navigators.dart';
 import 'package:shopnownow/modules/homepage/model/homepage_model.dart';
 import 'package:shopnownow/modules/homepage/provider/homepage_provider.dart';
 import 'package:shopnownow/modules/homepage/screens/home_widget_constant.dart';
 import 'package:shopnownow/modules/homepage/screens/homepage.dart';
-import 'package:shopnownow/modules/orders/order_widget.dart';
+import 'package:shopnownow/modules/orders/screen/order_widget.dart';
 import 'package:shopnownow/modules/reuseables/size_boxes.dart';
 import 'package:shopnownow/modules/reuseables/widgets.dart';
-import 'package:shopnownow/utils/assets_path.dart';
 import 'package:shopnownow/utils/constants.dart';
 import 'package:shopnownow/utils/flushbar.dart';
 import 'package:shopnownow/utils/strings.dart';
@@ -264,7 +262,8 @@ class _CheckOutState extends ConsumerState<CheckOut> {
                   : YBox(0),
             ),
             YBox(kRegularPadding),
-            Consumer(builder: (context, ref, _) {
+
+          SessionManager.getToken() == null ? YBox(0) :  Consumer(builder: (context, ref, _) {
               var addToListWidget = InkWellNoShadow(
                 onTap: () {
                   List<ProductRequest> prodRequest = [];
@@ -456,18 +455,165 @@ class _CheckOutState extends ConsumerState<CheckOut> {
                 )
               ],
             ),
-            YBox(kLargePadding),
-            Text(
-              payWith,
-              style: textTheme.titleMedium!.copyWith(
-                fontWeight: FontWeight.w600,
-                fontSize: 16,
-              ),
-            ),
+
             YBox(kMediumPadding),
-            ...List.generate(
-                pay.length,
-                (index) => Padding(
+         SessionManager.getToken() == null ? Column(
+           crossAxisAlignment: CrossAxisAlignment.start,
+           children: [
+             Text(
+               "$minOrder₦2,500",
+               style: textTheme.headlineMedium!.copyWith(color: kOrange500),
+             ),
+             YBox(kMediumPadding),
+             PaymentRow(
+               text: subTotal,
+               subText: totalAmount.toString(),
+             ),
+             PaymentRow(
+               text: tax,
+               subText: (totalAmount * 0.1).toString(),
+             ),
+             PaymentRow(
+               text: delivery,
+               subText: _location == null ? "0" : _location!.price!,
+             ),
+             _location == null
+                 ? PaymentRow(
+                 text: total,
+                 subText: (totalAmount + (totalAmount* 0.1)).toString())
+                 : PaymentRow(
+                 text: total,
+                 subText: ((totalAmount +
+                     double.parse(_location!.price!) +
+                     (totalAmount * 0.1))).toString()),
+             YBox(kMediumPadding),
+             Row(
+               crossAxisAlignment: CrossAxisAlignment.start,
+               children: [
+                 Checkbox(
+                   visualDensity:
+                   const VisualDensity(horizontal: -4, vertical: -4),
+                   activeColor: kPrimaryColor,
+                   checkColor: kPrimaryWhite,
+                   side: MaterialStateBorderSide.resolveWith(
+                         (states) => BorderSide(
+                         width: 2.0,
+                         color: isChecked ? kPrimaryColor : kGrey700),
+                   ),
+                   shape: const RoundedRectangleBorder(
+                     side: BorderSide(color: kPrimaryColor, width: 5),
+                   ),
+                   value: isChecked,
+                   onChanged: (bool? value) {
+                     setState(() {
+                       isChecked = value!;
+                     });
+                   },
+                 ),
+                 Expanded(
+                   child: Container(
+                     padding: const EdgeInsets.only(top: kPadding),
+                     child: RichText(
+                       text: TextSpan(
+                         text: "$accept ",
+                         style: textTheme.headlineMedium!.copyWith(
+                           color: Colors.black,
+                         ),
+                         children: [
+                           TextSpan(
+                               text: terms,
+                               style: textTheme.headlineMedium!.copyWith(
+                                   color: kPrimaryColor,
+                                   decoration: TextDecoration.underline)),
+                         ],
+                       ),
+                     ),
+                   ),
+                 ),
+               ],
+             ),
+             YBox(kMacroPadding),
+             Consumer(builder: (context, ref, _) {
+               return ref.watch(processPaymentProvider).when(
+                   done: (data) => Consumer(builder: (context, ref, _) {
+                     var buttonWidget = LargeButton(
+                         title: _location == null
+                             ? "Pay ₦ ${((totalAmount + (totalAmount * 0.1))).toString()}"
+                             : "Pay ₦ ${((totalAmount +
+                             double.parse(_location!.price!) +
+                             (totalAmount * 0.1))).toString()}",
+                         onPressed: () {
+                           if (isChecked) {
+                             if (formKey.currentState!.validate()) {
+                               List<ProductRequest> request = [];
+                               for (var element in widget.productList) {
+                                 setState(() {
+                                   request.add(ProductRequest(
+                                       id: element.id!,
+                                       quantity: element.quantity!));
+                                 });
+                               }
+                               CreateOrderRequest orderRequest =
+                               CreateOrderRequest(
+                                 products: request,
+                                 userId: 0,
+                                 price: totalAmount,
+                                 tax: (totalAmount *
+                                     0.1)
+                                     .toInt(),
+                                 status: "pending",
+                                 deliveryInfo: addressController.text,
+                                 paymentType: "card",
+                                 recipientName: nameController.text,
+                                 recipientPhone: phoneController.text,
+                                 recipientEmail: emailController.text,
+                                 deliveryFee: int.parse(_location!.price!
+                                     .replaceAll(".00", "")),
+                                 deliveryTimeSlot: timeSlot!.deliveryTime!,
+                               );
+                               ref
+                                   .read(createOrderProvider.notifier)
+                                   .createOrder(
+                                   orderRequest: orderRequest,
+                                   then: (val) {
+                                       checkOut(
+                                           ((totalAmount +
+                                               double.parse(_location!.price!) +
+                                               (totalAmount * 0.1))).toInt(),
+                                           val["orderId"]);
+                                   });
+                             }
+                           } else {
+                             showErrorBar(context,
+                                 "Please accept the terms and condition");
+                           }
+                         });
+                     return ref.watch(createOrderProvider).when(
+                       done: (data) => buttonWidget,
+                       error: (val) => buttonWidget,
+                       loading: () => const SpinKitDemo(),
+                     );
+                   }),
+                   loading: () => const SpinKitDemo());
+             }),
+             YBox(kRegularPadding),
+           ],
+         ) :
+         Column(
+           crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                YBox(kLargePadding),
+                Text(
+                  payWith,
+                  style: textTheme.titleMedium!.copyWith(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 16,
+                  ),
+                ),
+                YBox(kSmallPadding),
+                ...List.generate(
+                    pay.length,
+                        (index) => Padding(
                       padding: const EdgeInsets.only(bottom: kRegularPadding),
                       child: InkWellNoShadow(
                           onTap: () {
@@ -489,12 +635,12 @@ class _CheckOutState extends ConsumerState<CheckOut> {
                                     shape: BoxShape.circle),
                                 child: currentIndex == index
                                     ? Container(
-                                        height: kSmallPadding,
-                                        width: kSmallPadding,
-                                        decoration: const BoxDecoration(
-                                            color: kPrimaryColor,
-                                            shape: BoxShape.circle),
-                                      )
+                                  height: kSmallPadding,
+                                  width: kSmallPadding,
+                                  decoration: const BoxDecoration(
+                                      color: kPrimaryColor,
+                                      shape: BoxShape.circle),
+                                )
                                     : YBox(0),
                               ),
                               XBox(kSmallPadding),
@@ -508,99 +654,100 @@ class _CheckOutState extends ConsumerState<CheckOut> {
                             ],
                           )),
                     )),
-            YBox(85),
-            Text(
-              "Note: Your wallet balance will be deducted first and the remaining balance will be removed from your card!!!",
-              style: textTheme.titleMedium!.copyWith(
-                fontWeight: FontWeight.w600,
-                fontSize: 16,
-                color: kPrimaryColor
-              ),
-            ),
-            const Divider(
-              thickness: 2,
-              color: k200,
-            ),
-            YBox(kRegularPadding),
-            Text(
-              "$minOrder₦2,500",
-              style: textTheme.headlineMedium!.copyWith(color: kOrange500),
-            ),
-            YBox(kMediumPadding),
-            PaymentRow(
-              text: subTotal,
-              subText: totalAmount.toString(),
-            ),
-            PaymentRow(
-              text: tax,
-              subText: (totalAmount * 0.1).toString(),
-            ),
-            PaymentRow(
-              text: delivery,
-              subText: _location == null ? "0" : _location!.price!,
-            ),
-            PaymentRow(
-              text: walletBalance,
-              subText: SessionManager.getWallet() ?? "0"),
-
-            _location == null
-                ? PaymentRow(
+                YBox(85),
+                Text(
+                  "Note: Your wallet balance will be deducted first and the remaining balance will be removed from your card!!!",
+                  style: textTheme.titleMedium!.copyWith(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 16,
+                      color: kPrimaryColor
+                  ),
+                ),
+                const Divider(
+                  thickness: 2,
+                  color: k200,
+                ),
+                YBox(kRegularPadding),
+                Text(
+                  "$minOrder₦2,500",
+                  style: textTheme.headlineMedium!.copyWith(color: kOrange500),
+                ),
+                YBox(kMediumPadding),
+                PaymentRow(
+                  text: subTotal,
+                  subText: totalAmount.toString(),
+                ),
+                PaymentRow(
+                  text: tax,
+                  subText: (totalAmount * 0.1).toString(),
+                ),
+                PaymentRow(
+                  text: delivery,
+                  subText: _location == null ? "0" : _location!.price!,
+                ),
+                PaymentRow(
+                    text: walletBalance,
+                    subText: SessionManager.getWallet() ?? "0"),
+                _location == null
+                    ? PaymentRow(
                     text: total,
                     subText:  ( int.parse(SessionManager.getWallet()!.replaceAll(".00", "") ?? "0") -
                         (totalAmount + (totalAmount* 0.1))).toString())
-                : PaymentRow(
+                    : PaymentRow(
                     text: total,
                     subText: totalAmountToBePaid()),
-            YBox(kMediumPadding),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Checkbox(
-                  visualDensity:
+                YBox(kMediumPadding),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Checkbox(
+                      visualDensity:
                       const VisualDensity(horizontal: -4, vertical: -4),
-                  activeColor: kPrimaryColor,
-                  checkColor: kPrimaryWhite,
-                  side: MaterialStateBorderSide.resolveWith(
-                    (states) => BorderSide(
-                        width: 2.0,
-                        color: isChecked ? kPrimaryColor : kGrey700),
-                  ),
-                  shape: const RoundedRectangleBorder(
-                    side: BorderSide(color: kPrimaryColor, width: 5),
-                  ),
-                  value: isChecked,
-                  onChanged: (bool? value) {
-                    setState(() {
-                      isChecked = value!;
-                    });
-                  },
-                ),
-                Expanded(
-                  child: Container(
-                    padding: const EdgeInsets.only(top: kPadding),
-                    child: RichText(
-                      text: TextSpan(
-                        text: "$accept ",
-                        style: textTheme.headlineMedium!.copyWith(
-                          color: Colors.black,
+                      activeColor: kPrimaryColor,
+                      checkColor: kPrimaryWhite,
+                      side: MaterialStateBorderSide.resolveWith(
+                            (states) => BorderSide(
+                            width: 2.0,
+                            color: isChecked ? kPrimaryColor : kGrey700),
+                      ),
+                      shape: const RoundedRectangleBorder(
+                        side: BorderSide(color: kPrimaryColor, width: 5),
+                      ),
+                      value: isChecked,
+                      onChanged: (bool? value) {
+                        setState(() {
+                          isChecked = value!;
+                        });
+                      },
+                    ),
+                    Expanded(
+                      child: Container(
+                        padding: const EdgeInsets.only(top: kPadding),
+                        child: RichText(
+                          text: TextSpan(
+                            text: "$accept ",
+                            style: textTheme.headlineMedium!.copyWith(
+                              color: Colors.black,
+                            ),
+                            children: [
+                              TextSpan(
+                                  text: terms,
+                                  style: textTheme.headlineMedium!.copyWith(
+                                      color: kPrimaryColor,
+                                      decoration: TextDecoration.underline)),
+                            ],
+                          ),
                         ),
-                        children: [
-                          TextSpan(
-                              text: terms,
-                              style: textTheme.headlineMedium!.copyWith(
-                                  color: kPrimaryColor,
-                                  decoration: TextDecoration.underline)),
-                        ],
                       ),
                     ),
-                  ),
+                  ],
                 ),
-              ],
-            ),
-            YBox(kMacroPadding),
-            Consumer(builder: (context, ref, _) {
-              return ref.watch(processPaymentProvider).when(
-                  done: (data) => Consumer(builder: (context, ref, _) {
+
+
+                YBox(kMacroPadding),
+                Consumer(builder: (context, ref, _) {
+                  return ref.watch(processPaymentProvider).when(
+                      done: (data) => Consumer(builder: (context, ref, _) {
                         var buttonWidget = LargeButton(
                             title: _location == null
                                 ? "Pay ₦ ${(int.parse(SessionManager.getWallet()!.replaceAll(".00", "") ?? "0") -(totalAmount +
@@ -618,17 +765,17 @@ class _CheckOutState extends ConsumerState<CheckOut> {
                                     });
                                   }
                                   CreateOrderRequest orderRequest =
-                                      CreateOrderRequest(
+                                  CreateOrderRequest(
                                     products: request,
-                                    userId: 0,
+                                    userId: SessionManager.getUserId(),
                                     price: totalAmount,
                                     tax: (totalAmount *
-                                            0.1)
+                                        0.1)
                                         .toInt(),
                                     status: "pending",
                                     deliveryInfo: addressController.text,
                                     paymentType:
-                                        currentIndex == 0 ? "card" : "wallet",
+                                    currentIndex == 0 ? "card" : "wallet",
                                     recipientName: nameController.text,
                                     recipientPhone: phoneController.text,
                                     recipientEmail: emailController.text,
@@ -639,34 +786,34 @@ class _CheckOutState extends ConsumerState<CheckOut> {
                                   ref
                                       .read(createOrderProvider.notifier)
                                       .createOrder(
-                                          orderRequest: orderRequest,
-                                          then: (val) {
-                                            if(totalAmountToBePaid() == "0" ){
-                                              ProcessPaymentRequest paymentRequest = ProcessPaymentRequest(
-                                                userId: SessionManager.getUserId(),
-                                                amount: totalAmountToBePaid(),
-                                                status: "successful",
-                                                orderId: val["orderId"],
-                                                reference: "wallet",
-                                                paymentType: "wallet",
-                                                paymentGateway: "wallet",
-                                                paymentGatewayReference: "wallet",
-                                              );
-                                              ref.read(processPaymentProvider.notifier).processPayment(
-                                                  paymentRequest: paymentRequest,
-                                                  then: (val) {
-                                                    pushToAndClearStack(const HomePage());
-                                                    showSuccessBar(context, val);
-                                                  });
-                                            }else {
-                                              checkOut(
-                                                int.parse(totalAmountToBePaid().substring(1).replaceAll(".0", "")),
-                                                val["orderId"]);
-                                            }
-                                            // "message" : data["message"],
-                                            // "orderId"
-                                            // showSuccessBar(context, val["message"]);
-                                          });
+                                      orderRequest: orderRequest,
+                                      then: (val) {
+                                        if(totalAmountToBePaid() == "0" ){
+                                          ProcessPaymentRequest paymentRequest = ProcessPaymentRequest(
+                                            userId: SessionManager.getUserId(),
+                                            amount: totalAmountToBePaid(),
+                                            status: "successful",
+                                            orderId: val["orderId"],
+                                            reference: "wallet",
+                                            paymentType: "wallet",
+                                            paymentGateway: "wallet",
+                                            paymentGatewayReference: "wallet",
+                                          );
+                                          ref.read(processPaymentProvider.notifier).processPayment(
+                                              paymentRequest: paymentRequest,
+                                              then: (val) {
+                                                pushToAndClearStack(const HomePage());
+                                                showSuccessBar(context, val);
+                                              });
+                                        }else {
+                                          checkOut(
+                                              int.parse(totalAmountToBePaid().substring(1).replaceAll(".0", "")),
+                                              val["orderId"]);
+                                        }
+                                        // "message" : data["message"],
+                                        // "orderId"
+                                        // showSuccessBar(context, val["message"]);
+                                      });
                                 }
                               } else {
                                 showErrorBar(context,
@@ -674,14 +821,16 @@ class _CheckOutState extends ConsumerState<CheckOut> {
                               }
                             });
                         return ref.watch(createOrderProvider).when(
-                              done: (data) => buttonWidget,
-                              error: (val) => buttonWidget,
-                              loading: () => const SpinKitDemo(),
-                            );
+                          done: (data) => buttonWidget,
+                          error: (val) => buttonWidget,
+                          loading: () => const SpinKitDemo(),
+                        );
                       }),
-                  loading: () => const SpinKitDemo());
-            }),
-            YBox(kRegularPadding),
+                      loading: () => const SpinKitDemo());
+                }),
+                YBox(kRegularPadding),
+              ],
+            )
           ],
         ),
       ),
@@ -708,14 +857,13 @@ class _CheckOutState extends ConsumerState<CheckOut> {
     Charge charge = Charge()
       ..amount = cost * 100
       ..reference = "${DateTime.now().millisecondsSinceEpoch}"
-      ..email = SessionManager.getEmail();
+      ..email = emailController.text;
     CheckoutResponse response = await plugin.checkout(
       context,
       method: CheckoutMethod.card,
       charge: charge,
     );
     if (response.status) {
-      print(checkoutOrderId);
       ProcessPaymentRequest paymentRequest = ProcessPaymentRequest(
         userId: SessionManager.getUserId(),
         amount: cost.toString(),
@@ -726,8 +874,10 @@ class _CheckOutState extends ConsumerState<CheckOut> {
         paymentGateway: "paystack",
         paymentGatewayReference: response.reference!,
       );
+
       ref.read(processPaymentProvider.notifier).processPayment(
           paymentRequest: paymentRequest,
+          noToken: SessionManager.getToken() == null ? true : false,
           then: (val) {
             pushToAndClearStack(const HomePage());
             showSuccessBar(context, val);

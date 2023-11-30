@@ -20,12 +20,13 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return ProviderScope(
       child: MaterialApp(
-        title: 'Shop Now Now',
+        title: 'ShopNowNow',
         theme: kThemeData,
         navigatorKey: navigatorKey,
         debugShowCheckedModeBanner: false,
-        home: SessionManager.getToken() == null ?
-        const SplashScreen() : const HomePage(),
+        home: SessionManager.getToken() == null
+            ? const SplashScreen()
+            : const HomePage(),
       ),
     );
   }

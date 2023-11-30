@@ -47,6 +47,8 @@ dependencies:
   logger: ^1.1.0
   http: ^0.13.4
   intl: ^0.17.0
+  responsive_framework: ^1.1.1
+  flutter_launcher_icons: ^0.13.1
 
 
 
@@ -64,6 +66,11 @@ dev_dependencies:
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path_android: "assets/images/app-icon.png"
+  image_path_ios: "assets/images/app-icon-ios.jpg"
 # The following section is specific to Flutter packages.
 flutter:
 

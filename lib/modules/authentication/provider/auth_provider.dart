@@ -9,7 +9,7 @@ StateNotifierProvider.autoDispose<SignUpNotifier, NotifierState<void>>(
     });
 
 final logInProvider =
-StateNotifierProvider.autoDispose<LogInNotifier, NotifierState<void>>(
+StateNotifierProvider.autoDispose<LogInNotifier, NotifierState>(
         (ref) {
       return LogInNotifier();
     });
@@ -66,7 +66,7 @@ class SignUpNotifier extends StateNotifier<NotifierState<void>> {
   }
 }
 
-class LogInNotifier extends StateNotifier<NotifierState<void>> {
+class LogInNotifier extends StateNotifier<NotifierState> {
   LogInNotifier() : super(NotifierState());
 
   void logIn({required String email,

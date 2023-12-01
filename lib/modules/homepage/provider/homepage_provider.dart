@@ -40,6 +40,11 @@ final processPaymentProvider = StateNotifierProvider<ProcessPaymentNotifier,
   return ProcessPaymentNotifier();
 });
 
+final processPaymentProvider2 = StateNotifierProvider.family<ProcessPaymentNotifier,
+    NotifierState<String>, int>((ref, id) {
+  return ProcessPaymentNotifier();
+});
+
 final loadCouponProvider = StateNotifierProvider<LoadCouponNotifier,
     NotifierState<String>>((ref) {
   return LoadCouponNotifier();

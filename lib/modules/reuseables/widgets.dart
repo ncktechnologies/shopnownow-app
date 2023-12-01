@@ -11,7 +11,7 @@ import 'package:shopnownow/modules/helpcenter/screens/help_center.dart';
 import 'package:shopnownow/modules/savedlist/saved_list.dart';
 import 'package:shopnownow/modules/specialrequest/screens/quick_guide.dart';
 import 'package:shopnownow/modules/specialrequest/screens/special_request.dart';
-import 'package:shopnownow/modules/wallet/wallet.dart';
+import 'package:shopnownow/modules/wallet/screens/wallet.dart';
 import 'package:shopnownow/utils/assets_path.dart';
 import 'package:shopnownow/utils/constants.dart';
 import 'package:shopnownow/utils/strings.dart';

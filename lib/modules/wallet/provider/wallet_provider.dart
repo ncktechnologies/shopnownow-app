@@ -14,6 +14,11 @@ final getTransactionProvider = StateNotifierProvider<
   return GetTransactionNotifier();
 });
 
+final getLimitedTransactionProvider = StateNotifierProvider<
+    GetLimitedTransactionNotifier, NotifierState<TransactionResponse>>((ref) {
+  return GetLimitedTransactionNotifier();
+});
+
 final convertPointsProvider = StateNotifierProvider<
     ConvertPointsNotifier, NotifierState<String>>((ref) {
   return ConvertPointsNotifier();
@@ -29,9 +34,10 @@ class GetWalletNotifier extends StateNotifier<NotifierState<WalletResponse>> {
 
   void getWallet(
       {
+        bool? loading = true,
         Function()? then,
         Function(String?)? error}) async {
-    state = notifyLoading();
+   loading! ? state = notifyLoading() : null;
     state = await WalletRepository.getWalletBal();
     if (state.status == NotifierStatus.done) {
       SessionManager.setWallet(state.data!.walletBalance ?? "");
@@ -69,6 +75,23 @@ class GetTransactionNotifier extends StateNotifier<NotifierState<TransactionResp
         Function(String?)? error}) async {
     state = notifyLoading();
     state = await WalletRepository.getTransactions();
+    if (state.status == NotifierStatus.done) {
+      if (then != null) then();
+    } else if (state.status == NotifierStatus.error) {
+      if (error != null) error(state.message);
+    }
+  }
+}
+
+class GetLimitedTransactionNotifier extends StateNotifier<NotifierState<TransactionResponse>> {
+  GetLimitedTransactionNotifier() : super(NotifierState());
+
+  void getLimitedTransaction(
+      {
+        Function()? then,
+        Function(String?)? error}) async {
+    state = notifyLoading();
+    state = await WalletRepository.getLimitedTransactions();
     if (state.status == NotifierStatus.done) {
       if (then != null) then();
     } else if (state.status == NotifierStatus.error) {

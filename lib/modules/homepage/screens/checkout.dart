@@ -263,7 +263,8 @@ class _CheckOutState extends ConsumerState<CheckOut> {
             ),
             YBox(kRegularPadding),
 
-          SessionManager.getToken() == null ? YBox(0) :  Consumer(builder: (context, ref, _) {
+          SessionManager.getToken() == null ? YBox(0) :
+          Consumer(builder: (context, ref, _) {
               var addToListWidget = InkWellNoShadow(
                 onTap: () {
                   List<ProductRequest> prodRequest = [];
@@ -787,6 +788,7 @@ class _CheckOutState extends ConsumerState<CheckOut> {
                                       .read(createOrderProvider.notifier)
                                       .createOrder(
                                       orderRequest: orderRequest,
+                                      error: (val)=> showErrorBar(context, val),
                                       then: (val) {
                                         if(totalAmountToBePaid() == "0" ){
                                           ProcessPaymentRequest paymentRequest = ProcessPaymentRequest(

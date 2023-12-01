@@ -31,21 +31,26 @@ class AuthRepository {
   }
 
 
-  static Future<NotifierState<void>> logIn(
+  static Future<NotifierState> logIn(
       {required String email, required String password}) async {
-    return (await ApiService<void>().postCall(
+    return (await ApiService().postCall(
             "/user/auth/login",
             ServiceRequest(
               serviceRequest: {"email": email, "password": password},
             ), onReturn: (response) {
       return logResponse(response);
     }, getDataFromResponse: (data) {
-      SessionManager.setToken(data["access_token"]);
-      SessionManager.setFullName(data["user"]["name"]);
-      SessionManager.setEmail(data["user"]["email"]);
-      SessionManager.setUserId(data["user"]["id"]);
-      SessionManager.setWallet(data["user"]["wallet"]);
-      SessionManager.setLoyaltyPoints(data["user"]["loyalty_points"]);
+              if(data["message"].toString().contains("Invalid")){
+
+              }else{
+                SessionManager.setToken(data["access_token"]);
+                SessionManager.setFullName(data["user"]["name"]);
+                SessionManager.setEmail(data["user"]["email"]);
+                SessionManager.setUserId(data["user"]["id"]);
+                SessionManager.setWallet(data["user"]["wallet"]);
+                SessionManager.setLoyaltyPoints(data["user"]["loyalty_points"]);
+
+              }
       return data;
     }))
         .toNotifierState();

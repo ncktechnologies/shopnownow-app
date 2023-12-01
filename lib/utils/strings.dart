@@ -109,6 +109,7 @@ String shoppingList = "Your shopping list";
 String saveList = "Save list";
 String fundAmount = "Fund amount";
 String enterAmount = "Enter amount";
+String viewAll = "View All";
 
 
 

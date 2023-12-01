@@ -15,4 +15,16 @@ class OrderRepository{
         .toNotifierState();
   }
 
+  static Future<NotifierState<String>> reOrder({required String id}) async {
+    return (await ApiService<String>().postCall(
+        "/user/orders/reorder/$id",
+        ServiceRequest(serviceRequest: {}),
+        hasToken: true,
+        onReturn: (response) => logResponse(response),
+        getDataFromResponse: (data) {
+          return data["message"];
+        }))
+        .toNotifierState();
+  }
+
 }

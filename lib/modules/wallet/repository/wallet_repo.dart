@@ -54,4 +54,15 @@ class WalletRepository{
         }))
         .toNotifierState();
   }
+
+  static Future<NotifierState<TransactionResponse>> getLimitedTransactions() async {
+    return (await ApiService<TransactionResponse>().getCall(
+        "/user/wallet/limited-transactions",
+        hasToken: true,
+        onReturn: (response) => logResponse(response),
+        getDataFromResponse: (data) {
+          return TransactionResponse.fromJson(data);
+        }))
+        .toNotifierState();
+  }
 }

@@ -8,8 +8,9 @@ import 'package:shopnownow/app/navigators/navigators.dart';
 import 'package:shopnownow/modules/homepage/screens/home_widget_constant.dart';
 import 'package:shopnownow/modules/reuseables/size_boxes.dart';
 import 'package:shopnownow/modules/reuseables/widgets.dart';
-import 'package:shopnownow/modules/wallet/fund_wallet.dart';
+import 'package:shopnownow/modules/wallet/screens/fund_wallet.dart';
 import 'package:shopnownow/modules/wallet/provider/wallet_provider.dart';
+import 'package:shopnownow/modules/wallet/screens/transactions.dart';
 import 'package:shopnownow/utils/assets_path.dart';
 import 'package:shopnownow/utils/constants.dart';
 import 'package:shopnownow/utils/flushbar.dart';
@@ -32,7 +33,9 @@ class _MyWalletState extends ConsumerState<MyWallet> {
     // TODO: implement initState
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      ref.read(getTransactionProvider.notifier).getTransaction();
+      ref.read(getLimitedTransactionProvider.notifier).getLimitedTransaction();
+      ref.read(getWalletProvider.notifier).getWallet(loading: false);
+
     });
   }
 
@@ -172,7 +175,14 @@ class _MyWalletState extends ConsumerState<MyWallet> {
                   var widget = InkWellNoShadow(
                     onTap: () {
                       ref.read(convertPointsProvider.notifier).convertPoints(
-                            then: (val) => showSuccessBar(context, val),
+                            then: (val) {
+                              ref.read(getTransactionProvider.notifier).getTransaction();
+                              ref.read(getLimitedTransactionProvider.notifier).getLimitedTransaction();
+                              ref.read(getWalletProvider.notifier).getWallet(then: () {
+                                setState(() {});
+                              });
+                              showSuccessBar(context, val);
+                            },
                             error: (val) => showErrorBar(context, val),
                           );
                     },
@@ -198,20 +208,36 @@ class _MyWalletState extends ConsumerState<MyWallet> {
             ),
           ),
           YBox(kRegularPadding),
-          Text(
-            transActivity,
-            style: textTheme.bodyLarge!.copyWith(color: kBlue, fontSize: 16),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                transActivity,
+                style: textTheme.bodyLarge!.copyWith(color: kBlue, fontSize: 16),
+              ),
+              InkWellNoShadow(
+                onTap: (){
+                  pushTo(const AllTransactions());
+                },
+                child: Text(
+                  viewAll,
+                  style: textTheme.bodyLarge!.copyWith(color: kPrimaryColor, fontSize: 14),
+                ),
+              ),
+            ],
           ),
           YBox(kRegularPadding),
           Consumer(builder: (context, ref, _) {
-            return ref.watch(getTransactionProvider).when(
+            return ref.watch(getLimitedTransactionProvider).when(
                 done: (data) {
                   if (data != null) {
                     return data.transactions!.isEmpty
-                        ? EmptyHomeProduct(
-                            text: noTrans,
-                            subText: noTransSub,
-                          )
+                        ? Center(
+                          child: EmptyHomeProduct(
+                              text: noTrans,
+                              subText: noTransSub,
+                            ),
+                        )
                         : Column(
                             children: List.generate(
                               data.transactions!.length,

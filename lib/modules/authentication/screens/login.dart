@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shopnownow/app/navigators/navigators.dart';
 import 'package:shopnownow/modules/authentication/provider/auth_provider.dart';
+import 'package:shopnownow/modules/authentication/screens/forgot_password.dart';
 import 'package:shopnownow/modules/authentication/screens/signup.dart';
 import 'package:shopnownow/modules/homepage/screens/homepage.dart';
 import 'package:shopnownow/modules/reuseables/size_boxes.dart';
@@ -41,11 +42,12 @@ class _LogInState extends State<LogIn> {
           key: _formKey,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text(
                 logInContinue,
                 style: textTheme.bodyMedium,
+                textAlign: TextAlign.center,
               ),
               YBox(kSmallPadding),
               Text(
@@ -99,6 +101,17 @@ class _LogInState extends State<LogIn> {
                         ),
                 ),
               ),
+              InkWellNoShadow(
+                onTap: (){
+                  pushTo(ForgotPassword());
+                },
+                child: Text("$forgotPassword?", style: textTheme.displayLarge!.copyWith(
+                  fontWeight: FontWeight.w400,
+                  fontSize: 14,
+                ), textAlign: TextAlign.left,),
+              ),
+              YBox(kMicroPadding),
+
               Consumer(builder: (context, ref, _) {
                 var widget = LargeButton(
                     title: logIn,

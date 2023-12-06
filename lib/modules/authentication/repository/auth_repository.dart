@@ -73,13 +73,30 @@ class AuthRepository {
         .toNotifierState();
   }
 
-  static Future<NotifierState<void>> forgotVerifyOtp(
-      {required String otp}) async {
-    return (await ApiService<void>().postCall(
-            "/user/auth/verify-otp",
+  static Future<NotifierState<String>> forgotVerifyOtp(
+      {required String email, required String otp}) async {
+    return (await ApiService<String>().postCall(
+            "/user/auth/verify_otp",
             ServiceRequest(
               serviceRequest: {
                 "otp": otp,
+                "email" : email
+              },
+            ),
+            onReturn: (response) => logResponse(response),
+            getDataFromResponse: (data) {
+              return data["message"];
+            }))
+        .toNotifierState();
+  }
+
+  static Future<NotifierState<String>> resendOtp(
+      {required String email,}) async {
+    return (await ApiService<String>().postCall(
+            "/user/auth/resend_otp",
+            ServiceRequest(
+              serviceRequest: {
+                "email" : email
               },
             ),
             onReturn: (response) => logResponse(response),
@@ -93,12 +110,14 @@ class AuthRepository {
     required String otp,
     required String password,
     required String confirmPassword,
+    required String email,
   }) async {
     return (await ApiService<String>().postCall(
-            "/user/auth/reset-password",
+            "/user/auth/reset_password",
             ServiceRequest(
               serviceRequest: {
                 "otp": otp,
+                "email": email,
                 "password": password,
                 "password_confirmation": confirmPassword
               },
@@ -111,31 +130,10 @@ class AuthRepository {
   }
 
 
-  static Future<NotifierState<String>> checkOutPayment({
-    required String planId,
-    required String paymentRef,
-  }) async {
-    return (await ApiService<String>().postCallNoForm(
-            "/user/plans/subscribe-to-plan",
-            ServiceRequest(
-              serviceRequest: {
-                "plan_id": planId,
-                "user_id": SessionManager.getUserId(),
-                "payment_ref": paymentRef
-              },
-            ),
-            onReturn: (response) => logResponse(response),
-            getDataFromResponse: (data) {
-              return data["message"];
-            }))
-        .toNotifierState();
-  }
-
-
-  static Future<NotifierState<String>> validateCode(String code, String id) async {
+  static Future<NotifierState<String>> forgotPassword(String email) async {
     return (await ApiService<String>().postCall(
-            "/user/codes/validate",
-            ServiceRequest(serviceRequest: {"code" : code, "plan_id" : id}),
+            "/user/auth/forgot_password",
+            ServiceRequest(serviceRequest: {"email" : email,}),
             hasToken: true,
             onReturn: (response) => logResponse(response),
             getDataFromResponse: (data) {

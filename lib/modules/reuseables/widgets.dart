@@ -108,7 +108,7 @@ class InitialPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: const Drawer(child: DrawerScaffoldContainer()),
-      resizeToAvoidBottomInset: noScroll ? false : true,
+      // resizeToAvoidBottomInset: noScroll ? false : true,
       appBar: AppBar(
         leading: Builder(
           builder: (context) => InkWellNoShadow(

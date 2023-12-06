@@ -20,8 +20,9 @@ import 'package:shopnownow/utils/widgets.dart';
 
 class CheckOut extends ConsumerStatefulWidget {
   final List<Product> productList;
+  final Band? band;
 
-  const CheckOut({Key? key, required this.productList}) : super(key: key);
+  const CheckOut({Key? key, required this.productList, this.band}) : super(key: key);
 
   @override
   ConsumerState<CheckOut> createState() => _CheckOutState();
@@ -45,6 +46,7 @@ class _CheckOutState extends ConsumerState<CheckOut> {
   final plugin = PaystackPlugin();
   TextEditingController couponController = TextEditingController();
   int totalAmount = 0;
+  int couponAmount = 0;
 
   @override
   void initState() {
@@ -52,10 +54,11 @@ class _CheckOutState extends ConsumerState<CheckOut> {
     super.initState();
     plugin.initialize(publicKey: publicKey);
     totalAmount = widget.productList.fold<int>(0, (previousValue, element) {
+      print(element.quantity);
       return (previousValue +
-          int.parse(element.price
+          (int.parse(element.price
               ?.replaceAll(".00", "") ??
-              "0"));
+              "0") * element.quantity!));
     });
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       ref.read(getLocationsProvider.notifier).getLocations(then: (val) {
@@ -77,6 +80,8 @@ class _CheckOutState extends ConsumerState<CheckOut> {
 
   @override
   Widget build(BuildContext context) {
+    print(widget.productList[0].id);
+
     return InitialPage(
         child: Padding(
       padding: const EdgeInsets.symmetric(horizontal: kRegularPadding),
@@ -433,27 +438,37 @@ class _CheckOutState extends ConsumerState<CheckOut> {
                   ),
                 ),
                 XBox(kRegularPadding),
-                InkWellNoShadow(
-                  onTap: () {
-                    ref
-                        .read(loadCouponProvider.notifier)
-                        .loadCoupon(coupon: couponController.text);
-                  },
-                  child: Container(
-                    width: 96,
-                    height: 56,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                        color: kPrimaryColor,
-                        borderRadius: BorderRadius.circular(kMacroPadding)),
-                    child: Text(
-                      apply,
-                      style: textTheme.displayMedium!.copyWith(
-                        fontWeight: FontWeight.w600,
+                Consumer(builder: (context, ref, _){
+                  var widget = InkWellNoShadow(
+                    onTap: () {
+                      ref
+                          .read(loadCouponProvider.notifier)
+                          .loadCoupon(coupon: couponController.text, error: (val)=> showErrorBar(context, val), then: (val){
+                           setState(() {
+                             couponAmount = int.parse(val.replaceAll(".00", ""));
+                             totalAmount = couponAmount > totalAmount ? 0 : totalAmount - couponAmount;
+                           });
+                           print(totalAmount);
+                      });
+                    },
+                    child: Container(
+                      width: 96,
+                      height: 56,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                          color: kPrimaryColor,
+                          borderRadius: BorderRadius.circular(kMacroPadding)),
+                      child: Text(
+                        apply,
+                        style: textTheme.displayMedium!.copyWith(
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
-                  ),
-                )
+                  );
+                 return ref.watch(loadCouponProvider).when(done: (done)=> widget, loading: ()=> const SpinKitDemo(), error: (val)=> widget);
+                })
+
               ],
             ),
 
@@ -467,26 +482,28 @@ class _CheckOutState extends ConsumerState<CheckOut> {
              ),
              YBox(kMediumPadding),
              PaymentRow(
-               text: subTotal,
-               subText: totalAmount.toString(),
+               text: subTotalCalculation(),
+               subText: subTotalCalculation().toString(),
              ),
              PaymentRow(
                text: tax,
-               subText: (totalAmount * 0.1).toString(),
+               subText: (double.parse(subTotalCalculation()) * 0.1).toStringAsFixed(2),
              ),
              PaymentRow(
                text: delivery,
                subText: _location == null ? "0" : _location!.price!,
              ),
              _location == null
-                 ? PaymentRow(
+                 ? YBox(0)
+             // PaymentRow(
+             //     text: total,
+             //     subText: ((totalAmount) + ((totalAmount)* 0.1)).toString())
+                 :
+             PaymentRow(
                  text: total,
-                 subText: (totalAmount + (totalAmount* 0.1)).toString())
-                 : PaymentRow(
-                 text: total,
-                 subText: ((totalAmount +
+                 subText: ((double.parse(subTotalCalculation())) +
                      double.parse(_location!.price!) +
-                     (totalAmount * 0.1))).toString()),
+                     (double.parse(subTotalCalculation()) * 0.1)).toString()),
              YBox(kMediumPadding),
              Row(
                crossAxisAlignment: CrossAxisAlignment.start,
@@ -539,10 +556,10 @@ class _CheckOutState extends ConsumerState<CheckOut> {
                    done: (data) => Consumer(builder: (context, ref, _) {
                      var buttonWidget = LargeButton(
                          title: _location == null
-                             ? "Pay ₦ ${((totalAmount + (totalAmount * 0.1))).toString()}"
-                             : "Pay ₦ ${((totalAmount +
+                             ? "Pay ₦ ${((double.parse(subTotalCalculation())  + (double.parse(subTotalCalculation()) * 0.1))).toString()}"
+                             : "Pay ₦ ${((double.parse(subTotalCalculation()) +
                              double.parse(_location!.price!) +
-                             (totalAmount * 0.1))).toString()}",
+                             (double.parse(subTotalCalculation()) * 0.1))).toString()}",
                          onPressed: () {
                            if (isChecked) {
                              if (formKey.currentState!.validate()) {
@@ -558,8 +575,8 @@ class _CheckOutState extends ConsumerState<CheckOut> {
                                CreateOrderRequest(
                                  products: request,
                                  userId: 0,
-                                 price: totalAmount,
-                                 tax: (totalAmount *
+                                 price: (int.parse(subTotalCalculation())),
+                                 tax: (double.parse(subTotalCalculation()) *
                                      0.1)
                                      .toInt(),
                                  status: "pending",
@@ -578,9 +595,9 @@ class _CheckOutState extends ConsumerState<CheckOut> {
                                    orderRequest: orderRequest,
                                    then: (val) {
                                        checkOut(
-                                           ((totalAmount +
+                                           ((double.parse(subTotalCalculation()) +
                                                double.parse(_location!.price!) +
-                                               (totalAmount * 0.1))).toInt(),
+                                               (double.parse(subTotalCalculation()) * 0.1))).toInt(),
                                            val["orderId"]);
                                    });
                              }
@@ -600,6 +617,22 @@ class _CheckOutState extends ConsumerState<CheckOut> {
              YBox(kRegularPadding),
            ],
          ) :
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
          Column(
            crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -676,11 +709,11 @@ class _CheckOutState extends ConsumerState<CheckOut> {
                 YBox(kMediumPadding),
                 PaymentRow(
                   text: subTotal,
-                  subText: totalAmount.toString(),
+                  subText: subTotalCalculation().toString(),
                 ),
                 PaymentRow(
                   text: tax,
-                  subText: (totalAmount * 0.1).toString(),
+                  subText: subTotalCalculation() == "0" ? "0" :  (double.parse(subTotalCalculation()) * 0.1).toStringAsFixed(2),
                 ),
                 PaymentRow(
                   text: delivery,
@@ -690,13 +723,16 @@ class _CheckOutState extends ConsumerState<CheckOut> {
                     text: walletBalance,
                     subText: SessionManager.getWallet() ?? "0"),
                 _location == null
-                    ? PaymentRow(
+                    ?
+                YBox(0) :
+                // PaymentRow(
+                //     text: total,
+                //     subText:  ( int.parse(SessionManager.getWallet()!.replaceAll(".00", "") ?? "0") -
+                //         ( couponAmount > totalAmount ? 0 : ((totalAmount ) + ((totalAmount )* 0.1)))).toString()),
+                //     :
+                PaymentRow(
                     text: total,
-                    subText:  ( int.parse(SessionManager.getWallet()!.replaceAll(".00", "") ?? "0") -
-                        (totalAmount + (totalAmount* 0.1))).toString())
-                    : PaymentRow(
-                    text: total,
-                    subText: totalAmountToBePaid()),
+                    subText: double.parse(finalAmountToBePaid(subTotalCalculation())).toStringAsFixed(2)),
                 YBox(kMediumPadding),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -750,11 +786,15 @@ class _CheckOutState extends ConsumerState<CheckOut> {
                   return ref.watch(processPaymentProvider).when(
                       done: (data) => Consumer(builder: (context, ref, _) {
                         var buttonWidget = LargeButton(
-                            title: _location == null
-                                ? "Pay ₦ ${(int.parse(SessionManager.getWallet()!.replaceAll(".00", "") ?? "0") -(totalAmount +
-                                (totalAmount * 0.1))).toString()}"
-                                : "Pay ₦ ${totalAmountToBePaid()}",
+                            title:
+                            _location == null
+                                ? ""
+                            // "Pay ₦ ${(int.parse(SessionManager.getWallet()!.replaceAll(".00", "") ?? "0") -
+                            //     (double.parse(subTotalCalculation()) +
+                            //     (double.parse(subTotalCalculation()) * 0.1))).toString()}"
+                                : "Pay ₦ ${finalAmountToBePaid(subTotalCalculation()).startsWith("-") ? finalAmountToBePaid(subTotalCalculation()).substring(1) : finalAmountToBePaid(subTotalCalculation()) }",
                             onPressed: () {
+
                               if (isChecked) {
                                 if (formKey.currentState!.validate()) {
                                   List<ProductRequest> request = [];
@@ -765,57 +805,59 @@ class _CheckOutState extends ConsumerState<CheckOut> {
                                           quantity: element.quantity!));
                                     });
                                   }
-                                  CreateOrderRequest orderRequest =
-                                  CreateOrderRequest(
-                                    products: request,
-                                    userId: SessionManager.getUserId(),
-                                    price: totalAmount,
-                                    tax: (totalAmount *
-                                        0.1)
-                                        .toInt(),
-                                    status: "pending",
-                                    deliveryInfo: addressController.text,
-                                    paymentType:
-                                    currentIndex == 0 ? "card" : "wallet",
-                                    recipientName: nameController.text,
-                                    recipientPhone: phoneController.text,
-                                    recipientEmail: emailController.text,
-                                    deliveryFee: int.parse(_location!.price!
-                                        .replaceAll(".00", "")),
-                                    deliveryTimeSlot: timeSlot!.deliveryTime!,
-                                  );
-                                  ref
-                                      .read(createOrderProvider.notifier)
-                                      .createOrder(
-                                      orderRequest: orderRequest,
-                                      error: (val)=> showErrorBar(context, val),
-                                      then: (val) {
-                                        if(totalAmountToBePaid() == "0" ){
-                                          ProcessPaymentRequest paymentRequest = ProcessPaymentRequest(
-                                            userId: SessionManager.getUserId(),
-                                            amount: totalAmountToBePaid(),
-                                            status: "successful",
-                                            orderId: val["orderId"],
-                                            reference: "wallet",
-                                            paymentType: "wallet",
-                                            paymentGateway: "wallet",
-                                            paymentGatewayReference: "wallet",
-                                          );
-                                          ref.read(processPaymentProvider.notifier).processPayment(
-                                              paymentRequest: paymentRequest,
-                                              then: (val) {
-                                                pushToAndClearStack(const HomePage());
-                                                showSuccessBar(context, val);
-                                              });
-                                        }else {
-                                          checkOut(
-                                              int.parse(totalAmountToBePaid().substring(1).replaceAll(".0", "")),
-                                              val["orderId"]);
-                                        }
-                                        // "message" : data["message"],
-                                        // "orderId"
-                                        // showSuccessBar(context, val["message"]);
-                                      });
+                                  print(widget.productList);
+                                  print("11111${double.parse(finalAmountToBePaid(subTotalCalculation())).floor()}");
+                                  // CreateOrderRequest orderRequest =
+                                  // CreateOrderRequest(
+                                  //   products: request,
+                                  //   userId: SessionManager.getUserId(),
+                                  //   price: int.parse(subTotalCalculation()).floor(),
+                                  //   tax: (double.parse(subTotalCalculation())  *
+                                  //       0.1)
+                                  //       .toInt(),
+                                  //   status: "pending",
+                                  //   deliveryInfo: addressController.text,
+                                  //   paymentType:
+                                  //   currentIndex == 0 ? "card" : "wallet",
+                                  //   recipientName: nameController.text,
+                                  //   recipientPhone: phoneController.text,
+                                  //   recipientEmail: emailController.text,
+                                  //   deliveryFee: int.parse(_location!.price!
+                                  //       .replaceAll(".00", "")),
+                                  //   deliveryTimeSlot: timeSlot!.deliveryTime!,
+                                  // );
+                                  // ref
+                                  //     .read(createOrderProvider.notifier)
+                                  //     .createOrder(
+                                  //     orderRequest: orderRequest,
+                                  //     error: (val)=> showErrorBar(context, val),
+                                  //     then: (val) {
+                                  //       if(finalAmountToBePaid(subTotalCalculation()) == "0" ){
+                                  //         ProcessPaymentRequest paymentRequest = ProcessPaymentRequest(
+                                  //           userId: SessionManager.getUserId(),
+                                  //           amount: finalAmountToBePaid(subTotalCalculation()).startsWith("-") ?  double.parse(finalAmountToBePaid(subTotalCalculation()).substring(1)).floor().toString() : double.parse(finalAmountToBePaid(subTotalCalculation())).floor().toString(),
+                                  //           status: "successful",
+                                  //           orderId: val["orderId"],
+                                  //           reference: "wallet",
+                                  //           paymentType: "wallet",
+                                  //           paymentGateway: "wallet",
+                                  //           paymentGatewayReference: "wallet",
+                                  //         );
+                                  //         ref.read(processPaymentProvider.notifier).processPayment(
+                                  //             paymentRequest: paymentRequest,
+                                  //             then: (val) {
+                                  //               pushToAndClearStack(const HomePage());
+                                  //               showSuccessBar(context, val);
+                                  //             });
+                                  //       }else {
+                                  //         checkOut(
+                                  //             int.parse(finalAmountToBePaid(subTotalCalculation()).substring(1).replaceAll(".0", "")),
+                                  //             val["orderId"]);
+                                  //       }
+                                  //       // "message" : data["message"],
+                                  //       // "orderId"
+                                  //       // showSuccessBar(context, val["message"]);
+                                  //     });
                                 }
                               } else {
                                 showErrorBar(context,
@@ -839,19 +881,44 @@ class _CheckOutState extends ConsumerState<CheckOut> {
     ));
   }
 
-  String totalAmountToBePaid(){
+  String subTotalCalculation(){
+    double subtotal = 0;
+    double discount1 = 0;
+    double discount2 = 0;
+
+    if(widget.band!.discountEnabled == 1){
+      discount1 =  (totalAmount * (int.parse(widget.band!.generalDiscount!) / 100));
+    }
+
+    if(totalAmount > int.parse(widget.band!.bulkDiscountAmount!)){
+      discount2 =  (totalAmount * (int.parse(widget.band!.bulkDiscountPercentage!) / 100));
+    }
+
+    subtotal = couponAmount > totalAmount ? 0 :  totalAmount - (discount1 + discount2);
+    return subtotal == 0 ? "0" : (subtotal).toStringAsFixed(2);
+  }
+
+  String finalAmountToBePaid(String subTotalPrice){
     String amount = "0";
-    if(double.parse(SessionManager.getWallet()!.replaceAll(".00", "")) > double.parse(((totalAmount +
-        double.parse(_location!.price!) +
-        (totalAmount * 0.1))).toString()) ){
+
+      if(double.parse(SessionManager.getWallet()!.replaceAll(".00", "")) > double.parse(((double.parse(subTotalPrice)  +
+          double.parse(_location!.price!) +
+          (double.parse(subTotalPrice) * 0.1))).toString()) ){
+        print("objectll9");
+
         amount = "0";
 
-    }else{
-        amount =  (int.parse(SessionManager.getWallet()!.replaceAll(".00", "") ?? "0") - (totalAmount +
+      }else{
+        print("objectll");
+        amount =  (int.parse(SessionManager.getWallet()!.replaceAll(".00", "") ?? "0") - (double.parse(subTotalPrice)  +
             double.parse(_location!.price!) +
-            (totalAmount * 0.1)))
+            (double.parse(subTotalPrice) * 0.1)))
             .toString();
+
     }
+
+
+
     return amount;
   }
 

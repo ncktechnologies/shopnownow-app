@@ -108,7 +108,7 @@ class HomePageRepository {
         // hasToken: true,
         onReturn: (response) => logResponse(response),
         getDataFromResponse: (data) {
-          return data["message"];
+          return data["coupon"]["value"];
         }))
         .toNotifierState();
   }

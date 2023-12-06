@@ -18,6 +18,7 @@ class GetCategories {
   int? bandId;
   DateTime? createdAt;
   DateTime? updatedAt;
+  Band? band;
 
   GetCategories({
       this.id,
@@ -32,6 +33,7 @@ class GetCategories {
       this.bandId,
       this.createdAt,
       this.updatedAt,
+    this.band
   });
 
   factory GetCategories.fromJson(Map<String, dynamic> json) => GetCategories(
@@ -47,6 +49,7 @@ class GetCategories {
     bandId: json["band_id"],
     createdAt: DateTime.parse(json["created_at"]),
     updatedAt: DateTime.parse(json["updated_at"]),
+    band: Band.fromJson(json["band"]),
   );
 
   Map<String, dynamic> toJson() => {
@@ -62,7 +65,65 @@ class GetCategories {
     "band_id": bandId,
     "created_at": createdAt!.toIso8601String(),
     "updated_at": updatedAt!.toIso8601String(),
+    "band": band!.toJson(),
   };
+}
+
+class Band {
+  int? id;
+  String? name;
+  String? description;
+  DateTime? createdAt;
+  DateTime? updatedAt;
+  String? minimum;
+  String? bulkDiscountPercentage;
+  String? bulkDiscountAmount;
+  String? generalDiscount;
+  int? discountEnabled;
+
+  Band({
+      this.id,
+      this.name,
+      this.description,
+      this.createdAt,
+      this.updatedAt,
+      this.minimum,
+      this.bulkDiscountPercentage,
+      this.bulkDiscountAmount,
+      this.generalDiscount,
+      this.discountEnabled,
+  });
+
+  factory Band.fromJson(Map<String, dynamic> json) => Band(
+    id: json["id"],
+    name: json["name"],
+    description: json["description"],
+    createdAt: DateTime.parse(json["created_at"]),
+    updatedAt: DateTime.parse(json["updated_at"]),
+    minimum: json["minimum"],
+    bulkDiscountPercentage: json["bulk_discount_percentage"],
+    bulkDiscountAmount: json["bulk_discount_amount"],
+    generalDiscount: json["general_discount"],
+    discountEnabled: json["discount_enabled"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "name": name,
+    "description": description,
+    "created_at": createdAt!.toIso8601String(),
+    "updated_at": updatedAt!.toIso8601String(),
+    "minimum": minimum,
+    "bulk_discount_percentage": bulkDiscountPercentage,
+    "bulk_discount_amount": bulkDiscountAmount,
+    "general_discount": generalDiscount,
+    "discount_enabled": discountEnabled,
+  };
+
+  @override
+  String toString() {
+    return 'Band{id: $id, name: $name, description: $description, createdAt: $createdAt, updatedAt: $updatedAt, minimum: $minimum, bulkDiscountPercentage: $bulkDiscountPercentage, bulkDiscountAmount: $bulkDiscountAmount, generalDiscount: $generalDiscount, discountEnabled: $discountEnabled}';
+  }
 }
 
 
@@ -97,6 +158,7 @@ class Product {
   DateTime? createdAt;
   DateTime? updatedAt;
   int? quantity;
+  Band? band;
 
   Product({
       this.id,
@@ -108,7 +170,8 @@ class Product {
       this.categoryId,
       this.createdAt,
       this.updatedAt,
-    this.quantity
+    this.quantity,
+    this.band
   });
 
   factory Product.fromJson(Map<String, dynamic> json) => Product(
@@ -119,9 +182,10 @@ class Product {
     unitOfMeasurement: json["unit_of_measurement"],
     availability: json["availability"],
     categoryId: json["category_id"],
-    quantity: 1,
+    quantity: json["quantity"],
     createdAt: DateTime.parse(json["created_at"]),
     updatedAt: DateTime.parse(json["updated_at"]),
+    band: json["band"] == null ? null : Band.fromJson(json["band"]),
   );
 
   Map<String, dynamic> toJson() => {
@@ -134,6 +198,7 @@ class Product {
     "category_id": categoryId,
     "created_at": createdAt!.toIso8601String(),
     "updated_at": updatedAt!.toIso8601String(),
+    "band": band!.toJson(),
   };
 
   @override

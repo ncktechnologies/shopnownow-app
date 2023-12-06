@@ -330,7 +330,8 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
                       overlaySearchEntry = null;
                       pushTo(
                          CheckOut(
-                          productList: productList
+                          productList: productList,
+                           band: widget.menuItems.band
                         ),
                       );
                     }),
@@ -371,9 +372,9 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
                   YBox(kMediumPadding),
                   InkWellNoShadow(
                     onTap: () {
-                      if (overlayEntry == null) {
-                        _showOverlay(context);
-                      } else {}
+                      // if (overlayEntry == null) {
+                      //   _showOverlay(context);
+                      // } else {}
                     },
                     child: Container(
                       padding: const EdgeInsets.all(kRegularPadding),
@@ -408,11 +409,12 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
                               textAlign: TextAlign.center,
                             ),
                           ),
-                          const Icon(
-                            Icons.keyboard_arrow_down,
-                            size: 25,
-                            color: kPrimaryColor,
-                          )
+                          XBox(25)
+                          // const Icon(
+                          //   Icons.keyboard_arrow_down,
+                          //   size: 25,
+                          //   color: kPrimaryColor,
+                          // )
                         ],
                       ),
                     ),

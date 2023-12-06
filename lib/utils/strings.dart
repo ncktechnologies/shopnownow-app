@@ -110,6 +110,13 @@ String saveList = "Save list";
 String fundAmount = "Fund amount";
 String enterAmount = "Enter amount";
 String viewAll = "View All";
+String forgotPassword = "Forgot password";
+String resetPassword = "Reset password";
+String verifyOtp = "Verify OTP";
+String resendOtp ="Resend OTP?";
+String createPassword ="Create password";
+String confirmPassword ="Confirmed Password";
+
 
 
 

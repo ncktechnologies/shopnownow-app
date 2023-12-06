@@ -7,6 +7,7 @@ import 'package:shopnownow/app/helpers/session_manager.dart';
 import 'package:shopnownow/app/navigators/navigators.dart';
 import 'package:shopnownow/modules/homepage/model/homepage_model.dart';
 import 'package:shopnownow/modules/homepage/provider/homepage_provider.dart';
+import 'package:shopnownow/modules/homepage/screens/checkout.dart';
 import 'package:shopnownow/modules/orders/provider/order_provider.dart';
 import 'package:shopnownow/modules/orders/screen/order_details.dart';
 import 'package:shopnownow/modules/reuseables/size_boxes.dart';
@@ -26,14 +27,10 @@ class OrderHistory extends ConsumerStatefulWidget {
 }
 
 class _OrderHistoryState extends ConsumerState<OrderHistory> {
-  var publicKey = 'pk_test_25e249297133695de0f477d314a9d2658c967446';
-  final plugin = PaystackPlugin();
-
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    plugin.initialize(publicKey: publicKey);
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       ref.read(orderProvider.notifier).getOrder();
@@ -167,133 +164,68 @@ class _OrderHistoryState extends ConsumerState<OrderHistory> {
                                             ),
                                           ),
                                           // data.orders![index].status == "delivered"  ?
-    Consumer(builder: (context, ref, _) {
-      var widget = Consumer(builder: (context, ref, _) {
-        var widget = InkWellNoShadow(
-          onTap: () {
-            ref
-                .read(reorderProvider(data.orders![index].id!)
-                .notifier)
-                .reOrder(
-              id: data.orders![index].id
-                  .toString(),
-              error: (val) =>
-                  showErrorBar(
-                      context, val),
-              then: (val) {
-                if (totalAmountToBePaid(
-                    price: data
-                        .orders![
-                    index]
-                        .price!,
-                    deliveryFee: data
-                        .orders![
-                    index]
-                        .deliveryFee!,
-                    taxFee: data
-                        .orders![
-                    index]
-                        .tax!) ==
-                    "0") {
-                  ProcessPaymentRequest paymentRequest = ProcessPaymentRequest(
-                    userId: SessionManager.getUserId(),
-                    amount: totalAmountToBePaid(price: data
-                        .orders![
-                    index]
-                        .price!,
-                        deliveryFee: data
-                            .orders![
-                        index]
-                            .deliveryFee!,
-                        taxFee: data
-                            .orders![
-                        index]
-                            .tax!),
-                    status: "successful",
-                    orderId: data.orders![index].id,
-                    reference: "wallet",
-                    paymentType: "wallet",
-                    paymentGateway: "wallet",
-                    paymentGatewayReference: "wallet",
-                  );
-                  ref.read(processPaymentProvider2(data.orders![index].id!).notifier).processPayment(
-                      paymentRequest: paymentRequest,
-                      then: (val) {
-                        ref.read(orderProvider.notifier).getOrder(
-                            loading: false
+                                          Consumer(builder: (context, ref, _) {
+                                            var widget = Consumer(
+                                                builder: (context, ref, _) {
+                                              var widget = InkWellNoShadow(
+                                                onTap: () {
 
-                        );
-                        showSuccessBar(context, val);
-                      });
-                } else {
-                  checkOut(
-                      int.parse(totalAmountToBePaid(
-                          price: data
-                              .orders![
-                          index]
-                              .price!,
-                          deliveryFee: data
-                              .orders![
-                          index]
-                              .deliveryFee!,
-                          taxFee: data
-                              .orders![
-                          index]
-                              .tax!)
-                          .substring(1)
-                          .replaceAll(
-                          ".0",
-                          "")),
-                      data
-                          .orders![
-                      index]
-                          .id!);
-                }
-              },
-            );
-          },
-          child: Container(
-            padding:
-            const EdgeInsets.symmetric(
-                horizontal: 12,
-                vertical: 10),
-            decoration: BoxDecoration(
-                borderRadius:
-                BorderRadius.circular(
-                    500),
-                color: kLightGrey100),
-            child: Row(
-              children: [
-                SvgPicture.asset(
-                    AssetPaths.reOrder),
-                XBox(kSmallPadding),
-                Text(
-                  reOrder,
-                  style: textTheme
-                      .headlineMedium!
-                      .copyWith(
-                      color: kBlack100,
-                      fontWeight:
-                      FontWeight
-                          .w500),
-                ),
-              ],
-            ),
-          ),
-        );
-        return ref
-            .watch(reorderProvider(data.orders![index].id!))
-            .when(
-            done: (done) => widget,
-            loading: () =>
-            const SpinKitDemo(),
-            error: (val) => widget);
-      });
-      return ref.watch(processPaymentProvider2(data.orders![index].id!)).when(
-          done: (data) => widget,     loading: () => const SpinKitDemo());
-
-    }),
-
+                                                  pushTo(CheckOut(
+                                                    productList: data
+                                                        .orders![index]
+                                                        .products!,
+                                                    band: data
+                                                        .orders![index]
+                                                        .products![0].band,
+                                                  ));
+                                                },
+                                                child: Container(
+                                                  padding: const EdgeInsets
+                                                          .symmetric(
+                                                      horizontal: 12,
+                                                      vertical: 10),
+                                                  decoration: BoxDecoration(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              500),
+                                                      color: kLightGrey100),
+                                                  child: Row(
+                                                    children: [
+                                                      SvgPicture.asset(
+                                                          AssetPaths.reOrder),
+                                                      XBox(kSmallPadding),
+                                                      Text(
+                                                        reOrder,
+                                                        style: textTheme
+                                                            .headlineMedium!
+                                                            .copyWith(
+                                                                color:
+                                                                    kBlack100,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              );
+                                              return ref
+                                                  .watch(reorderProvider(
+                                                      data.orders![index].id!))
+                                                  .when(
+                                                      done: (done) => widget,
+                                                      loading: () =>
+                                                          const SpinKitDemo(),
+                                                      error: (val) => widget);
+                                            });
+                                            return ref
+                                                .watch(processPaymentProvider2(
+                                                    data.orders![index].id!))
+                                                .when(
+                                                    done: (data) => widget,
+                                                    loading: () =>
+                                                        const SpinKitDemo());
+                                          }),
 
                                           //: YBox(0)
                                         ],
@@ -313,61 +245,5 @@ class _OrderHistoryState extends ConsumerState<OrderHistory> {
                 },
                 loading: () => const SpinKitDemo(),
                 error: (val) => YBox(0))));
-  }
-
-  String totalAmountToBePaid(
-      {required String price,
-      required String deliveryFee,
-      required String taxFee}) {
-    String amount = "0";
-    if (double.parse(SessionManager.getWallet()!.replaceAll(".00", "")) >
-        double.parse(((double.parse(price) +
-                double.parse(deliveryFee) +
-                double.parse(taxFee)))
-            .toString())) {
-      amount = "0";
-    } else {
-      amount =
-          (int.parse(SessionManager.getWallet()!.replaceAll(".00", "") ?? "0") -
-                  (double.parse(price) +
-                      double.parse(deliveryFee) +
-                      double.parse(taxFee)))
-              .toString();
-    }
-    return amount;
-  }
-
-  checkOut(int cost, int checkoutOrderId) async {
-    Charge charge = Charge()
-      ..amount = cost * 100
-      ..reference = "${DateTime.now().millisecondsSinceEpoch}"
-      ..email = SessionManager.getEmail();
-    CheckoutResponse response = await plugin.checkout(
-      context,
-      method: CheckoutMethod.card,
-      charge: charge,
-    );
-    if (response.status) {
-      ProcessPaymentRequest paymentRequest = ProcessPaymentRequest(
-        userId: SessionManager.getUserId(),
-        amount: cost.toString(),
-        status: "successful",
-        orderId: checkoutOrderId,
-        reference: response.reference!,
-        paymentType: "card",
-        paymentGateway: "paystack",
-        paymentGatewayReference: response.reference!,
-      );
-
-      ref.read(processPaymentProvider2(checkoutOrderId).notifier).processPayment(
-          paymentRequest: paymentRequest,
-          noToken: SessionManager.getToken() == null ? true : false,
-          then: (val) {
-            ref.read(orderProvider.notifier).getOrder(
-              loading: false
-            );
-            showSuccessBar(context, val);
-          });
-    }
   }
 }

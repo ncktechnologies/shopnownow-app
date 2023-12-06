@@ -139,6 +139,7 @@ const Color kLightRed100 = Color(0xffFEF2F2);
 const Color kLightPurple100 = Color(0xffF9FAFB);
 const Color kLightPurple200 = Color(0xffE7F1F7);
 const Color kLightBlue400 = Color(0xff107AB6);
+const Color kLightRed400 = Color(0xffFE0000);
 
 
 

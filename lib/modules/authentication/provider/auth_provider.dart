@@ -26,22 +26,22 @@ final forgotVerifyOtpProvider = StateNotifierProvider.autoDispose<
   return ForgotVerifyOtpNotifier();
 });
 
+final resendOtpProvider = StateNotifierProvider.autoDispose<
+    ResendOtpNotifier,
+    NotifierState<void>>((ref) {
+  return ResendOtpNotifier();
+});
+
 final resetPasswordProvider = StateNotifierProvider.autoDispose<
     ResetPasswordNotifier,
     NotifierState<String>>((ref) {
   return ResetPasswordNotifier();
 });
 
-final checkOutPaymentProvider = StateNotifierProvider.autoDispose<
-    CheckOutPaymentNotifier,
+final forgotPasswordProvider = StateNotifierProvider<
+    ForgotPasswordNotifier,
     NotifierState<String>>((ref) {
-  return CheckOutPaymentNotifier();
-});
-
-final validateCodeProvider = StateNotifierProvider<
-    ValidateCodeNotifier,
-    NotifierState<String>>((ref) {
-  return ValidateCodeNotifier();
+  return ForgotPasswordNotifier();
 });
 
 class SignUpNotifier extends StateNotifier<NotifierState<void>> {
@@ -101,14 +101,32 @@ class SendOtpNotifier extends StateNotifier<NotifierState<String>> {
   }
 }
 
-class ForgotVerifyOtpNotifier extends StateNotifier<NotifierState<void>> {
+class ForgotVerifyOtpNotifier extends StateNotifier<NotifierState<String>> {
   ForgotVerifyOtpNotifier() : super(NotifierState());
 
   void forgotVerifyOtp(
-      {required String otp, Function()? then, Function(String?)? error}) async {
+      {required String email,required String otp, Function()? then, Function(String?)? error}) async {
     state = notifyLoading();
     state = await AuthRepository.forgotVerifyOtp(
       otp: otp,
+      email: email
+    );
+    if (state.status == NotifierStatus.done) {
+      if (then != null) then();
+    } else if (state.status == NotifierStatus.error) {
+      if (error != null) error(state.message);
+    }
+  }
+}
+
+class ResendOtpNotifier extends StateNotifier<NotifierState<String>> {
+  ResendOtpNotifier() : super(NotifierState());
+
+  void resendOtp(
+      {required String email, Function()? then, Function(String?)? error}) async {
+    state = notifyLoading();
+    state = await AuthRepository.resendOtp(
+      email: email
     );
     if (state.status == NotifierStatus.done) {
       if (then != null) then();
@@ -124,29 +142,12 @@ class ResetPasswordNotifier extends StateNotifier<NotifierState<String>> {
   void resetPassword({required String otp,
     required String password,
     required String confirmPassword,
+    required String email,
     Function()? then,
     Function(String?)? error}) async {
     state = notifyLoading();
     state = await AuthRepository.resetPassword(
-        otp: otp, password: password, confirmPassword: confirmPassword);
-    if (state.status == NotifierStatus.done) {
-      if (then != null) then();
-    } else if (state.status == NotifierStatus.error) {
-      if (error != null) error(state.message);
-    }
-  }
-}
-
-class CheckOutPaymentNotifier extends StateNotifier<NotifierState<String>> {
-  CheckOutPaymentNotifier() : super(NotifierState());
-
-  void checkOutPayment({required String planId,
-    required String paymentRef,
-    Function()? then,
-    Function(String?)? error}) async {
-    state = notifyLoading();
-    state = await AuthRepository.checkOutPayment(
-      paymentRef: paymentRef, planId: planId,);
+        otp: otp, password: password, confirmPassword: confirmPassword, email: email);
     if (state.status == NotifierStatus.done) {
       if (then != null) then();
     } else if (state.status == NotifierStatus.error) {
@@ -156,13 +157,12 @@ class CheckOutPaymentNotifier extends StateNotifier<NotifierState<String>> {
 }
 
 
+class ForgotPasswordNotifier extends StateNotifier<NotifierState<String>> {
+  ForgotPasswordNotifier() : super(NotifierState());
 
-class ValidateCodeNotifier extends StateNotifier<NotifierState<String>> {
-  ValidateCodeNotifier() : super(NotifierState());
-
-  void validateCode({required String code, required String id, Function()? then, Function(String?)? error}) async {
+  void forgotPassword({required String email, Function()? then, Function(String?)? error}) async {
     state = notifyLoading();
-    state = await AuthRepository.validateCode(code, id);
+    state = await AuthRepository.forgotPassword(email);
     if (state.status == NotifierStatus.done) {
 
       if (then != null) then();

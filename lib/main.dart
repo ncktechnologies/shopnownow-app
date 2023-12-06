@@ -1,13 +1,19 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shopnownow/app/helpers/service_constants.dart';
 import 'package:shopnownow/app/helpers/session_manager.dart';
+import 'package:shopnownow/firebase_options.dart';
 import 'package:shopnownow/modules/homepage/screens/homepage.dart';
 import 'package:shopnownow/modules/onboarding/splash_screen.dart';
 import 'package:shopnownow/utils/constants.dart';
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+options: DefaultFirebaseOptions.currentPlatform).catchError((e){
+  print(" Error : ${e.toString()}");
+});
   Env.setEnvironment(EnvState.test);
   SessionManager.initSharedPreference().then((value) => runApp(const MyApp()));
 }

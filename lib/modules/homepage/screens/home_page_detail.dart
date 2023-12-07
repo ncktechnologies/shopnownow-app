@@ -308,7 +308,7 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
                 ),
                 YBox(kRegularPadding),
                 Text(
-                  "$minOrder₦2,500",
+                  "$minOrder₦${widget.menuItems.band!.minimum}",
                   style: textTheme.headlineMedium!.copyWith(color: kOrange500),
                 ),
                 YBox(kMediumPadding),
@@ -316,7 +316,7 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
                     text: subTotal,
                     subText: (productList.fold<int>(0, (previousValue, element) {
                       return (previousValue +
-                          int.parse(element.price?.replaceAll(".00", "") ?? "0"));
+                          (int.parse(element.price?.replaceAll(".00", "") ?? "0") * element.quantity!));
                     }).toString())),
                 YBox(kRegularPadding),
                 LargeButton(
@@ -509,6 +509,22 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
                             productList.length,
                             (index) => HomeCartList(
                               product: productList[index],
+                              subtractTap: () {
+                                if (productList[index].quantity != 1) {
+                                  setState(() {
+                                    productList[index].quantity =
+                                        productList[index].quantity! - 1;
+                                  });
+                                }
+                              },
+                              addTap:  (){
+                                  setState(() {
+                                    productList[index].quantity =
+                                        productList[index].quantity! + 1;
+                                  });
+
+                              },
+
                               category: categoryName!,
                               onTap: () {
                                 setState(() {
@@ -561,12 +577,14 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
 class HomeCartList extends StatefulWidget {
   final Product product;
   final GetCategories category;
-  final Function() onTap;
+  final Function() onTap, addTap, subtractTap;
 
   const HomeCartList(
       {Key? key,
       required this.product,
       required this.category,
+        required this.addTap,
+        required this.subtractTap,
       required this.onTap})
       : super(key: key);
 
@@ -660,14 +678,7 @@ class _HomeCartListState extends State<HomeCartList> {
                       child: Row(
                         children: [
                           InkWellNoShadow(
-                            onTap: () {
-                              if (widget.product.quantity != 1) {
-                                setState(() {
-                                  widget.product.quantity =
-                                      widget.product.quantity! - 1;
-                                });
-                              }
-                            },
+                            onTap: widget.subtractTap,
                             child: Text(
                               "-",
                               style: textTheme.displayLarge!.copyWith(
@@ -686,12 +697,7 @@ class _HomeCartListState extends State<HomeCartList> {
                           ),
                           XBox(kMediumPadding),
                           InkWellNoShadow(
-                            onTap: () {
-                              setState(() {
-                                widget.product.quantity =
-                                    widget.product.quantity! + 1;
-                              });
-                            },
+                            onTap: widget.addTap,
                             child: Text(
                               "+",
                               style: textTheme.displayLarge!.copyWith(

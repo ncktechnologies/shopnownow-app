@@ -705,7 +705,7 @@ class _CheckOutState extends ConsumerState<CheckOut> {
                 ),
                 YBox(kRegularPadding),
                 Text(
-                  "$minOrder₦2,500",
+                  "$minOrder₦${widget.band!.minimum}",
                   style: textTheme.headlineMedium!.copyWith(color: kOrange500),
                 ),
                 YBox(kMediumPadding),

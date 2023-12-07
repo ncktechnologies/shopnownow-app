@@ -446,7 +446,7 @@ class _CheckOutState extends ConsumerState<CheckOut> {
                           .loadCoupon(coupon: couponController.text, error: (val)=> showErrorBar(context, val), then: (val){
                            setState(() {
                              couponAmount = int.parse(val.replaceAll(".00", ""));
-                             totalAmount = couponAmount > totalAmount ? 0 : totalAmount - couponAmount;
+                             // totalAmount = couponAmount > totalAmount ? 0 : totalAmount - couponAmount;
                            });
                            print(totalAmount);
                       });
@@ -466,7 +466,7 @@ class _CheckOutState extends ConsumerState<CheckOut> {
                       ),
                     ),
                   );
-                 return ref.watch(loadCouponProvider).when(done: (done)=> widget, loading: ()=> const SpinKitDemo(), error: (val)=> widget);
+                 return ref.watch(loadCouponProvider).when(done: (done)=> widget, loading: ()=> Center(child: const SpinKitDemo()), error: (val)=> widget);
                 })
 
               ],
@@ -489,6 +489,7 @@ class _CheckOutState extends ConsumerState<CheckOut> {
                text: tax,
                subText: (double.parse(subTotalCalculation()) * 0.1).toStringAsFixed(2),
              ),
+             //ABC456
              PaymentRow(
                text: delivery,
                subText: _location == null ? "0" : _location!.price!,
@@ -805,59 +806,57 @@ class _CheckOutState extends ConsumerState<CheckOut> {
                                           quantity: element.quantity!));
                                     });
                                   }
-                                  print(widget.productList);
-                                  print("11111${double.parse(finalAmountToBePaid(subTotalCalculation())).floor()}");
-                                  // CreateOrderRequest orderRequest =
-                                  // CreateOrderRequest(
-                                  //   products: request,
-                                  //   userId: SessionManager.getUserId(),
-                                  //   price: int.parse(subTotalCalculation()).floor(),
-                                  //   tax: (double.parse(subTotalCalculation())  *
-                                  //       0.1)
-                                  //       .toInt(),
-                                  //   status: "pending",
-                                  //   deliveryInfo: addressController.text,
-                                  //   paymentType:
-                                  //   currentIndex == 0 ? "card" : "wallet",
-                                  //   recipientName: nameController.text,
-                                  //   recipientPhone: phoneController.text,
-                                  //   recipientEmail: emailController.text,
-                                  //   deliveryFee: int.parse(_location!.price!
-                                  //       .replaceAll(".00", "")),
-                                  //   deliveryTimeSlot: timeSlot!.deliveryTime!,
-                                  // );
-                                  // ref
-                                  //     .read(createOrderProvider.notifier)
-                                  //     .createOrder(
-                                  //     orderRequest: orderRequest,
-                                  //     error: (val)=> showErrorBar(context, val),
-                                  //     then: (val) {
-                                  //       if(finalAmountToBePaid(subTotalCalculation()) == "0" ){
-                                  //         ProcessPaymentRequest paymentRequest = ProcessPaymentRequest(
-                                  //           userId: SessionManager.getUserId(),
-                                  //           amount: finalAmountToBePaid(subTotalCalculation()).startsWith("-") ?  double.parse(finalAmountToBePaid(subTotalCalculation()).substring(1)).floor().toString() : double.parse(finalAmountToBePaid(subTotalCalculation())).floor().toString(),
-                                  //           status: "successful",
-                                  //           orderId: val["orderId"],
-                                  //           reference: "wallet",
-                                  //           paymentType: "wallet",
-                                  //           paymentGateway: "wallet",
-                                  //           paymentGatewayReference: "wallet",
-                                  //         );
-                                  //         ref.read(processPaymentProvider.notifier).processPayment(
-                                  //             paymentRequest: paymentRequest,
-                                  //             then: (val) {
-                                  //               pushToAndClearStack(const HomePage());
-                                  //               showSuccessBar(context, val);
-                                  //             });
-                                  //       }else {
-                                  //         checkOut(
-                                  //             int.parse(finalAmountToBePaid(subTotalCalculation()).substring(1).replaceAll(".0", "")),
-                                  //             val["orderId"]);
-                                  //       }
-                                  //       // "message" : data["message"],
-                                  //       // "orderId"
-                                  //       // showSuccessBar(context, val["message"]);
-                                  //     });
+                                  CreateOrderRequest orderRequest =
+                                  CreateOrderRequest(
+                                    products: request,
+                                    userId: SessionManager.getUserId(),
+                                    price: double.parse(subTotalCalculation()).floor(),
+                                    tax: (double.parse(subTotalCalculation())  *
+                                        0.1)
+                                        .toInt(),
+                                    status: "pending",
+                                    deliveryInfo: addressController.text,
+                                    paymentType:
+                                    currentIndex == 0 ? "card" : "wallet",
+                                    recipientName: nameController.text,
+                                    recipientPhone: phoneController.text,
+                                    recipientEmail: emailController.text,
+                                    deliveryFee: int.parse(_location!.price!
+                                        .replaceAll(".00", "")),
+                                    deliveryTimeSlot: timeSlot!.deliveryTime!,
+                                  );
+                                  ref
+                                      .read(createOrderProvider.notifier)
+                                      .createOrder(
+                                      orderRequest: orderRequest,
+                                      error: (val)=> showErrorBar(context, val),
+                                      then: (val) {
+                                        if(finalAmountToBePaid(subTotalCalculation()) == "0" ){
+                                          ProcessPaymentRequest paymentRequest = ProcessPaymentRequest(
+                                            userId: SessionManager.getUserId(),
+                                            amount: finalAmountToBePaid(subTotalCalculation()).startsWith("-") ?  double.parse(finalAmountToBePaid(subTotalCalculation()).substring(1)).floor().toString() : double.parse(finalAmountToBePaid(subTotalCalculation())).floor().toString(),
+                                            status: "successful",
+                                            orderId: val["orderId"],
+                                            reference: "wallet",
+                                            paymentType: "wallet",
+                                            paymentGateway: "wallet",
+                                            paymentGatewayReference: "wallet",
+                                          );
+                                          ref.read(processPaymentProvider.notifier).processPayment(
+                                              paymentRequest: paymentRequest,
+                                              then: (val) {
+                                                pushToAndClearStack(const HomePage());
+                                                showSuccessBar(context, val);
+                                              });
+                                        }else {
+                                          checkOut(
+                                              int.parse(finalAmountToBePaid(subTotalCalculation()).substring(1).replaceAll(".0", "")),
+                                              val["orderId"]);
+                                        }
+                                        // "message" : data["message"],
+                                        // "orderId"
+                                        // showSuccessBar(context, val["message"]);
+                                      });
                                 }
                               } else {
                                 showErrorBar(context,
@@ -894,7 +893,7 @@ class _CheckOutState extends ConsumerState<CheckOut> {
       discount2 =  (totalAmount * (int.parse(widget.band!.bulkDiscountPercentage!) / 100));
     }
 
-    subtotal = couponAmount > totalAmount ? 0 :  totalAmount - (discount1 + discount2);
+    subtotal = couponAmount > totalAmount ? 0 :  totalAmount - (discount1 + discount2 + couponAmount);
     return subtotal == 0 ? "0" : (subtotal).toStringAsFixed(2);
   }
 

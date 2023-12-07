@@ -116,6 +116,7 @@ class _LogInState extends State<LogIn> {
                 var widget = LargeButton(
                     title: logIn,
                     onPressed: () {
+                      FocusScope.of(context).unfocus();
                       if (_formKey.currentState!.validate()) {
                         ref.read(logInProvider.notifier).logIn(
                             email: emailController.text,

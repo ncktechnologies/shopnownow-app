@@ -331,7 +331,8 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
                       pushTo(
                          CheckOut(
                           productList: productList,
-                           band: widget.menuItems.band
+                           band: widget.menuItems.band,
+                           tax: widget.menuItems.tax,
                         ),
                       );
                     }),

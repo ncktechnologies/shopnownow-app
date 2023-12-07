@@ -177,6 +177,9 @@ class _OrderHistoryState extends ConsumerState<OrderHistory> {
                                                     band: data
                                                         .orders![index]
                                                         .products![0].band,
+                                                    tax: data
+                                                        .orders![index]
+                                                        .products![0].category!.tax,
                                                   ));
                                                 },
                                                 child: Container(

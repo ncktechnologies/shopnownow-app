@@ -21,8 +21,9 @@ import 'package:shopnownow/utils/widgets.dart';
 class CheckOut extends ConsumerStatefulWidget {
   final List<Product> productList;
   final Band? band;
+  final String? tax;
 
-  const CheckOut({Key? key, required this.productList, this.band}) : super(key: key);
+  const CheckOut({Key? key, required this.productList, this.tax, this.band}) : super(key: key);
 
   @override
   ConsumerState<CheckOut> createState() => _CheckOutState();
@@ -80,7 +81,7 @@ class _CheckOutState extends ConsumerState<CheckOut> {
 
   @override
   Widget build(BuildContext context) {
-    print(widget.productList[0].id);
+    print(double.parse((int.parse(widget.tax!.replaceAll(".00", "")) / 100).toString()));
 
     return InitialPage(
         child: Padding(
@@ -486,8 +487,8 @@ class _CheckOutState extends ConsumerState<CheckOut> {
                subText: subTotalCalculation().toString(),
              ),
              PaymentRow(
-               text: tax,
-               subText: (double.parse(subTotalCalculation()) * 0.1).toStringAsFixed(2),
+               text: "$tax(${widget.tax?.replaceAll(".00", "")}%)",
+               subText: (double.parse(subTotalCalculation()) * double.parse((int.parse(widget.tax!.replaceAll(".00", "")) / 100).toString())).toStringAsFixed(2),
              ),
              //ABC456
              PaymentRow(
@@ -498,13 +499,13 @@ class _CheckOutState extends ConsumerState<CheckOut> {
                  ? YBox(0)
              // PaymentRow(
              //     text: total,
-             //     subText: ((totalAmount) + ((totalAmount)* 0.1)).toString())
+             //     subText: ((totalAmount) + ((totalAmount)* double.parse((int.parse(widget.tax!.replaceAll(".00", "")) / 100).toString()))).toString())
                  :
              PaymentRow(
                  text: total,
                  subText: ((double.parse(subTotalCalculation())) +
                      double.parse(_location!.price!) +
-                     (double.parse(subTotalCalculation()) * 0.1)).toString()),
+                     (double.parse(subTotalCalculation()) * double.parse((int.parse(widget.tax!.replaceAll(".00", "")) / 100).toString()))).toString()),
              YBox(kMediumPadding),
              Row(
                crossAxisAlignment: CrossAxisAlignment.start,
@@ -557,10 +558,10 @@ class _CheckOutState extends ConsumerState<CheckOut> {
                    done: (data) => Consumer(builder: (context, ref, _) {
                      var buttonWidget = LargeButton(
                          title: _location == null
-                             ? "Pay ₦ ${((double.parse(subTotalCalculation())  + (double.parse(subTotalCalculation()) * 0.1))).toString()}"
+                             ? "Pay ₦ ${((double.parse(subTotalCalculation())  + (double.parse(subTotalCalculation()) * double.parse((int.parse(widget.tax!.replaceAll(".00", "")) / 100).toString())))).toString()}"
                              : "Pay ₦ ${((double.parse(subTotalCalculation()) +
                              double.parse(_location!.price!) +
-                             (double.parse(subTotalCalculation()) * 0.1))).toString()}",
+                             (double.parse(subTotalCalculation()) * double.parse((int.parse(widget.tax!.replaceAll(".00", "")) / 100).toString())))).toString()}",
                          onPressed: () {
                            if (isChecked) {
                              if (formKey.currentState!.validate()) {
@@ -578,7 +579,7 @@ class _CheckOutState extends ConsumerState<CheckOut> {
                                  userId: 0,
                                  price: (int.parse(subTotalCalculation())),
                                  tax: (double.parse(subTotalCalculation()) *
-                                     0.1)
+                                     double.parse((int.parse(widget.tax!.replaceAll(".00", "")) / 100).toString()))
                                      .toInt(),
                                  status: "pending",
                                  deliveryInfo: addressController.text,
@@ -598,7 +599,7 @@ class _CheckOutState extends ConsumerState<CheckOut> {
                                        checkOut(
                                            ((double.parse(subTotalCalculation()) +
                                                double.parse(_location!.price!) +
-                                               (double.parse(subTotalCalculation()) * 0.1))).toInt(),
+                                               (double.parse(subTotalCalculation()) * double.parse((int.parse(widget.tax!.replaceAll(".00", "")) / 100).toString())))).toInt(),
                                            val["orderId"]);
                                    });
                              }
@@ -713,8 +714,8 @@ class _CheckOutState extends ConsumerState<CheckOut> {
                   subText: subTotalCalculation().toString(),
                 ),
                 PaymentRow(
-                  text: tax,
-                  subText: subTotalCalculation() == "0" ? "0" :  (double.parse(subTotalCalculation()) * 0.1).toStringAsFixed(2),
+                  text: "$tax(${widget.tax?.replaceAll(".00", "")}%)",
+                  subText: subTotalCalculation() == "0" ? "0" :  (double.parse(subTotalCalculation()) * double.parse((int.parse(widget.tax!.replaceAll(".00", "")) / 100).toString())).toStringAsFixed(2),
                 ),
                 PaymentRow(
                   text: delivery,
@@ -729,7 +730,7 @@ class _CheckOutState extends ConsumerState<CheckOut> {
                 // PaymentRow(
                 //     text: total,
                 //     subText:  ( int.parse(SessionManager.getWallet()!.replaceAll(".00", "") ?? "0") -
-                //         ( couponAmount > totalAmount ? 0 : ((totalAmount ) + ((totalAmount )* 0.1)))).toString()),
+                //         ( couponAmount > totalAmount ? 0 : ((totalAmount ) + ((totalAmount )* double.parse((int.parse(widget.tax!.replaceAll(".00", "")) / 100).toString()))))).toString()),
                 //     :
                 PaymentRow(
                     text: total,
@@ -792,7 +793,7 @@ class _CheckOutState extends ConsumerState<CheckOut> {
                                 ? ""
                             // "Pay ₦ ${(int.parse(SessionManager.getWallet()!.replaceAll(".00", "") ?? "0") -
                             //     (double.parse(subTotalCalculation()) +
-                            //     (double.parse(subTotalCalculation()) * 0.1))).toString()}"
+                            //     (double.parse(subTotalCalculation()) * double.parse((int.parse(widget.tax!.replaceAll(".00", "")) / 100).toString())))).toString()}"
                                 : "Pay ₦ ${finalAmountToBePaid(subTotalCalculation()).startsWith("-") ? finalAmountToBePaid(subTotalCalculation()).substring(1) : finalAmountToBePaid(subTotalCalculation()) }",
                             onPressed: () {
 
@@ -812,7 +813,7 @@ class _CheckOutState extends ConsumerState<CheckOut> {
                                     userId: SessionManager.getUserId(),
                                     price: double.parse(subTotalCalculation()).floor(),
                                     tax: (double.parse(subTotalCalculation())  *
-                                        0.1)
+                                        double.parse((int.parse(widget.tax!.replaceAll(".00", "")) / 100).toString()))
                                         .toInt(),
                                     status: "pending",
                                     deliveryInfo: addressController.text,
@@ -902,7 +903,7 @@ class _CheckOutState extends ConsumerState<CheckOut> {
 
       if(double.parse(SessionManager.getWallet()!.replaceAll(".00", "")) > double.parse(((double.parse(subTotalPrice)  +
           double.parse(_location!.price!) +
-          (double.parse(subTotalPrice) * 0.1))).toString()) ){
+          (double.parse(subTotalPrice) * double.parse((int.parse(widget.tax!.replaceAll(".00", "")) / 100).toString())))).toString()) ){
         print("objectll9");
 
         amount = "0";
@@ -911,7 +912,7 @@ class _CheckOutState extends ConsumerState<CheckOut> {
         print("objectll");
         amount =  (int.parse(SessionManager.getWallet()!.replaceAll(".00", "") ?? "0") - (double.parse(subTotalPrice)  +
             double.parse(_location!.price!) +
-            (double.parse(subTotalPrice) * 0.1)))
+            (double.parse(subTotalPrice) * double.parse((int.parse(widget.tax!.replaceAll(".00", "")) / 100).toString()))))
             .toString();
 
     }

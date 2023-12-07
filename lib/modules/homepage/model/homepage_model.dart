@@ -159,6 +159,7 @@ class Product {
   DateTime? updatedAt;
   int? quantity;
   Band? band;
+  Category? category;
 
   Product({
       this.id,
@@ -171,7 +172,8 @@ class Product {
       this.createdAt,
       this.updatedAt,
     this.quantity,
-    this.band
+    this.band,
+     this.category
   });
 
   factory Product.fromJson(Map<String, dynamic> json) => Product(
@@ -186,6 +188,7 @@ class Product {
     createdAt: DateTime.parse(json["created_at"]),
     updatedAt: DateTime.parse(json["updated_at"]),
     band: json["band"] == null ? null : Band.fromJson(json["band"]),
+    category: json["category"] == null ? null : Category.fromJson(json["category"]),
   );
 
   Map<String, dynamic> toJson() => {
@@ -199,12 +202,32 @@ class Product {
     "created_at": createdAt!.toIso8601String(),
     "updated_at": updatedAt!.toIso8601String(),
     "band": band!.toJson(),
+    "category": category!.toJson(),
   };
 
   @override
   String toString() {
     return 'Product{id: $id, quantity:$quantity, name: $name, thumbnailUrl: $thumbnailUrl, price: $price, unitOfMeasurement: $unitOfMeasurement, availability: $availability, categoryId: $categoryId, createdAt: $createdAt, updatedAt: $updatedAt}';
   }
+}
+
+class Category {
+
+  String tax;
+
+  Category({
+
+    required this.tax,
+  });
+
+  factory Category.fromJson(Map<String, dynamic> json) => Category(
+
+    tax: json["tax"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "tax": tax,
+  };
 }
 
 class AddProductRequest {

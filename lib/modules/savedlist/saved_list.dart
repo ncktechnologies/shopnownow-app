@@ -94,6 +94,8 @@ class _SavedListState extends ConsumerState<SavedList> {
                                           onTap: () {
                                             pushTo( CheckOut(
                                               productList: data.shoppingLists![index].productIds!,
+                                              band: data.shoppingLists![index].productIds![0].band,
+                                              tax: data.shoppingLists![index].productIds![0].category!.tax
                                             ));
                                           },
                                           child: Container(

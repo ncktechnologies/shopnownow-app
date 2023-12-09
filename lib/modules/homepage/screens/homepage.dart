@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -22,7 +24,6 @@ import 'package:shopnownow/utils/text_field_comp.dart';
 import 'package:shopnownow/utils/widgets.dart';
 
 class HomePage extends ConsumerStatefulWidget {
-
   final bool? loggedIn;
 
   const HomePage({Key? key, this.loggedIn = false}) : super(key: key);
@@ -31,13 +32,11 @@ class HomePage extends ConsumerStatefulWidget {
   ConsumerState<HomePage> createState() => _HomePageState();
 }
 
-
 class _HomePageState extends ConsumerState<HomePage> {
   TextEditingController controller = TextEditingController();
   List<GetCategories> categories = [];
   List<GetCategories> searchResult = [];
   final FirebaseMessaging messaging = FirebaseMessaging.instance;
-
 
 //Firebase functions
   Future<void> initalizeFirebase() async {
@@ -80,13 +79,11 @@ class _HomePageState extends ConsumerState<HomePage> {
     super.initState();
     getToken();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      ref.read(getCategoriesProvider.notifier).getCategories(
-          then: (val) {
-            for (var element in val) {
-              categories.add(element);
-            }
-          }
-      );
+      ref.read(getCategoriesProvider.notifier).getCategories(then: (val) {
+        for (var element in val) {
+          categories.add(element);
+        }
+      });
       if (SessionManager.getToken() != null) {
         ref.read(getProfileProvider.notifier).getProfile();
         ref.read(getWalletProvider.notifier).getWallet();
@@ -123,134 +120,159 @@ class _HomePageState extends ConsumerState<HomePage> {
                       return const SizedBox();
                     } else {
                       return Expanded(
-                        child: searchResult.isEmpty ? MasonryGridView.count(
-                            crossAxisCount: 2,
-                            itemCount: categories.length,
-                            crossAxisSpacing: kRegularPadding,
-                            mainAxisSpacing: kRegularPadding,
-                            itemBuilder: (ctx, index) {
-                              return InkWellNoShadow(
-                                onTap: () {
-                                  pushTo(HomePageDetail(
-                                    menuItems: categories[index],
-                                    category: categories,));
-                                },
-                                child: Container(
-                                  height: screenSize.height / 4.6,
-                                  padding: const EdgeInsets.only(
-                                      top: kRegularPadding,
-                                      left: kMediumPadding,
-                                      right: kMediumPadding,
-                                      bottom: kMicroPadding),
-                                  decoration: BoxDecoration(
-                                    borderRadius:
-                                    BorderRadius.circular(kRegularPadding),
-                                    color: kSecondaryColor,
-                                  ),
-                                  child: Column(
-                                      mainAxisAlignment: MainAxisAlignment
-                                          .spaceBetween,
-                                      crossAxisAlignment: CrossAxisAlignment
-                                          .start,
-                                      children: [
-                                      Align(
-                                      alignment: Alignment.topRight,
-                                      child: categories[index].thumbnail!.split(
-                                          ".").last == "svg" ? SvgPicture
-                                          .network(
-                                        categories[index].thumbnail!,
-                                        height: 40,
-                                        width: 40,
-                                      ) : Image.network(
-                                        categories[index].thumbnail!,
-                                        height: kLargePadding,
-                                        width: kLargePadding,)) ,
-                                  Text(
-                                  categories[index].name ?? "",
-                                  style: textTheme.displayLarge!,
-                                )
-                                ],
-                              ),)
-                              ,
-                              );
-                            }) : MasonryGridView.count(
-                            crossAxisCount: 2,
-                            itemCount: searchResult.length,
-                            crossAxisSpacing: kRegularPadding,
-                            mainAxisSpacing: kRegularPadding,
-                            itemBuilder: (ctx, index) {
-                              return InkWellNoShadow(
-                                onTap: () {
-                                  pushTo(HomePageDetail(
-                                    menuItems: searchResult[index],
-                                    category: searchResult,));
-                                },
-                                child: Container(
-                                  height: screenSize.height / 4.6,
-                                  padding: const EdgeInsets.only(
-                                      top: kRegularPadding,
-                                      left: kMediumPadding,
-                                      right: kMediumPadding,
-                                      bottom: kMicroPadding),
-                                  decoration: BoxDecoration(
-                                    borderRadius:
-                                    BorderRadius.circular(kRegularPadding),
-                                    color: kSecondaryColor,
-                                  ),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment
-                                        .spaceBetween,
-                                    crossAxisAlignment: CrossAxisAlignment
-                                        .start,
-                                    children: [
-                                      Align(
-                                          alignment: Alignment.topRight,
-                                          child: categories[index].thumbnail!.split(
-                                              ".").last == "svg" ?  SvgPicture.network(
-                                            searchResult[index].thumbnail!,
-                                            height: 40,
-                                            width: 40,
-                                          ) :  Image.network(
-                                  categories[index].thumbnail!,
-                                    height: kLargePadding,
-                                    width: kLargePadding,)),
-                                      Text(
-                                        searchResult[index].name ?? "",
-                                        style: textTheme.displayLarge!,
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              );
-                            }),
+                        child: searchResult.isEmpty
+                            ? MasonryGridView.count(
+                                crossAxisCount: 2,
+                                itemCount: categories.length,
+                                crossAxisSpacing: kRegularPadding,
+                                mainAxisSpacing: kRegularPadding,
+                                itemBuilder: (ctx, index) {
+                                  return InkWellNoShadow(
+                                    onTap: () {
+                                      pushTo(HomePageDetail(
+                                        menuItems: categories[index],
+                                        category: categories,
+                                      ));
+                                    },
+                                    child: Container(
+                                      height: screenSize.height / 4.6,
+                                      padding: const EdgeInsets.only(
+                                          top: kRegularPadding,
+                                          left: kMediumPadding,
+                                          right: kMediumPadding,
+                                          bottom: kMicroPadding),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(
+                                            kRegularPadding),
+                                        color: kSecondaryColor,
+                                      ),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Align(
+                                              alignment: Alignment.topRight,
+                                              child: categories[index]
+                                                          .thumbnail!
+                                                          .split(".")
+                                                          .last ==
+                                                      "svg"
+                                                  ? SvgPicture.network(
+                                                      categories[index]
+                                                          .thumbnail!,
+                                                      height: 40,
+                                                      width: 40,
+                                                    )
+                                                  : Image.network(
+                                                      categories[index]
+                                                          .thumbnail!,
+                                                      height: kLargePadding,
+                                                      width: kLargePadding,
+                                                    )),
+                                          Text(
+                                            categories[index].name ?? "",
+                                            style: textTheme.displayLarge!,
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                })
+                            : MasonryGridView.count(
+                                crossAxisCount: 2,
+                                itemCount: searchResult.length,
+                                crossAxisSpacing: kRegularPadding,
+                                mainAxisSpacing: kRegularPadding,
+                                itemBuilder: (ctx, index) {
+                                  return InkWellNoShadow(
+                                    onTap: () {
+                                      pushTo(HomePageDetail(
+                                        menuItems: searchResult[index],
+                                        category: searchResult,
+                                      ));
+                                    },
+                                    child: Container(
+                                      height: screenSize.height / 4.6,
+                                      padding: const EdgeInsets.only(
+                                          top: kRegularPadding,
+                                          left: kMediumPadding,
+                                          right: kMediumPadding,
+                                          bottom: kMicroPadding),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(
+                                            kRegularPadding),
+                                        color: kSecondaryColor,
+                                      ),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Align(
+                                              alignment: Alignment.topRight,
+                                              child: categories[index]
+                                                          .thumbnail!
+                                                          .split(".")
+                                                          .last ==
+                                                      "svg"
+                                                  ? SvgPicture.network(
+                                                      searchResult[index]
+                                                          .thumbnail!,
+                                                      height: 40,
+                                                      width: 40,
+                                                    )
+                                                  : Image.network(
+                                                      categories[index]
+                                                          .thumbnail!,
+                                                      height: kLargePadding,
+                                                      width: kLargePadding,
+                                                    )),
+                                          Text(
+                                            searchResult[index].name ?? "",
+                                            style: textTheme.displayLarge!,
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                }),
                       );
                     }
                   },
                   loading: () => const SpinKitDemo()),
               YBox(kMacroPadding),
-              Text(
-                downloadApp,
-                textAlign: TextAlign.center,
-                style: textTheme.headlineMedium!
-                    .copyWith(
-                    color: kDarkColor300, fontWeight: FontWeight.w500),
-              ),
-              YBox(kSmallPadding),
-              Row(
-                children: [
-                  AppleGoogleWidget(
-                    icon: AssetPaths.appleLogo,
-                    text: downloadOn,
-                    subText: appStore,
-                  ),
-                  XBox(kRegularPadding),
-                  AppleGoogleWidget(
-                    icon: AssetPaths.googleLogo,
-                    text: getIt,
-                    subText: googlePlay,
-                  )
-                ],
-              )
+              !Platform.isAndroid && !Platform.isIOS
+                  ? Column(
+                      children: [
+                        Text(
+                          downloadApp,
+                          textAlign: TextAlign.center,
+                          style: textTheme.headlineMedium!.copyWith(
+                              color: kDarkColor300,
+                              fontWeight: FontWeight.w500),
+                        ),
+                        YBox(kSmallPadding),
+                        Row(
+                          children: [
+                            AppleGoogleWidget(
+                              icon: AssetPaths.appleLogo,
+                              text: downloadOn,
+                              subText: appStore,
+                            ),
+                            XBox(kRegularPadding),
+                            AppleGoogleWidget(
+                              icon: AssetPaths.googleLogo,
+                              text: getIt,
+                              subText: googlePlay,
+                            )
+                          ],
+                        )
+                      ],
+                    )
+                  : const SizedBox(height: 0),
             ],
           ),
         ));
@@ -273,4 +295,3 @@ class _HomePageState extends ConsumerState<HomePage> {
     setState(() {});
   }
 }
-

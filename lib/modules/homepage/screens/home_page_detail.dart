@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -36,8 +38,9 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
   OverlayEntry? overlayEntry;
   OverlayEntry? overlaySearchEntry;
   GetCategories? categoryName;
-
+  Timer? _debounce;
   List<Product> productList = [];
+  bool _searching = false;
 
   void _showOverlay(BuildContext context) async {
     OverlayState overlayState = Overlay.of(context);
@@ -79,12 +82,18 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
                                   const EdgeInsets.only(bottom: kSmallPadding),
                               child: Row(
                                 children: [
-                                  SvgPicture.network(
-                                    e.thumbnail ?? "",
-                                    fit: BoxFit.scaleDown,
-                                    height: kMacroPadding,
-                                    width: kMacroPadding,
-                                  ),
+                                  e.thumbnail!.split(".").last == "svg"
+                                      ? SvgPicture.network(
+                                          e.thumbnail ?? "",
+                                          fit: BoxFit.scaleDown,
+                                          height: kMacroPadding,
+                                          width: kMacroPadding,
+                                        )
+                                      : Image.network(
+                                          e.thumbnail!,
+                                          height: kMacroPadding,
+                                          width: kMacroPadding,
+                                        ),
                                   XBox(kSmallPadding),
                                   Text(
                                     e.name ?? "",
@@ -230,6 +239,11 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
                                           thumbnailUrl:
                                               searchResult[index].thumbnailUrl),
                                     );
+
+                                    overlayEntry?.remove();
+                                    overlaySearchEntry?.remove();
+                                    overlayEntry = null;
+                                    overlaySearchEntry = null;
                                   });
                                 },
                                 child: Container(
@@ -279,6 +293,12 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
   }
 
   @override
+  void dispose() {
+    _debounce?.cancel();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
@@ -287,12 +307,20 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
         return true;
       },
       child: Scaffold(
-        drawer: const Drawer(child: DrawerScaffoldContainer()),
+        drawer: const Drawer(
+          child: DrawerScaffoldContainer(),
+        ),
+        onDrawerChanged: (val) {
+          overlayEntry?.remove();
+          overlaySearchEntry?.remove();
+          overlayEntry = null;
+          overlaySearchEntry = null;
+        },
         resizeToAvoidBottomInset: false,
         bottomSheet: Padding(
           padding: const EdgeInsets.symmetric(horizontal: kRegularPadding),
           child: InkWellNoShadow(
-            onTap: (){
+            onTap: () {
               overlayEntry?.remove();
               overlaySearchEntry?.remove();
               overlayEntry = null;
@@ -314,34 +342,75 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
                 YBox(kMediumPadding),
                 PaymentRow(
                     text: subTotal,
-                    subText: (productList.fold<int>(0, (previousValue, element) {
+                    subText:
+                        (productList.fold<int>(0, (previousValue, element) {
                       return (previousValue +
-                          (int.parse(element.price?.replaceAll(".00", "") ?? "0") * element.quantity!));
+                          (int.parse(
+                                  element.price?.replaceAll(".00", "") ?? "0") *
+                              element.quantity!));
                     }).toString())),
                 YBox(kRegularPadding),
                 LargeButton(
                     title: checkout,
-                    onPressed: productList.isEmpty ? (){
-                      showErrorBar(context, "Please add a Product");
-                    }: () {
-                      overlayEntry?.remove();
-                      overlaySearchEntry?.remove();
-                      overlayEntry = null;
-                      overlaySearchEntry = null;
-                      pushTo(
-                         CheckOut(
-                          productList: productList,
-                           band: widget.menuItems.band,
-                           tax: widget.menuItems.tax,
-                        ),
-                      );
-                    }),
+                    onPressed: productList.isEmpty
+                        ? () {
+                            showErrorBar(context, "Please add a Product");
+                          }
+                        : () {
+                            if (double.parse(widget.menuItems.band!.minimum!) >
+                                double.parse((productList.fold<int>(0,
+                                    (previousValue, element) {
+                                  return (previousValue +
+                                      (int.parse(element.price
+                                                  ?.replaceAll(".00", "") ??
+                                              "0") *
+                                          element.quantity!));
+                                }).toString()))) {
+                              showErrorBar(context,
+                                  "The minimum order is ₦${widget.menuItems.band!.minimum}");
+                            } else {
+                              overlayEntry?.remove();
+                              overlaySearchEntry?.remove();
+                              overlayEntry = null;
+                              overlaySearchEntry = null;
+                              pushTo(
+                                CheckOut(
+                                  productList: productList,
+                                  band: widget.menuItems.band,
+                                  tax: widget.menuItems.tax,
+                                ),
+                              );
+                            }
+                          }),
                 YBox(kRegularPadding),
               ],
             ),
           ),
         ),
         appBar: AppBar(
+          actions: [
+            InkWellNoShadow(
+              onTap: () {
+                overlayEntry?.remove();
+                overlaySearchEntry?.remove();
+                overlayEntry = null;
+                overlaySearchEntry = null;
+                if (Navigator.canPop(context)) {
+                  Navigator.pop(context);
+                }
+              },
+              child: const Padding(
+                padding: EdgeInsets.only(right: kMediumPadding),
+                child: Center(
+                  child: Icon(
+                    Icons.close,
+                    size: 30,
+                    color: kPrimaryColor,
+                  ),
+                ),
+              ),
+            )
+          ],
           leading: Builder(
             builder: (context) => InkWellNoShadow(
               onTap: () => Scaffold.of(context).openDrawer(),
@@ -366,16 +435,22 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
               overlaySearchEntry = null;
             },
             child: Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: kRegularPadding),
+              padding: const EdgeInsets.symmetric(horizontal: kRegularPadding),
               child: Column(
                 children: [
                   YBox(kMediumPadding),
                   InkWellNoShadow(
                     onTap: () {
-                      // if (overlayEntry == null) {
-                      //   _showOverlay(context);
-                      // } else {}
+                      if (overlayEntry == null) {
+                        _showOverlay(context);
+                      } else {
+                        setState(() {
+                          overlayEntry?.remove();
+                          overlaySearchEntry?.remove();
+                          overlayEntry = null;
+                          overlaySearchEntry = null;
+                        });
+                      }
                     },
                     child: Container(
                       padding: const EdgeInsets.all(kRegularPadding),
@@ -389,8 +464,7 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
                             child: Container(
                               padding: const EdgeInsets.all(8),
                               decoration: const BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: kPrimaryWhite),
+                                  shape: BoxShape.circle, color: kPrimaryWhite),
                               child: SvgPicture.network(
                                 widget.menuItems.thumbnail ?? "",
                                 fit: BoxFit.scaleDown,
@@ -410,12 +484,12 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
                               textAlign: TextAlign.center,
                             ),
                           ),
-                          XBox(25)
-                          // const Icon(
-                          //   Icons.keyboard_arrow_down,
-                          //   size: 25,
-                          //   color: kPrimaryColor,
-                          // )
+                          XBox(25),
+                          const Icon(
+                            Icons.keyboard_arrow_down,
+                            size: 25,
+                            color: kPrimaryColor,
+                          )
                         ],
                       ),
                     ),
@@ -427,14 +501,45 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
                       fit: BoxFit.scaleDown,
                     ),
                     controller: controller,
-                    onChanged: (val) {
-                      if (val!.isEmpty) {
-                        overlaySearchEntry?.remove();
-                        overlaySearchEntry = null;
-                      } else {
-                        onSearchTextChanged(val ?? "");
-                      }
+                    icon: _searching
+                        ? SizedBox(
+                            width: 40,
+                            child: Container(
+                                margin: const EdgeInsets.only(
+                                    right: kMediumPadding),
+                                child: const SpinKitDemo(
+                                  size: 30,
+                                )),
+                          )
+                        : YBox(0),
+                    onChanged: (inputValue) {
+                      if (_debounce?.isActive ?? false) _debounce?.cancel();
+                      _debounce = Timer(const Duration(seconds: 1), () {
+                        if (inputValue != null &&
+                            inputValue.trim().isNotEmpty) {
+                          onSearchTextChanged(inputValue ?? "");
+                          setState(() {
+                            _searching = true;
+                          });
+                        } else {
+                          overlaySearchEntry?.remove();
+                          overlaySearchEntry = null;
+                          setState(() {
+                            _searching = false;
+                          });
+                        }
+
+                        setState(() {});
+                      });
                     },
+                    // onChanged: (val) {
+                    //   if (val!.isEmpty) {
+                    //     overlaySearchEntry?.remove();
+                    //     overlaySearchEntry = null;
+                    //   } else {
+                    //     onSearchTextChanged(val ?? "");
+                    //   }
+                    // },
                     hintText: searchText,
                   ),
                   productList.isEmpty
@@ -474,8 +579,7 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
                                       horizontal: kRegularPadding,
                                       vertical: kPadding),
                                   decoration: BoxDecoration(
-                                      borderRadius:
-                                          BorderRadius.circular(500),
+                                      borderRadius: BorderRadius.circular(500),
                                       color: kLightPurple200),
                                   child: Text(
                                     saveList,
@@ -502,40 +606,38 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
                             subText: addItem,
                           ))
                       : Expanded(
-                        child: ListView(
-                          // crossAxisAlignment: CrossAxisAlignment.start,
-                          // mainAxisSize: MainAxisSize.min,
-                          children: List.generate(
-                            productList.length,
-                            (index) => HomeCartList(
-                              product: productList[index],
-                              subtractTap: () {
-                                if (productList[index].quantity != 1) {
-                                  setState(() {
-                                    productList[index].quantity =
-                                        productList[index].quantity! - 1;
-                                  });
-                                }
-                              },
-                              addTap:  (){
+                          child: ListView(
+                            // crossAxisAlignment: CrossAxisAlignment.start,
+                            // mainAxisSize: MainAxisSize.min,
+                            children: List.generate(
+                              productList.length,
+                              (index) => HomeCartList(
+                                product: productList[index],
+                                subtractTap: () {
+                                  if (productList[index].quantity != 1) {
+                                    setState(() {
+                                      productList[index].quantity =
+                                          productList[index].quantity! - 1;
+                                    });
+                                  }
+                                },
+                                addTap: () {
                                   setState(() {
                                     productList[index].quantity =
                                         productList[index].quantity! + 1;
                                   });
-
-                              },
-
-                              category: categoryName!,
-                              onTap: () {
-                                setState(() {
-                                  productList.removeAt(index);
-                                });
-                              },
-                            ),
-                          ).toList(),
+                                },
+                                category: categoryName!,
+                                onTap: () {
+                                  setState(() {
+                                    productList.removeAt(index);
+                                  });
+                                },
+                              ),
+                            ).toList(),
+                          ),
                         ),
-                      ),
-                   YBox(170),
+                  YBox(170),
                 ],
               ),
             ),
@@ -558,19 +660,24 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
         categoryId: categoryName!.id.toString(),
         then: (val) {
           searchResult.clear();
-
+          setState(() {
+            _searching = false;
+          });
           for (var element in val) {
             setState(() {
               searchResult.add(element);
               if (searchResult.isNotEmpty) {
                 if (overlaySearchEntry == null) {
+                  _searching = false;
                   _showSearchOverlay(context);
                 }
               }
             });
           }
         });
-    setState(() {});
+    setState(() {
+      _searching = false;
+    });
   }
 }
 
@@ -583,8 +690,8 @@ class HomeCartList extends StatefulWidget {
       {Key? key,
       required this.product,
       required this.category,
-        required this.addTap,
-        required this.subtractTap,
+      required this.addTap,
+      required this.subtractTap,
       required this.onTap})
       : super(key: key);
 

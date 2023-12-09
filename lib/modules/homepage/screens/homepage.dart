@@ -22,6 +22,7 @@ import 'package:shopnownow/utils/text_field_comp.dart';
 import 'package:shopnownow/utils/widgets.dart';
 
 class HomePage extends ConsumerStatefulWidget {
+
   final bool? loggedIn;
 
   const HomePage({Key? key, this.loggedIn = false}) : super(key: key);
@@ -31,14 +32,11 @@ class HomePage extends ConsumerStatefulWidget {
 }
 
 
-
 class _HomePageState extends ConsumerState<HomePage> {
   TextEditingController controller = TextEditingController();
   List<GetCategories> categories = [];
   List<GetCategories> searchResult = [];
   final FirebaseMessaging messaging = FirebaseMessaging.instance;
-
-
 
 
 //Firebase functions
@@ -67,7 +65,6 @@ class _HomePageState extends ConsumerState<HomePage> {
     } else {
       print('User declined or has not yet responded to the permission request');
     }
-
   }
 
   void registerNotification() async {}
@@ -76,6 +73,7 @@ class _HomePageState extends ConsumerState<HomePage> {
       RemoteMessage message) async {
     await Firebase.initializeApp();
   }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -83,16 +81,15 @@ class _HomePageState extends ConsumerState<HomePage> {
     getToken();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       ref.read(getCategoriesProvider.notifier).getCategories(
-        then: (val){
-          for (var element in val) {
-            categories.add(element);
+          then: (val) {
+            for (var element in val) {
+              categories.add(element);
+            }
           }
-        }
       );
-      if(SessionManager.getToken() != null){
+      if (SessionManager.getToken() != null) {
         ref.read(getProfileProvider.notifier).getProfile();
         ref.read(getWalletProvider.notifier).getWallet();
-
       }
     });
   }
@@ -100,146 +97,165 @@ class _HomePageState extends ConsumerState<HomePage> {
   @override
   Widget build(BuildContext context) {
     return InitialPage(
-      noScroll: true,
+        noScroll: true,
         child: Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: kRegularPadding,
-        vertical: kMediumPadding,
-      ),
-      child: Column(
-        children: [
-          SearchTextInputNoIcon(
-            prefixIcon: SvgPicture.asset(
-              AssetPaths.search,
-              fit: BoxFit.scaleDown,
-            ),
-            controller: controller,
-            onChanged: (val) {
-              onSearchTextChanged(val ?? "");
-            },
-            hintText: searchText,
+          padding: const EdgeInsets.symmetric(
+            horizontal: kRegularPadding,
+            vertical: kMediumPadding,
           ),
-          YBox(kMicroPadding),
-          ref.watch(getCategoriesProvider).when(
-              done: (data) {
-                if (data == null) {
-                  return const SizedBox();
-                } else {
-                  return Expanded(
-                    child: searchResult.isEmpty ? MasonryGridView.count(
-                        crossAxisCount: 2,
-                        itemCount: categories.length,
-                        crossAxisSpacing: kRegularPadding,
-                        mainAxisSpacing: kRegularPadding,
-                        itemBuilder: (ctx, index) {
-                          return InkWellNoShadow(
-                            onTap: () {
-                              pushTo(HomePageDetail(menuItems: categories[index], category: categories,));
-                            },
-                            child: Container(
-                              height: screenSize.height / 4.6,
-                              padding: const EdgeInsets.only(
-                                  top: kRegularPadding,
-                                  left: kMediumPadding,
-                                  right: kMediumPadding,
-                                  bottom: kMicroPadding),
-                              decoration: BoxDecoration(
-                                borderRadius:
+          child: Column(
+            children: [
+              SearchTextInputNoIcon(
+                prefixIcon: SvgPicture.asset(
+                  AssetPaths.search,
+                  fit: BoxFit.scaleDown,
+                ),
+                controller: controller,
+                onChanged: (val) {
+                  onSearchTextChanged(val ?? "");
+                },
+                hintText: searchText,
+              ),
+              YBox(kMicroPadding),
+              ref.watch(getCategoriesProvider).when(
+                  done: (data) {
+                    if (data == null) {
+                      return const SizedBox();
+                    } else {
+                      return Expanded(
+                        child: searchResult.isEmpty ? MasonryGridView.count(
+                            crossAxisCount: 2,
+                            itemCount: categories.length,
+                            crossAxisSpacing: kRegularPadding,
+                            mainAxisSpacing: kRegularPadding,
+                            itemBuilder: (ctx, index) {
+                              return InkWellNoShadow(
+                                onTap: () {
+                                  pushTo(HomePageDetail(
+                                    menuItems: categories[index],
+                                    category: categories,));
+                                },
+                                child: Container(
+                                  height: screenSize.height / 4.6,
+                                  padding: const EdgeInsets.only(
+                                      top: kRegularPadding,
+                                      left: kMediumPadding,
+                                      right: kMediumPadding,
+                                      bottom: kMicroPadding),
+                                  decoration: BoxDecoration(
+                                    borderRadius:
                                     BorderRadius.circular(kRegularPadding),
-                                color: kSecondaryColor,
-                              ),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Align(
+                                    color: kSecondaryColor,
+                                  ),
+                                  child: Column(
+                                      mainAxisAlignment: MainAxisAlignment
+                                          .spaceBetween,
+                                      crossAxisAlignment: CrossAxisAlignment
+                                          .start,
+                                      children: [
+                                      Align(
                                       alignment: Alignment.topRight,
-                                      child: SvgPicture.network(
+                                      child: categories[index].thumbnail!.split(
+                                          ".").last == "svg" ? SvgPicture
+                                          .network(
                                         categories[index].thumbnail!,
                                         height: 40,
                                         width: 40,
-                                      )),
+                                      ) : Image.network(
+                                        categories[index].thumbnail!,
+                                        height: kLargePadding,
+                                        width: kLargePadding,)) ,
                                   Text(
-                                    categories[index].name ?? "",
-                                    style: textTheme.displayLarge!,
-                                  )
+                                  categories[index].name ?? "",
+                                  style: textTheme.displayLarge!,
+                                )
                                 ],
-                              ),
-                            ),
-                          );
-                        }) : MasonryGridView.count(
-                        crossAxisCount: 2,
-                        itemCount: searchResult.length,
-                        crossAxisSpacing: kRegularPadding,
-                        mainAxisSpacing: kRegularPadding,
-                        itemBuilder: (ctx, index) {
-                          return InkWellNoShadow(
-                            onTap: () {
-                              pushTo(HomePageDetail(menuItems: searchResult[index], category: searchResult,));
-                            },
-                            child: Container(
-                              height: screenSize.height / 4.6,
-                              padding: const EdgeInsets.only(
-                                  top: kRegularPadding,
-                                  left: kMediumPadding,
-                                  right: kMediumPadding,
-                                  bottom: kMicroPadding),
-                              decoration: BoxDecoration(
-                                borderRadius:
-                                BorderRadius.circular(kRegularPadding),
-                                color: kSecondaryColor,
-                              ),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Align(
-                                      alignment: Alignment.topRight,
-                                      child: SvgPicture.network(
-                                        searchResult[index].thumbnail!,
-                                        height: 40,
-                                        width: 40,
-                                      )),
-                                  Text(
-                                    searchResult[index].name ?? "",
-                                    style: textTheme.displayLarge!,
-                                  )
-                                ],
-                              ),
-                            ),
-                          );
-                        }),
-                  );
-                }
-              },
-              loading: () => const SpinKitDemo()),
-          YBox(kMacroPadding),
-          Text(
-            downloadApp,
-            textAlign: TextAlign.center,
-            style: textTheme.headlineMedium!
-                .copyWith(color: kDarkColor300, fontWeight: FontWeight.w500),
-          ),
-          YBox(kSmallPadding),
-          Row(
-            children: [
-              AppleGoogleWidget(
-                icon: AssetPaths.appleLogo,
-                text: downloadOn,
-                subText: appStore,
+                              ),)
+                              ,
+                              );
+                            }) : MasonryGridView.count(
+                            crossAxisCount: 2,
+                            itemCount: searchResult.length,
+                            crossAxisSpacing: kRegularPadding,
+                            mainAxisSpacing: kRegularPadding,
+                            itemBuilder: (ctx, index) {
+                              return InkWellNoShadow(
+                                onTap: () {
+                                  pushTo(HomePageDetail(
+                                    menuItems: searchResult[index],
+                                    category: searchResult,));
+                                },
+                                child: Container(
+                                  height: screenSize.height / 4.6,
+                                  padding: const EdgeInsets.only(
+                                      top: kRegularPadding,
+                                      left: kMediumPadding,
+                                      right: kMediumPadding,
+                                      bottom: kMicroPadding),
+                                  decoration: BoxDecoration(
+                                    borderRadius:
+                                    BorderRadius.circular(kRegularPadding),
+                                    color: kSecondaryColor,
+                                  ),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment
+                                        .spaceBetween,
+                                    crossAxisAlignment: CrossAxisAlignment
+                                        .start,
+                                    children: [
+                                      Align(
+                                          alignment: Alignment.topRight,
+                                          child: categories[index].thumbnail!.split(
+                                              ".").last == "svg" ?  SvgPicture.network(
+                                            searchResult[index].thumbnail!,
+                                            height: 40,
+                                            width: 40,
+                                          ) :  Image.network(
+                                  categories[index].thumbnail!,
+                                    height: kLargePadding,
+                                    width: kLargePadding,)),
+                                      Text(
+                                        searchResult[index].name ?? "",
+                                        style: textTheme.displayLarge!,
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              );
+                            }),
+                      );
+                    }
+                  },
+                  loading: () => const SpinKitDemo()),
+              YBox(kMacroPadding),
+              Text(
+                downloadApp,
+                textAlign: TextAlign.center,
+                style: textTheme.headlineMedium!
+                    .copyWith(
+                    color: kDarkColor300, fontWeight: FontWeight.w500),
               ),
-              XBox(kRegularPadding),
-              AppleGoogleWidget(
-                icon: AssetPaths.googleLogo,
-                text: getIt,
-                subText: googlePlay,
+              YBox(kSmallPadding),
+              Row(
+                children: [
+                  AppleGoogleWidget(
+                    icon: AssetPaths.appleLogo,
+                    text: downloadOn,
+                    subText: appStore,
+                  ),
+                  XBox(kRegularPadding),
+                  AppleGoogleWidget(
+                    icon: AssetPaths.googleLogo,
+                    text: getIt,
+                    subText: googlePlay,
+                  )
+                ],
               )
             ],
-          )
-        ],
-      ),
-    ));
+          ),
+        ));
   }
+
   onSearchTextChanged(String text) async {
     searchResult.clear();
     if (text.isEmpty) {

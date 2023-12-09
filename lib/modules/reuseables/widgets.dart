@@ -4,6 +4,7 @@ import 'package:shopnownow/app/helpers/session_manager.dart';
 import 'package:shopnownow/app/navigators/navigators.dart';
 import 'package:shopnownow/modules/authentication/screens/login.dart';
 import 'package:shopnownow/modules/authentication/screens/signup.dart';
+import 'package:shopnownow/modules/homepage/screens/homepage.dart';
 import 'package:shopnownow/modules/orders/screen/order_history.dart';
 import 'package:shopnownow/modules/profile/screens/profile.dart';
 import 'package:shopnownow/modules/reuseables/size_boxes.dart';
@@ -121,6 +122,23 @@ class InitialPage extends StatelessWidget {
             ),
           ),
         ),
+        actions: [
+          InkWellNoShadow(
+            onTap: (){
+              if(Navigator.canPop(context)){
+                Navigator.pop(context);
+              }
+            },
+            child: const Padding(
+              padding: EdgeInsets.only(right: kMediumPadding),
+              child: Center(
+                child: Icon(
+                  Icons.close, size: 30, color: kPrimaryColor,
+                ),
+              ),
+            ),
+          )
+        ],
         leadingWidth: 40,
         title: Image.asset(AssetPaths.logo, height: 40),
         centerTitle: true,
@@ -174,11 +192,19 @@ class DrawerScaffoldContainer extends StatelessWidget {
             ],
           ),
           YBox(kLargePadding),
+          DrawerContainer(
+            text: home,
+            onTap: () {
+              Scaffold.of(context).closeDrawer();
+              pushToAndClearStack(const HomePage());
+            },
+          ),
           SessionManager.getToken() != null
               ? DrawerContainer(
             text: profile,
             onTap: () {
-              pushTo(const Profile());
+              Scaffold.of(context).closeDrawer();
+              pushToAndClearStack(const Profile());
             },
           )
               : YBox(0),
@@ -186,7 +212,8 @@ class DrawerScaffoldContainer extends StatelessWidget {
               ? DrawerContainer(
             text: wallet,
             onTap: () {
-              pushTo(const MyWallet());
+              Scaffold.of(context).closeDrawer();
+              pushToAndClearStack(const MyWallet());
             },
           )
               : YBox(0),
@@ -194,20 +221,24 @@ class DrawerScaffoldContainer extends StatelessWidget {
               ? DrawerContainer(
             text: orders,
             onTap: () {
-              pushTo(const OrderHistory());
+              Scaffold.of(context).closeDrawer();
+              pushToAndClearStack(const OrderHistory());
             },
           )
               : YBox(0),
           SessionManager.getToken() != null
               ? DrawerContainer(
             text: savedList,
-            onTap: () {pushTo(const SavedList());},
+            onTap: () {
+              Scaffold.of(context).closeDrawer();
+              pushToAndClearStack(const SavedList());},
           )
               : YBox(0),
           DrawerContainer(
             text: specialRequest,
             onTap: () {
-              pushTo(const SpecialRequest());
+              Scaffold.of(context).closeDrawer();
+              pushToAndClearStack(const SpecialRequest());
             },
           ),
           SessionManager.getToken() != null
@@ -224,7 +255,8 @@ class DrawerScaffoldContainer extends StatelessWidget {
           DrawerContainer(
             text: quickGuide,
             onTap: () {
-              pushTo(const QuickGuide());
+              Scaffold.of(context).closeDrawer();
+              pushToAndClearStack(const QuickGuide());
             },
           ),
           DrawerContainer(
@@ -234,7 +266,8 @@ class DrawerScaffoldContainer extends StatelessWidget {
           DrawerContainer(
             text: helpCenter,
             onTap: () {
-              pushTo(const HelpCenter());
+              Scaffold.of(context).closeDrawer();
+              pushToAndClearStack(const HelpCenter());
             },
           ),
           YBox(kMacroPadding),
@@ -249,6 +282,7 @@ class DrawerScaffoldContainer extends StatelessWidget {
           SessionManager.getToken() != null
               ?   InkWellNoShadow(
             onTap: (){
+              Scaffold.of(context).closeDrawer();
               pushToAndClearStack(const LogIn());
             },
             child: Container(
@@ -273,7 +307,8 @@ class DrawerScaffoldContainer extends StatelessWidget {
               Expanded(
                   child: LargeButton(
                     onPressed: () {
-                      pushTo(const LogIn());
+                      Scaffold.of(context).closeDrawer();
+                      pushToAndClearStack(const LogIn());
                     },
                     title: logIn,
                     outlineButton: true,
@@ -282,7 +317,8 @@ class DrawerScaffoldContainer extends StatelessWidget {
               Expanded(
                   child: LargeButton(
                     onPressed: () {
-                      pushTo(const SignUp());
+                      Scaffold.of(context).closeDrawer();
+                      pushToAndClearStack(const SignUp());
                     },
                     title: signUp,
                   )),

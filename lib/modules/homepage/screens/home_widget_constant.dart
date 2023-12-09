@@ -107,7 +107,7 @@ class AppleGoogleWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Expanded(
       child: Container(
-        padding: const EdgeInsets.all(kSmallPadding),
+        padding: const EdgeInsets.only(top: kSmallPadding, left: kSmallPadding, bottom: kSmallPadding, right: kSmallPadding),
         decoration: BoxDecoration(
             borderRadius: kBorderSmallRadius,
             color: Colors.black,
@@ -123,6 +123,7 @@ class AppleGoogleWidget extends StatelessWidget {
                   text,
                   style: textTheme.displayMedium!.copyWith(
                     fontWeight: FontWeight.w400,
+                    fontSize: 15,
                   ),
                 ),
                 Text(

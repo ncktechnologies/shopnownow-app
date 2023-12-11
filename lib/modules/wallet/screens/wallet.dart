@@ -42,6 +42,7 @@ class _MyWalletState extends ConsumerState<MyWallet> {
   @override
   Widget build(BuildContext context) {
     return InitialPage(
+        noIcon: true,
         child: Padding(
       padding: const EdgeInsets.symmetric(horizontal: kRegularPadding),
       child: Column(

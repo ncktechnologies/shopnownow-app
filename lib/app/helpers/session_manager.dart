@@ -1,6 +1,4 @@
-
 import 'package:shared_preferences/shared_preferences.dart';
-
 
 class SessionManager {
   static late SharedPreferences prefs;
@@ -12,9 +10,8 @@ class SessionManager {
   ///User setters
   static String userId = "user_id";
   static String email = "email";
-  static String userName = "username";
-  static String firstName = "firstName";
-  static String lastName = "lastName";
+  static String contactEmail = "contactEmail";
+  static String contactPhone = "contactPhone";
   static String fullName = "fullName";
   static String phoneNumber = "phoneNo";
   static String dateOfBirth = "dateOfBirth";
@@ -22,11 +19,14 @@ class SessionManager {
   static String gender = "gender";
   static String profilePhoto = "profilePhoto";
   static String logOut = "logOut";
-  static String expiry = "expiry";
+  // static String expiry = "expiry";
   static String wallet = "wallet";
   static String loyaltyPoints = "loyaltyPoints";
-
-
+  static String terms = "terms_and_conditions";
+  static String privacy = "privacy_policy";
+  static String instagram = "instagram";
+  static String facebook = "facebook";
+  static String twitter = "x";
 
   /// Sessions
   static String sessionToken = "session_token";
@@ -40,12 +40,28 @@ class SessionManager {
     SessionManager.prefs.setString(wallet, value);
   }
 
-  static void setLoyaltyPoints(int value) {
-    SessionManager.prefs.setInt(loyaltyPoints, value);
+  static void setTerms(String value) {
+    SessionManager.prefs.setString(terms, value);
   }
 
-  static void setExpiry(String value) {
-    SessionManager.prefs.setString(expiry, value);
+  static void setTwitter(String value) {
+    SessionManager.prefs.setString(twitter, value);
+  }
+
+  static void setFacebook(String value) {
+    SessionManager.prefs.setString(facebook, value);
+  }
+
+  static void setPrivacy(String value) {
+    SessionManager.prefs.setString(privacy, value);
+  }
+
+  static void setInstagram(String value) {
+    SessionManager.prefs.setString(instagram, value);
+  }
+
+  static void setLoyaltyPoints(int value) {
+    SessionManager.prefs.setInt(loyaltyPoints, value);
   }
 
   static void setLogOut(bool value) {
@@ -56,12 +72,8 @@ class SessionManager {
     SessionManager.prefs.setString(email, value);
   }
 
-  static void setUserName(String value) {
-    SessionManager.prefs.setString(userName, value);
-  }
-
-  static void setLastName(String value) {
-    SessionManager.prefs.setString(lastName, value);
+  static void setContactPhone(String value) {
+    SessionManager.prefs.setString(contactPhone, value);
   }
 
   static void setFullName(String value) {
@@ -80,8 +92,8 @@ class SessionManager {
     SessionManager.prefs.setString(token, value);
   }
 
-  static void setFirstName(String value) {
-    SessionManager.prefs.setString(firstName, value);
+  static void setContactEmail(String value) {
+    SessionManager.prefs.setString(contactEmail, value);
   }
 
   static void setProfilePhoto(String value) {
@@ -91,7 +103,6 @@ class SessionManager {
   static void setGender(String value) {
     SessionManager.prefs.setString(gender, value);
   }
-
 
   /// GETTERS
   static int? getUserId() {
@@ -106,6 +117,26 @@ class SessionManager {
     return SessionManager.prefs.getString(email);
   }
 
+  static String? getInstagram() {
+    return SessionManager.prefs.getString(instagram);
+  }
+
+  static String? getFacebook() {
+    return SessionManager.prefs.getString(facebook);
+  }
+
+  static String? getTwitter() {
+    return SessionManager.prefs.getString(twitter);
+  }
+
+  static String? getTerms() {
+    return SessionManager.prefs.getString(terms);
+  }
+
+  static String? getPrivacy() {
+    return SessionManager.prefs.getString(privacy);
+  }
+
   static int? getLoyaltyPoints() {
     return SessionManager.prefs.getInt(loyaltyPoints);
   }
@@ -114,33 +145,24 @@ class SessionManager {
     return SessionManager.prefs.getString(wallet);
   }
 
-  static String? getExpiry() {
-    return SessionManager.prefs.getString(expiry);
-  }
-
   static String? getProfilePhoto() {
     return SessionManager.prefs.getString(profilePhoto);
-  }
-
-  static String? getUserName() {
-    return SessionManager.prefs.getString(userName);
   }
 
   static String? getDateOfBirth() {
     return SessionManager.prefs.getString(dateOfBirth);
   }
 
-
-  static String? getFirstName() {
-    return SessionManager.prefs.getString(firstName);
+  static String? getContactEmail() {
+    return SessionManager.prefs.getString(contactEmail);
   }
 
   static String? getFullName() {
     return SessionManager.prefs.getString(fullName);
   }
 
-  static String? getLastName() {
-    return SessionManager.prefs.getString(lastName);
+  static String? getContactPhone() {
+    return SessionManager.prefs.getString(contactPhone);
   }
 
   static String? getPhone() {
@@ -155,7 +177,7 @@ class SessionManager {
     return SessionManager.prefs.getString(gender);
   }
 
-  static void clear() async{
+  static void clear() async {
     await prefs.clear();
   }
 }

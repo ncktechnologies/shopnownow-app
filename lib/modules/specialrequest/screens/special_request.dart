@@ -24,6 +24,7 @@ class _SpecialRequestState extends State<SpecialRequest> {
   @override
   Widget build(BuildContext context) {
     return InitialPage(
+        noIcon: true,
         child: Padding(
       padding: const EdgeInsets.symmetric(horizontal: kRegularPadding),
       child: Form(

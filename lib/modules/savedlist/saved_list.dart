@@ -31,6 +31,7 @@ class _SavedListState extends ConsumerState<SavedList> {
   @override
   Widget build(BuildContext context) {
     return InitialPage(
+        noIcon: true,
         child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: kRegularPadding),
             child: ref.watch(savedListProvider).when(

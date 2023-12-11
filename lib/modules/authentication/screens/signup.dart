@@ -31,6 +31,7 @@ class _SignUpState extends State<SignUp> {
   @override
   Widget build(BuildContext context) {
     return InitialPage(
+        noIcon: true,
         child: Padding(
       padding: const EdgeInsets.only(
           left: kMicroPadding,

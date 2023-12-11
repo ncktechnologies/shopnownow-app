@@ -1,14 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:shopnownow/app/helpers/session_manager.dart';
 import 'package:shopnownow/modules/reuseables/size_boxes.dart';
 import 'package:shopnownow/modules/reuseables/widgets.dart';
 import 'package:shopnownow/utils/assets_path.dart';
 import 'package:shopnownow/utils/constants.dart';
+import 'package:shopnownow/utils/flushbar.dart';
 import 'package:shopnownow/utils/strings.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-class SocialMedia extends StatelessWidget {
+class SocialMedia extends StatefulWidget {
   const SocialMedia({Key? key}) : super(key: key);
 
+  @override
+  State<SocialMedia> createState() => _SocialMediaState();
+}
+
+class _SocialMediaState extends State<SocialMedia> {
   @override
   Widget build(BuildContext context) {
     return InitialPage(
@@ -61,22 +69,55 @@ class SocialMedia extends StatelessWidget {
                   YBox(50),
                   SocialRow(
                     icon: AssetPaths.instagram,
-                    onTap: (){},
+                    onTap: openInstagram
+                    ,
                     text: instagram,
                   ),
                   YBox(kMicroPadding),
                   SocialRow(
                     icon: AssetPaths.facebook,
-                    onTap: (){},
+                    onTap: openFacebook,
                     text: facebook,
                   ),
                   YBox(kMicroPadding),
                   SocialRow(
                     icon: AssetPaths.x,
-                    onTap: (){},
+                    onTap: openTwitter,
                     text: "X",
                   ),
             ])));
+
+  }
+
+  void openTwitter() async {
+    final twitterUrl =
+        "https://twitter.com/${SessionManager.getTwitter()!.split("@").last}";
+    if (await canLaunchUrl(Uri.parse(twitterUrl))) {
+      await launchUrl(Uri.parse(twitterUrl));
+    } else {
+      showErrorBar(context, "The twitter link provided is invalid");
+    }
+  }
+
+  void openInstagram() async {
+
+    final instagramUrl =
+        "https://www.instagram.com/${SessionManager.getInstagram()!.split("@").last}";
+    if (await canLaunchUrl(Uri.parse(instagramUrl))) {
+      await launchUrl(Uri.parse(instagramUrl));
+    } else {
+      showErrorBar(context, "The instagram link provided is invalid");
+    }
+  }
+
+  void openFacebook() async {
+    final facebookUrl =
+        SessionManager.getFacebook()!.split("@").last;
+    if (await canLaunchUrl(Uri.parse(facebookUrl))) {
+      await launchUrl(Uri.parse(facebookUrl));
+    } else {
+      showErrorBar(context, "The facebook link provided is invalid");
+    }
   }
 }
 
@@ -92,11 +133,11 @@ class SocialRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        InkWellNoShadow(
-          onTap: onTap,
-          child: Container(
+    return InkWellNoShadow(
+      onTap: onTap,
+      child: Row(
+        children: [
+          Container(
             padding: const EdgeInsets.all(kRegularPadding),
             decoration: const BoxDecoration(
               shape: BoxShape.circle,
@@ -109,13 +150,13 @@ class SocialRow extends StatelessWidget {
               width: 24,
             ),
           ),
-        ),
-        XBox(kMediumPadding),
-        Text(
-          text,
-          style: textTheme.displayLarge!.copyWith(color: kDark400, ),
-        )
-      ],
+          XBox(kMediumPadding),
+          Text(
+            text,
+            style: textTheme.displayLarge!.copyWith(color: kDark400, ),
+          )
+        ],
+      ),
     );
   }
 }

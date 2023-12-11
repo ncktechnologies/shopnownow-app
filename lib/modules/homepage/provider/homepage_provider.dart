@@ -50,6 +50,11 @@ final loadCouponProvider = StateNotifierProvider<LoadCouponNotifier,
   return LoadCouponNotifier();
 });
 
+final getContactProvider = StateNotifierProvider<GetContactNotifier,
+    NotifierState<Map<String, dynamic>>>((ref) {
+  return GetContactNotifier();
+});
+
 class GetCategoriesNotifier
     extends StateNotifier<NotifierState<List<GetCategories>>> {
   GetCategoriesNotifier() : super(NotifierState());
@@ -182,6 +187,24 @@ class LoadCouponNotifier extends StateNotifier<NotifierState<String>> {
         await HomePageRepository.loadCoupon(coupon: coupon);
     if (state.status == NotifierStatus.done) {
       if (then != null) then(state.data!);
+    } else if (state.status == NotifierStatus.error) {
+      if (error != null) error(state.message);
+    }
+  }
+}
+
+class GetContactNotifier extends StateNotifier<NotifierState<Map<String, dynamic>>> {
+  GetContactNotifier() : super(NotifierState());
+
+  void getContact(
+      {
+      Function()? then,
+      Function(String?)? error}) async {
+    state = notifyLoading();
+    state =
+        await HomePageRepository.getContact();
+    if (state.status == NotifierStatus.done) {
+      if (then != null) then();
     } else if (state.status == NotifierStatus.error) {
       if (error != null) error(state.message);
     }

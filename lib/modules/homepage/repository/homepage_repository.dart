@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:shopnownow/app/helpers/notifiers.dart';
 import 'package:shopnownow/app/helpers/service_response.dart';
+import 'package:shopnownow/app/helpers/session_manager.dart';
 import 'package:shopnownow/modules/homepage/model/homepage_model.dart';
 import 'package:shopnownow/utils/logger.dart';
 
@@ -109,6 +110,23 @@ class HomePageRepository {
         onReturn: (response) => logResponse(response),
         getDataFromResponse: (data) {
           return data["coupon"]["value"];
+        }))
+        .toNotifierState();
+  }
+
+  static Future<NotifierState<Map<String, dynamic>>> getContact() async {
+    return (await ApiService<Map<String, dynamic>>().getCall(
+        "/user/site-data/site_data",
+        onReturn: (response) => logResponse(response),
+        getDataFromResponse: (data) {
+          SessionManager.setPrivacy(data["privacy_policy"]);
+          SessionManager.setTerms(data["terms_and_conditions"]);
+          SessionManager.setInstagram(data["contact_data"].toString().split(";").first);
+          SessionManager.setFacebook(data["contact_data"].toString().split(";")[1]);
+          SessionManager.setTwitter(data["contact_data"].toString().split(";")[2]);
+          SessionManager.setContactEmail(data["contact_data"].toString().split(";")[4]);
+          SessionManager.setContactPhone(data["contact_data"].toString().split(";")[3]);
+          return data;
         }))
         .toNotifierState();
   }

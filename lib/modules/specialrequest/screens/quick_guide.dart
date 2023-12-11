@@ -9,7 +9,9 @@ class QuickGuide extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InitialPage(child: Padding(
+    return InitialPage(
+        noIcon: true,
+        child: Padding(
       padding: const EdgeInsets.symmetric(horizontal: kRegularPadding),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

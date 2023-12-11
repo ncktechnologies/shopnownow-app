@@ -79,6 +79,7 @@ class _HomePageState extends ConsumerState<HomePage> {
     super.initState();
     getToken();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      ref.read(getContactProvider.notifier).getContact();
       ref.read(getCategoriesProvider.notifier).getCategories(then: (val) {
         for (var element in val) {
           categories.add(element);
@@ -95,10 +96,10 @@ class _HomePageState extends ConsumerState<HomePage> {
   Widget build(BuildContext context) {
     return InitialPage(
         noScroll: true,
+        noIcon: true,
         child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: kRegularPadding,
-            vertical: kMediumPadding,
+          padding: const EdgeInsets.only(
+            left: kRegularPadding, right: kRegularPadding, top: kMediumPadding
           ),
           child: Column(
             children: [

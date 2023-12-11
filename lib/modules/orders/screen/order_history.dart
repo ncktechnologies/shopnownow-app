@@ -40,6 +40,7 @@ class _OrderHistoryState extends ConsumerState<OrderHistory> {
   @override
   Widget build(BuildContext context) {
     return InitialPage(
+        noIcon: true,
         child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: kRegularPadding),
             child: ref.watch(orderProvider).when(

@@ -85,19 +85,19 @@ class ContactUs extends StatelessWidget {
             ),
           ),
           YBox(kMacroPadding),
-          const OrWidget(color: kLightAsh400),
-          YBox(kMacroPadding),
-
-          TextInputNoIcon(
-            text: subject,
-          ),
-          TextInputNoIcon(
-            text: message,
-            maxLine: 8,
-          ),
-          YBox(80),
-          LargeButton(title: submit, onPressed: (){}),
-          YBox(kRegularPadding),
+          // const OrWidget(color: kLightAsh400),
+          // YBox(kMacroPadding),
+          //
+          // TextInputNoIcon(
+          //   text: subject,
+          // ),
+          // TextInputNoIcon(
+          //   text: message,
+          //   maxLine: 8,
+          // ),
+          // YBox(80),
+          // LargeButton(title: submit, onPressed: (){}),
+          // YBox(kRegularPadding),
 
         ],
       ),

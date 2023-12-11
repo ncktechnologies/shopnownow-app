@@ -98,10 +98,12 @@ class LargeButton extends StatelessWidget {
 class InitialPage extends StatelessWidget {
   final Widget child;
   final bool noScroll;
+  final bool noIcon;
 
   const InitialPage({
     required this.child,
     this.noScroll = false,
+    this.noIcon = false,
     super.key,
   });
 
@@ -123,7 +125,7 @@ class InitialPage extends StatelessWidget {
           ),
         ),
         actions: [
-          InkWellNoShadow(
+          noIcon? YBox(0):  InkWellNoShadow(
             onTap: (){
               if(Navigator.canPop(context)){
                 Navigator.pop(context);

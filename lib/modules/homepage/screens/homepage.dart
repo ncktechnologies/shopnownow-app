@@ -80,6 +80,7 @@ class _HomePageState extends ConsumerState<HomePage> {
     getToken();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       ref.read(getContactProvider.notifier).getContact();
+      ref.read(getQuickGuideProvider.notifier).getQuickGuide();
       ref.read(getCategoriesProvider.notifier).getCategories(then: (val) {
         for (var element in val) {
           categories.add(element);

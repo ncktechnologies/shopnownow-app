@@ -475,6 +475,49 @@ class ProcessPaymentRequest {
   };
 }
 
+List<GetQuickGuide> getQuickGuideFromJson(String str) => List<GetQuickGuide>.from(json.decode(str).map((x) => GetQuickGuide.fromJson(x)));
+
+class GetQuickGuide {
+  int? id;
+  String? title;
+  String? body;
+  String? imagePath;
+  int? isHidden;
+  DateTime? createdAt;
+  DateTime? updatedAt;
+
+  GetQuickGuide({
+      this.id,
+      this.title,
+      this.body,
+      this.imagePath,
+      this.isHidden,
+      this.createdAt,
+     this.updatedAt,
+  });
+
+  factory GetQuickGuide.fromJson(Map<String, dynamic> json) => GetQuickGuide(
+    id: json["id"],
+    title: json["title"],
+    body: json["body"],
+    imagePath: json["image_path"],
+    isHidden: json["is_hidden"],
+    createdAt: DateTime.parse(json["created_at"]),
+    updatedAt: DateTime.parse(json["updated_at"]),
+  );
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "title": title,
+    "body": body,
+    "image_path": imagePath,
+    "is_hidden": isHidden,
+    "created_at": createdAt!.toIso8601String(),
+    "updated_at": updatedAt!.toIso8601String(),
+  };
+}
+
+
 
 
 

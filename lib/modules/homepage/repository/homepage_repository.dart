@@ -130,4 +130,14 @@ class HomePageRepository {
         }))
         .toNotifierState();
   }
+
+  static Future<NotifierState<List<GetQuickGuide>>> getQuickGuide() async {
+    return (await ApiService<List<GetQuickGuide>>().getCallOnlyList(
+        "/user/quickguide/list",
+        onReturn: (response) => logResponse(response),
+        getDataFromResponse: (data) {
+          return getQuickGuideFromJson(jsonEncode(data));
+        }))
+        .toNotifierState();
+  }
 }

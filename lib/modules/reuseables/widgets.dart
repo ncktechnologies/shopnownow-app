@@ -363,113 +363,29 @@ class DrawerContainer extends StatelessWidget {
   }
 }
 
-// class PinCodeTextFieldWidget extends StatelessWidget {
-//   final Function(String?) onSaved;
-//   final Function(String) onChanged;
-//   final MainAxisAlignment? mainAlignment;
-//   final FocusNode? focusNode;
-//   final TextEditingController? controller;
-//   final String? hintCharacter;
-//   final TextStyle? hintColor;
-//
-//   const PinCodeTextFieldWidget(
-//       {Key? key,
-//       required this.onSaved,
-//       required this.onChanged,
-//       this.focusNode,
-//       this.controller,
-//       this.mainAlignment,
-//       this.hintCharacter,
-//       this.hintColor})
-//       : super(key: key);
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     TextTheme textTheme = Theme.of(context).textTheme;
-//     return PinCodeTextField(
-//         useHapticFeedback: true,
-//         keyboardType: TextInputType.number,
-//         enableActiveFill: true,
-//         mainAxisAlignment: MainAxisAlignment.start,
-//         animationDuration: const Duration(milliseconds: 300),
-//         cursorColor: kPrimaryColor,
-//         controller: controller,
-//         errorTextSpace: 25,
-//         autovalidateMode: AutovalidateMode.onUserInteraction,
-//         focusNode: focusNode,
-//         validator: (val) {
-//           if (val!.isEmpty) {
-//             return "Pin is empty";
-//           } else if (val.length != 4) {
-//             return "Pin must be 4 digits";
-//           } else {
-//             return null;
-//           }
-//         },
-//         onSaved: onSaved,
-//         inputFormatters: [
-//           FilteringTextInputFormatter.digitsOnly,
-//           LengthLimitingTextInputFormatter(4),
-//         ],
-//         textStyle: textTheme.bodyLarge!.copyWith(
-//           fontWeight: FontWeight.w400,
-//           fontSize: 18,
-//         ),
-//         pinTheme: PinTheme(
-//           fieldWidth: 45,
-//           fieldHeight: 45,
-//           shape: PinCodeFieldShape.box,
-//           borderRadius: BorderRadius.circular(kSmallPadding),
-//           fieldOuterPadding: mainAlignment == MainAxisAlignment.spaceBetween
-//               ? null
-//               : const EdgeInsets.only(right: kMediumPadding),
-//           selectedColor: kTransparent,
-//           inactiveColor: kLightAsh200,
-//           activeColor: kGrey700,
-//           selectedFillColor: kGrey700,
-//           activeFillColor: kGrey700,
-//           inactiveFillColor: kPrimaryWhite,
-//         ),
-//         appContext: context,
-//         length: 4,
-//         onChanged: onChanged);
-//   }
-// }
-//
-// class NotRegistered extends StatelessWidget {
-//   final Color? color;
-//   final String text;
-//   final String subText;
-//   final TextAlign? align;
-//   final Function() onTap;
-//
-//   const NotRegistered(
-//       {super.key,
-//       this.align,
-//       this.color,
-//       required this.text,
-//       required this.subText,
-//       required this.onTap});
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return RichText(
-//       textAlign: align ?? TextAlign.center,
-//       text: TextSpan(
-//         text: text,
-//         style: textTheme.displayMedium!.copyWith(color: color ?? kPrimaryWhite),
-//         children: [
-//           TextSpan(
-//               text: subText,
-//               recognizer: TapGestureRecognizer()..onTap = onTap,
-//               style: textTheme.bodyMedium!
-//                   .copyWith(fontWeight: FontWeight.bold, letterSpacing: 0.2)),
-//         ],
-//       ),
-//     );
-//   }
-// }
-//
+class PageIndicator extends StatelessWidget {
+  final int index, currentPage;
+  final Color color;
+  final Color? inactiveColor;
+
+  PageIndicator(this.index, this.currentPage, {this.color = kPurple50, this.inactiveColor = kLightDark400});
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedContainer(
+      padding: EdgeInsets.all(currentPage == index ? 3 : 0),
+      duration: const Duration(milliseconds: 300),
+      margin: const EdgeInsets.symmetric(horizontal: kPadding,),
+      height: 8,
+      width:  8,
+      decoration: BoxDecoration(
+          color: currentPage == index ? color : inactiveColor,
+          shape: BoxShape.circle),
+    );
+  }
+}
+
+
 class OrWidget extends StatelessWidget {
   final Color? color;
   const OrWidget({

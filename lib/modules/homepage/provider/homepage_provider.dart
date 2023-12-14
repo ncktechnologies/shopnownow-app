@@ -55,6 +55,11 @@ final getContactProvider = StateNotifierProvider<GetContactNotifier,
   return GetContactNotifier();
 });
 
+final getQuickGuideProvider = StateNotifierProvider<GetQuickGuideNotifier,
+    NotifierState<List<GetQuickGuide>>>((ref) {
+  return GetQuickGuideNotifier();
+});
+
 class GetCategoriesNotifier
     extends StateNotifier<NotifierState<List<GetCategories>>> {
   GetCategoriesNotifier() : super(NotifierState());
@@ -203,6 +208,24 @@ class GetContactNotifier extends StateNotifier<NotifierState<Map<String, dynamic
     state = notifyLoading();
     state =
         await HomePageRepository.getContact();
+    if (state.status == NotifierStatus.done) {
+      if (then != null) then();
+    } else if (state.status == NotifierStatus.error) {
+      if (error != null) error(state.message);
+    }
+  }
+}
+
+class GetQuickGuideNotifier extends StateNotifier<NotifierState<List<GetQuickGuide>>> {
+  GetQuickGuideNotifier() : super(NotifierState());
+
+  void getQuickGuide(
+      {
+      Function()? then,
+      Function(String?)? error}) async {
+    state = notifyLoading();
+    state =
+        await HomePageRepository.getQuickGuide();
     if (state.status == NotifierStatus.done) {
       if (then != null) then();
     } else if (state.status == NotifierStatus.error) {

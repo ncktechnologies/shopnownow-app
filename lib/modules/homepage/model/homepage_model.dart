@@ -1,9 +1,11 @@
-
 import 'dart:convert';
 
-List<GetCategories> getCategoriesFromJson(String str) => List<GetCategories>.from(json.decode(str).map((x) => GetCategories.fromJson(x)));
+List<GetCategories> getCategoriesFromJson(String str) =>
+    List<GetCategories>.from(
+        json.decode(str).map((x) => GetCategories.fromJson(x)));
 
-String getCategoriesToJson(List<GetCategories> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+String getCategoriesToJson(List<GetCategories> data) =>
+    json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
 class GetCategories {
   int? id;
@@ -20,8 +22,8 @@ class GetCategories {
   DateTime? updatedAt;
   Band? band;
 
-  GetCategories({
-      this.id,
+  GetCategories(
+      {this.id,
       this.name,
       this.tax,
       this.deliveryOption,
@@ -33,40 +35,39 @@ class GetCategories {
       this.bandId,
       this.createdAt,
       this.updatedAt,
-    this.band
-  });
+      this.band});
 
   factory GetCategories.fromJson(Map<String, dynamic> json) => GetCategories(
-    id: json["id"],
-    name: json["name"],
-    tax: json["tax"],
-    deliveryOption: json["delivery_option"],
-    discountOption: json["discount_option"],
-    discountType: json["discount_type"],
-    discountValue: json["discount_value"],
-    thumbnail: json["thumbnail"],
-    hidden: json["hidden"],
-    bandId: json["band_id"],
-    createdAt: DateTime.parse(json["created_at"]),
-    updatedAt: DateTime.parse(json["updated_at"]),
-    band: Band.fromJson(json["band"]),
-  );
+        id: json["id"],
+        name: json["name"],
+        tax: json["tax"],
+        deliveryOption: json["delivery_option"],
+        discountOption: json["discount_option"],
+        discountType: json["discount_type"],
+        discountValue: json["discount_value"],
+        thumbnail: json["thumbnail"],
+        hidden: json["hidden"],
+        bandId: json["band_id"],
+        createdAt: DateTime.parse(json["created_at"]),
+        updatedAt: DateTime.parse(json["updated_at"]),
+        band: Band.fromJson(json["band"]),
+      );
 
   Map<String, dynamic> toJson() => {
-    "id": id,
-    "name": name,
-    "tax": tax,
-    "delivery_option": deliveryOption,
-    "discount_option": discountOption,
-    "discount_type": discountType,
-    "discount_value": discountValue,
-    "thumbnail": thumbnail,
-    "hidden": hidden,
-    "band_id": bandId,
-    "created_at": createdAt!.toIso8601String(),
-    "updated_at": updatedAt!.toIso8601String(),
-    "band": band!.toJson(),
-  };
+        "id": id,
+        "name": name,
+        "tax": tax,
+        "delivery_option": deliveryOption,
+        "discount_option": discountOption,
+        "discount_type": discountType,
+        "discount_value": discountValue,
+        "thumbnail": thumbnail,
+        "hidden": hidden,
+        "band_id": bandId,
+        "created_at": createdAt!.toIso8601String(),
+        "updated_at": updatedAt!.toIso8601String(),
+        "band": band!.toJson(),
+      };
 }
 
 class Band {
@@ -82,43 +83,43 @@ class Band {
   int? discountEnabled;
 
   Band({
-      this.id,
-      this.name,
-      this.description,
-      this.createdAt,
-      this.updatedAt,
-      this.minimum,
-      this.bulkDiscountPercentage,
-      this.bulkDiscountAmount,
-      this.generalDiscount,
-      this.discountEnabled,
+    this.id,
+    this.name,
+    this.description,
+    this.createdAt,
+    this.updatedAt,
+    this.minimum,
+    this.bulkDiscountPercentage,
+    this.bulkDiscountAmount,
+    this.generalDiscount,
+    this.discountEnabled,
   });
 
   factory Band.fromJson(Map<String, dynamic> json) => Band(
-    id: json["id"],
-    name: json["name"],
-    description: json["description"],
-    createdAt: DateTime.parse(json["created_at"]),
-    updatedAt: DateTime.parse(json["updated_at"]),
-    minimum: json["minimum"],
-    bulkDiscountPercentage: json["bulk_discount_percentage"],
-    bulkDiscountAmount: json["bulk_discount_amount"],
-    generalDiscount: json["general_discount"],
-    discountEnabled: json["discount_enabled"],
-  );
+        id: json["id"],
+        name: json["name"],
+        description: json["description"],
+        createdAt: DateTime.parse(json["created_at"]),
+        updatedAt: DateTime.parse(json["updated_at"]),
+        minimum: json["minimum"],
+        bulkDiscountPercentage: json["bulk_discount_percentage"],
+        bulkDiscountAmount: json["bulk_discount_amount"],
+        generalDiscount: json["general_discount"],
+        discountEnabled: json["discount_enabled"],
+      );
 
   Map<String, dynamic> toJson() => {
-    "id": id,
-    "name": name,
-    "description": description,
-    "created_at": createdAt!.toIso8601String(),
-    "updated_at": updatedAt!.toIso8601String(),
-    "minimum": minimum,
-    "bulk_discount_percentage": bulkDiscountPercentage,
-    "bulk_discount_amount": bulkDiscountAmount,
-    "general_discount": generalDiscount,
-    "discount_enabled": discountEnabled,
-  };
+        "id": id,
+        "name": name,
+        "description": description,
+        "created_at": createdAt!.toIso8601String(),
+        "updated_at": updatedAt!.toIso8601String(),
+        "minimum": minimum,
+        "bulk_discount_percentage": bulkDiscountPercentage,
+        "bulk_discount_amount": bulkDiscountAmount,
+        "general_discount": generalDiscount,
+        "discount_enabled": discountEnabled,
+      };
 
   @override
   String toString() {
@@ -126,25 +127,26 @@ class Band {
   }
 }
 
-
 class GetProductsBySearch {
   String? message;
   List<Product>? products;
 
   GetProductsBySearch({
-      this.message,
-      this.products,
+    this.message,
+    this.products,
   });
 
-  factory GetProductsBySearch.fromJson(Map<String, dynamic> json) => GetProductsBySearch(
-    message: json["message"],
-    products: List<Product>.from(json["products"].map((x) => Product.fromJson(x))),
-  );
+  factory GetProductsBySearch.fromJson(Map<String, dynamic> json) =>
+      GetProductsBySearch(
+        message: json["message"],
+        products: List<Product>.from(
+            json["products"].map((x) => Product.fromJson(x))),
+      );
 
   Map<String, dynamic> toJson() => {
-    "message": message,
-    "products": List<dynamic>.from(products!.map((x) => x.toJson())),
-  };
+        "message": message,
+        "products": List<dynamic>.from(products!.map((x) => x.toJson())),
+      };
 }
 
 class Product {
@@ -161,8 +163,8 @@ class Product {
   Band? band;
   Category? category;
 
-  Product({
-      this.id,
+  Product(
+      {this.id,
       this.name,
       this.thumbnailUrl,
       this.price,
@@ -171,39 +173,40 @@ class Product {
       this.categoryId,
       this.createdAt,
       this.updatedAt,
-    this.quantity,
-    this.band,
-     this.category
-  });
+      this.quantity,
+      this.band,
+      this.category});
 
   factory Product.fromJson(Map<String, dynamic> json) => Product(
-    id: json["id"],
-    name: json["name"],
-    thumbnailUrl: json["thumbnail_url"],
-    price: json["price"],
-    unitOfMeasurement: json["unit_of_measurement"],
-    availability: json["availability"],
-    categoryId: json["category_id"],
-    quantity: json["quantity"],
-    createdAt: DateTime.parse(json["created_at"]),
-    updatedAt: DateTime.parse(json["updated_at"]),
-    band: json["band"] == null ? null : Band.fromJson(json["band"]),
-    category: json["category"] == null ? null : Category.fromJson(json["category"]),
-  );
+        id: json["id"],
+        name: json["name"],
+        thumbnailUrl: json["thumbnail_url"],
+        price: json["price"],
+        unitOfMeasurement: json["unit_of_measurement"],
+        availability: json["availability"],
+        categoryId: json["category_id"],
+        quantity: json["quantity"],
+        createdAt: DateTime.parse(json["created_at"]),
+        updatedAt: DateTime.parse(json["updated_at"]),
+        band: json["band"] == null ? null : Band.fromJson(json["band"]),
+        category: json["category"] == null
+            ? null
+            : Category.fromJson(json["category"]),
+      );
 
   Map<String, dynamic> toJson() => {
-    "id": id,
-    "name": name,
-    "thumbnail_url": thumbnailUrl,
-    "price": price,
-    "unit_of_measurement": unitOfMeasurement,
-    "availability": availability,
-    "category_id": categoryId,
-    "created_at": createdAt!.toIso8601String(),
-    "updated_at": updatedAt!.toIso8601String(),
-    "band": band!.toJson(),
-    "category": category!.toJson(),
-  };
+        "id": id,
+        "name": name,
+        "thumbnail_url": thumbnailUrl,
+        "price": price,
+        "unit_of_measurement": unitOfMeasurement,
+        "availability": availability,
+        "category_id": categoryId,
+        "created_at": createdAt!.toIso8601String(),
+        "updated_at": updatedAt!.toIso8601String(),
+        "band": band!.toJson(),
+        "category": category!.toJson(),
+      };
 
   @override
   String toString() {
@@ -212,22 +215,19 @@ class Product {
 }
 
 class Category {
-
   String tax;
 
   Category({
-
     required this.tax,
   });
 
   factory Category.fromJson(Map<String, dynamic> json) => Category(
-
-    tax: json["tax"],
-  );
+        tax: json["tax"],
+      );
 
   Map<String, dynamic> toJson() => {
-    "tax": tax,
-  };
+        "tax": tax,
+      };
 }
 
 class AddProductRequest {
@@ -237,13 +237,15 @@ class AddProductRequest {
     required this.products,
   });
 
-  factory AddProductRequest.fromJson(Map<String, dynamic> json) => AddProductRequest(
-    products: List<ProductRequest>.from(json["products"].map((x) => ProductRequest.fromJson(x))),
-  );
+  factory AddProductRequest.fromJson(Map<String, dynamic> json) =>
+      AddProductRequest(
+        products: List<ProductRequest>.from(
+            json["products"].map((x) => ProductRequest.fromJson(x))),
+      );
 
   Map<String, dynamic> toJson() => {
-    "products": List<dynamic>.from(products.map((x) => x.toJson())),
-  };
+        "products": List<dynamic>.from(products.map((x) => x.toJson())),
+      };
 }
 
 class ProductRequest {
@@ -256,30 +258,31 @@ class ProductRequest {
   });
 
   factory ProductRequest.fromJson(Map<String, dynamic> json) => ProductRequest(
-    id: json["id"],
-    quantity: json["quantity"],
-  );
+        id: json["id"],
+        quantity: json["quantity"],
+      );
 
   Map<String, dynamic> toJson() => {
-    "id": id,
-    "quantity": quantity,
-  };
+        "id": id,
+        "quantity": quantity,
+      };
 }
 
 class GetLocation {
   List<Location>? locations;
 
   GetLocation({
-      this.locations,
+    this.locations,
   });
 
   factory GetLocation.fromJson(Map<String, dynamic> json) => GetLocation(
-    locations: List<Location>.from(json["locations"].map((x) => Location.fromJson(x))),
-  );
+        locations: List<Location>.from(
+            json["locations"].map((x) => Location.fromJson(x))),
+      );
 
   Map<String, dynamic> toJson() => {
-    "locations": List<dynamic>.from(locations!.map((x) => x.toJson())),
-  };
+        "locations": List<dynamic>.from(locations!.map((x) => x.toJson())),
+      };
 }
 
 class Location {
@@ -292,50 +295,51 @@ class Location {
   DateTime? updatedAt;
 
   Location({
-      this.id,
-      this.bandId,
-      this.location,
-      this.price,
-      this.hidden,
-      this.createdAt,
-      this.updatedAt,
+    this.id,
+    this.bandId,
+    this.location,
+    this.price,
+    this.hidden,
+    this.createdAt,
+    this.updatedAt,
   });
 
   factory Location.fromJson(Map<String, dynamic> json) => Location(
-    id: json["id"],
-    bandId: json["band_id"],
-    location: json["location"],
-    price: json["price"],
-    hidden: json["hidden"],
-    createdAt: DateTime.parse(json["created_at"]),
-    updatedAt: DateTime.parse(json["updated_at"]),
-  );
+        id: json["id"],
+        bandId: json["band_id"],
+        location: json["location"],
+        price: json["price"],
+        hidden: json["hidden"],
+        createdAt: DateTime.parse(json["created_at"]),
+        updatedAt: DateTime.parse(json["updated_at"]),
+      );
 
   Map<String, dynamic> toJson() => {
-    "id": id,
-    "band_id": bandId,
-    "location": location,
-    "price": price,
-    "hidden": hidden,
-    "created_at": createdAt!.toIso8601String(),
-    "updated_at": updatedAt!.toIso8601String(),
-  };
+        "id": id,
+        "band_id": bandId,
+        "location": location,
+        "price": price,
+        "hidden": hidden,
+        "created_at": createdAt!.toIso8601String(),
+        "updated_at": updatedAt!.toIso8601String(),
+      };
 }
 
 class GetTimeSlot {
   List<TimeSlot>? timeSlots;
 
   GetTimeSlot({
-      this.timeSlots,
+    this.timeSlots,
   });
 
   factory GetTimeSlot.fromJson(Map<String, dynamic> json) => GetTimeSlot(
-    timeSlots: List<TimeSlot>.from(json["timeSlots"].map((x) => TimeSlot.fromJson(x))),
-  );
+        timeSlots: List<TimeSlot>.from(
+            json["timeSlots"].map((x) => TimeSlot.fromJson(x))),
+      );
 
   Map<String, dynamic> toJson() => {
-    "timeSlots": List<dynamic>.from(timeSlots!.map((x) => x.toJson())),
-  };
+        "timeSlots": List<dynamic>.from(timeSlots!.map((x) => x.toJson())),
+      };
 }
 
 class TimeSlot {
@@ -346,30 +350,29 @@ class TimeSlot {
   DateTime? updatedAt;
 
   TimeSlot({
-      this.id,
-      this.deliveryTime,
-      this.isAvailable,
-      this.createdAt,
-      this.updatedAt,
+    this.id,
+    this.deliveryTime,
+    this.isAvailable,
+    this.createdAt,
+    this.updatedAt,
   });
 
   factory TimeSlot.fromJson(Map<String, dynamic> json) => TimeSlot(
-    id: json["id"],
-    deliveryTime: json["delivery_time"],
-    isAvailable: json["is_available"],
-    createdAt: DateTime.parse(json["created_at"]),
-    updatedAt: DateTime.parse(json["updated_at"]),
-  );
+        id: json["id"],
+        deliveryTime: json["start_time"] + " - " + json["end_time"],
+        isAvailable: json["is_available"],
+        createdAt: DateTime.parse(json["created_at"]),
+        updatedAt: DateTime.parse(json["updated_at"]),
+      );
 
   Map<String, dynamic> toJson() => {
-    "id": id,
-    "delivery_time": deliveryTime,
-    "is_available": isAvailable,
-    "created_at": createdAt!.toIso8601String(),
-    "updated_at": updatedAt!.toIso8601String(),
-  };
+        "id": id,
+        "delivery_time": deliveryTime,
+        "is_available": isAvailable,
+        "created_at": createdAt!.toIso8601String(),
+        "updated_at": updatedAt!.toIso8601String(),
+      };
 }
-
 
 class CreateOrderRequest {
   int? userId;
@@ -386,7 +389,7 @@ class CreateOrderRequest {
   String deliveryTimeSlot;
 
   CreateOrderRequest({
-      this.userId,
+    this.userId,
     required this.products,
     required this.price,
     required this.tax,
@@ -400,35 +403,37 @@ class CreateOrderRequest {
     required this.deliveryTimeSlot,
   });
 
-  factory CreateOrderRequest.fromJson(Map<String, dynamic> json) => CreateOrderRequest(
-    userId: json["user_id"],
-    products: List<ProductRequest>.from(json["products"].map((x) => ProductRequest.fromJson(x))),
-    price: json["price"],
-    tax: json["tax"],
-    status: json["status"],
-    deliveryInfo: json["delivery_info"],
-    paymentType: json["payment_type"],
-    recipientName: json["recipient_name"],
-    recipientPhone: json["recipient_phone"],
-    recipientEmail: json["recipient_email"],
-    deliveryFee: json["delivery_fee"],
-    deliveryTimeSlot: json["delivery_time_slot"],
-  );
+  factory CreateOrderRequest.fromJson(Map<String, dynamic> json) =>
+      CreateOrderRequest(
+        userId: json["user_id"],
+        products: List<ProductRequest>.from(
+            json["products"].map((x) => ProductRequest.fromJson(x))),
+        price: json["price"],
+        tax: json["tax"],
+        status: json["status"],
+        deliveryInfo: json["delivery_info"],
+        paymentType: json["payment_type"],
+        recipientName: json["recipient_name"],
+        recipientPhone: json["recipient_phone"],
+        recipientEmail: json["recipient_email"],
+        deliveryFee: json["delivery_fee"],
+        deliveryTimeSlot: json["delivery_time_slot"],
+      );
 
   Map<String, dynamic> toJson() => {
-    if (userId != 0) 'user_id': userId,
-    "products": List<dynamic>.from(products.map((x) => x.toJson())),
-    "price": price,
-    "tax": tax,
-    "status": status,
-    "delivery_info": deliveryInfo,
-    "payment_type": paymentType,
-    "recipient_name": recipientName,
-    "recipient_phone": recipientPhone,
-    "recipient_email": recipientEmail,
-    "delivery_fee": deliveryFee,
-    "delivery_time_slot": deliveryTimeSlot,
-  };
+        if (userId != 0) 'user_id': userId,
+        "products": List<dynamic>.from(products.map((x) => x.toJson())),
+        "price": price,
+        "tax": tax,
+        "status": status,
+        "delivery_info": deliveryInfo,
+        "payment_type": paymentType,
+        "recipient_name": recipientName,
+        "recipient_phone": recipientPhone,
+        "recipient_email": recipientEmail,
+        "delivery_fee": deliveryFee,
+        "delivery_time_slot": deliveryTimeSlot,
+      };
 }
 
 class ProcessPaymentRequest {
@@ -442,7 +447,7 @@ class ProcessPaymentRequest {
   String paymentGatewayReference;
 
   ProcessPaymentRequest({
-     this.userId,
+    this.userId,
     required this.amount,
     required this.status,
     required this.orderId,
@@ -452,30 +457,33 @@ class ProcessPaymentRequest {
     required this.paymentGatewayReference,
   });
 
-  factory ProcessPaymentRequest.fromJson(Map<String, dynamic> json) => ProcessPaymentRequest(
-    userId: json["user_id"],
-    amount: json["amount"],
-    status: json["status"],
-    orderId: json["order_id"].toInt(),
-    reference: json["reference"],
-    paymentType: json["payment_type"],
-    paymentGateway: json["payment_gateway"],
-    paymentGatewayReference: json["payment_gateway_reference"],
-  );
+  factory ProcessPaymentRequest.fromJson(Map<String, dynamic> json) =>
+      ProcessPaymentRequest(
+        userId: json["user_id"],
+        amount: json["amount"],
+        status: json["status"],
+        orderId: json["order_id"].toInt(),
+        reference: json["reference"],
+        paymentType: json["payment_type"],
+        paymentGateway: json["payment_gateway"],
+        paymentGatewayReference: json["payment_gateway_reference"],
+      );
 
   Map<String, dynamic> toJson() => {
-    if(userId != null)"user_id": userId.toString(),
-    "amount": amount,
-    "status": status,
-    "order_id": orderId.toString(),
-    "reference": reference,
-    "payment_type": paymentType,
-    "payment_gateway": paymentGateway,
-    "payment_gateway_reference": paymentGatewayReference,
-  };
+        if (userId != null) "user_id": userId.toString(),
+        "amount": amount,
+        "status": status,
+        "order_id": orderId.toString(),
+        "reference": reference,
+        "payment_type": paymentType,
+        "payment_gateway": paymentGateway,
+        "payment_gateway_reference": paymentGatewayReference,
+      };
 }
 
-List<GetQuickGuide> getQuickGuideFromJson(String str) => List<GetQuickGuide>.from(json.decode(str).map((x) => GetQuickGuide.fromJson(x)));
+List<GetQuickGuide> getQuickGuideFromJson(String str) =>
+    List<GetQuickGuide>.from(
+        json.decode(str).map((x) => GetQuickGuide.fromJson(x)));
 
 class GetQuickGuide {
   int? id;
@@ -487,38 +495,32 @@ class GetQuickGuide {
   DateTime? updatedAt;
 
   GetQuickGuide({
-      this.id,
-      this.title,
-      this.body,
-      this.imagePath,
-      this.isHidden,
-      this.createdAt,
-     this.updatedAt,
+    this.id,
+    this.title,
+    this.body,
+    this.imagePath,
+    this.isHidden,
+    this.createdAt,
+    this.updatedAt,
   });
 
   factory GetQuickGuide.fromJson(Map<String, dynamic> json) => GetQuickGuide(
-    id: json["id"],
-    title: json["title"],
-    body: json["body"],
-    imagePath: json["image_path"],
-    isHidden: json["is_hidden"],
-    createdAt: DateTime.parse(json["created_at"]),
-    updatedAt: DateTime.parse(json["updated_at"]),
-  );
+        id: json["id"],
+        title: json["title"],
+        body: json["body"],
+        imagePath: json["image_path"],
+        isHidden: json["is_hidden"],
+        createdAt: DateTime.parse(json["created_at"]),
+        updatedAt: DateTime.parse(json["updated_at"]),
+      );
 
   Map<String, dynamic> toJson() => {
-    "id": id,
-    "title": title,
-    "body": body,
-    "image_path": imagePath,
-    "is_hidden": isHidden,
-    "created_at": createdAt!.toIso8601String(),
-    "updated_at": updatedAt!.toIso8601String(),
-  };
+        "id": id,
+        "title": title,
+        "body": body,
+        "image_path": imagePath,
+        "is_hidden": isHidden,
+        "created_at": createdAt!.toIso8601String(),
+        "updated_at": updatedAt!.toIso8601String(),
+      };
 }
-
-
-
-
-
-

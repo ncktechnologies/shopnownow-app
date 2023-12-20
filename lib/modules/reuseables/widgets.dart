@@ -125,37 +125,62 @@ class InitialPage extends StatelessWidget {
           ),
         ),
         actions: [
-          noIcon? YBox(0):  InkWellNoShadow(
-            onTap: (){
-              if(Navigator.canPop(context)){
-                Navigator.pop(context);
-              }
-            },
-            child: const Padding(
-              padding: EdgeInsets.only(right: kMediumPadding),
-              child: Center(
-                child: Icon(
-                  Icons.close, size: 30, color: kPrimaryColor,
-                ),
-              ),
-            ),
-          )
+          noIcon
+              ? YBox(0)
+              : InkWellNoShadow(
+                  onTap: () {
+                    if (Navigator.canPop(context)) {
+                      Navigator.pop(context);
+                    }
+                  },
+                  child: const Padding(
+                    padding: EdgeInsets.only(right: kMediumPadding),
+                    child: Center(
+                      child: Icon(
+                        Icons.close,
+                        size: 30,
+                        color: kPrimaryColor,
+                      ),
+                    ),
+                  ),
+                )
         ],
         leadingWidth: 40,
         title: Image.asset(AssetPaths.logo, height: 40),
         centerTitle: true,
       ),
-      body: SafeArea(
-        child: noScroll ? child : SingleChildScrollView(
-          child: child,
-        ),
+      body: LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints constraints) {
+          if (constraints.maxWidth > 600) {
+            return Center(
+              child: Container(
+                width: 800,
+                child: SafeArea(
+                  child: noScroll
+                      ? child
+                      : SingleChildScrollView(
+                          child: child,
+                        ),
+                ),
+              ),
+            );
+          } else {
+            return SafeArea(
+              child: noScroll
+                  ? child
+                  : SingleChildScrollView(
+                      child: child,
+                    ),
+            );
+            // return _buildNormalContainer();
+          }
+        },
       ),
     );
   }
 }
 
 class DrawerScaffoldContainer extends StatelessWidget {
-
   const DrawerScaffoldContainer({
     Key? key,
   }) : super(key: key);
@@ -165,7 +190,8 @@ class DrawerScaffoldContainer extends StatelessWidget {
     return Container(
       color: kPrimaryWhite,
       padding: const EdgeInsets.only(
-        left: kMediumPadding, right: kMediumPadding,
+        left: kMediumPadding,
+        right: kMediumPadding,
         top: 70,
       ),
       child: ListView(
@@ -203,38 +229,39 @@ class DrawerScaffoldContainer extends StatelessWidget {
           ),
           SessionManager.getToken() != null
               ? DrawerContainer(
-            text: profile,
-            onTap: () {
-              Scaffold.of(context).closeDrawer();
-              pushToAndClearStack(const Profile());
-            },
-          )
+                  text: profile,
+                  onTap: () {
+                    Scaffold.of(context).closeDrawer();
+                    pushToAndClearStack(const Profile());
+                  },
+                )
               : YBox(0),
           SessionManager.getToken() != null
               ? DrawerContainer(
-            text: wallet,
-            onTap: () {
-              Scaffold.of(context).closeDrawer();
-              pushToAndClearStack(const MyWallet());
-            },
-          )
+                  text: wallet,
+                  onTap: () {
+                    Scaffold.of(context).closeDrawer();
+                    pushToAndClearStack(const MyWallet());
+                  },
+                )
               : YBox(0),
           SessionManager.getToken() != null
               ? DrawerContainer(
-            text: orders,
-            onTap: () {
-              Scaffold.of(context).closeDrawer();
-              pushToAndClearStack(const OrderHistory());
-            },
-          )
+                  text: orders,
+                  onTap: () {
+                    Scaffold.of(context).closeDrawer();
+                    pushToAndClearStack(const OrderHistory());
+                  },
+                )
               : YBox(0),
           SessionManager.getToken() != null
               ? DrawerContainer(
-            text: savedList,
-            onTap: () {
-              Scaffold.of(context).closeDrawer();
-              pushToAndClearStack(const SavedList());},
-          )
+                  text: savedList,
+                  onTap: () {
+                    Scaffold.of(context).closeDrawer();
+                    pushToAndClearStack(const SavedList());
+                  },
+                )
               : YBox(0),
           DrawerContainer(
             text: specialRequest,
@@ -245,15 +272,15 @@ class DrawerScaffoldContainer extends StatelessWidget {
           ),
           SessionManager.getToken() != null
               ? const Padding(
-            padding: EdgeInsets.only(right: kMacroPadding),
-            child: Divider(
-              color: kDividerColor,
-              thickness: 1,
-              height: 0,
-            ),
-          ): YBox(0),
-          YBox(SessionManager.getToken() != null
-              ? kRegularPadding : 0),
+                  padding: EdgeInsets.only(right: kMacroPadding),
+                  child: Divider(
+                    color: kDividerColor,
+                    thickness: 1,
+                    height: 0,
+                  ),
+                )
+              : YBox(0),
+          YBox(SessionManager.getToken() != null ? kRegularPadding : 0),
           DrawerContainer(
             text: quickGuide,
             onTap: () {
@@ -282,50 +309,51 @@ class DrawerScaffoldContainer extends StatelessWidget {
           ),
           YBox(kFullPadding),
           SessionManager.getToken() != null
-              ?   InkWellNoShadow(
-            onTap: (){
-              Scaffold.of(context).closeDrawer();
-              pushToAndClearStack(const LogIn());
-            },
-            child: Container(
-              margin: const EdgeInsets.only(bottom: kMediumPadding),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    signOut,
-                    style: textTheme.displayLarge!.copyWith(color: kPurple50),
+              ? InkWellNoShadow(
+                  onTap: () {
+                    Scaffold.of(context).closeDrawer();
+                    pushToAndClearStack(const LogIn());
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.only(bottom: kMediumPadding),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          signOut,
+                          style: textTheme.displayLarge!
+                              .copyWith(color: kPurple50),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(right: kMacroPadding),
+                          child: SvgPicture.asset(AssetPaths.downArrow),
+                        )
+                      ],
+                    ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(right: kMacroPadding),
-                    child: SvgPicture.asset(AssetPaths.downArrow),
-                  )
-                ],
-              ),
-            ),
-          ) :
-          Row(
-            children: [
-              Expanded(
-                  child: LargeButton(
-                    onPressed: () {
-                      Scaffold.of(context).closeDrawer();
-                      pushToAndClearStack(const LogIn());
-                    },
-                    title: logIn,
-                    outlineButton: true,
-                  )),
-              XBox(kRegularPadding),
-              Expanded(
-                  child: LargeButton(
-                    onPressed: () {
-                      Scaffold.of(context).closeDrawer();
-                      pushToAndClearStack(const SignUp());
-                    },
-                    title: signUp,
-                  )),
-            ],
-          )
+                )
+              : Row(
+                  children: [
+                    Expanded(
+                        child: LargeButton(
+                      onPressed: () {
+                        Scaffold.of(context).closeDrawer();
+                        pushToAndClearStack(const LogIn());
+                      },
+                      title: logIn,
+                      outlineButton: true,
+                    )),
+                    XBox(kRegularPadding),
+                    Expanded(
+                        child: LargeButton(
+                      onPressed: () {
+                        Scaffold.of(context).closeDrawer();
+                        pushToAndClearStack(const SignUp());
+                      },
+                      title: signUp,
+                    )),
+                  ],
+                )
         ],
       ),
     );
@@ -368,16 +396,19 @@ class PageIndicator extends StatelessWidget {
   final Color color;
   final Color? inactiveColor;
 
-  PageIndicator(this.index, this.currentPage, {this.color = kPurple50, this.inactiveColor = kLightDark400});
+  PageIndicator(this.index, this.currentPage,
+      {this.color = kPurple50, this.inactiveColor = kLightDark400});
 
   @override
   Widget build(BuildContext context) {
     return AnimatedContainer(
       padding: EdgeInsets.all(currentPage == index ? 3 : 0),
       duration: const Duration(milliseconds: 300),
-      margin: const EdgeInsets.symmetric(horizontal: kPadding,),
+      margin: const EdgeInsets.symmetric(
+        horizontal: kPadding,
+      ),
       height: 8,
-      width:  8,
+      width: 8,
       decoration: BoxDecoration(
           color: currentPage == index ? color : inactiveColor,
           shape: BoxShape.circle),
@@ -385,26 +416,22 @@ class PageIndicator extends StatelessWidget {
   }
 }
 
-
 class OrWidget extends StatelessWidget {
   final Color? color;
-  const OrWidget({
-    super.key,
-    this.color = k200
-  });
+  const OrWidget({super.key, this.color = k200});
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-         Expanded(
+        Expanded(
           child: Divider(
             thickness: 0.8,
             color: color,
           ),
         ),
         Text("   $orText   ", style: textTheme.headlineMedium),
-         Expanded(
+        Expanded(
           child: Divider(
             thickness: 0.8,
             color: color,
@@ -416,7 +443,9 @@ class OrWidget extends StatelessWidget {
 }
 
 Widget makeDismissible(
-        {required Widget child, required BuildContext context, required Function() onTap}) =>
+        {required Widget child,
+        required BuildContext context,
+        required Function() onTap}) =>
     GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: onTap,

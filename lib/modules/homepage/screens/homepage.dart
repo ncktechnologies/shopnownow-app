@@ -36,35 +36,35 @@ class _HomePageState extends ConsumerState<HomePage> {
   TextEditingController controller = TextEditingController();
   List<GetCategories> categories = [];
   List<GetCategories> searchResult = [];
-  final FirebaseMessaging messaging = FirebaseMessaging.instance;
+  // final FirebaseMessaging messaging = FirebaseMessaging.instance;
 
 //Firebase functions
-  Future<void> initalizeFirebase() async {
-    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-  }
+  // Future<void> initalizeFirebase() async {
+  //   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  // }
 
-  void getToken() async {
-    print(await messaging.getToken());
+  // void getToken() async {
+  //   print(await messaging.getToken());
 
-    NotificationSettings settings = await messaging.requestPermission(
-      alert: true,
-      announcement: false,
-      badge: true,
-      carPlay: false,
-      criticalAlert: false,
-      provisional: false,
-      sound: true,
-    );
+  //   NotificationSettings settings = await messaging.requestPermission(
+  //     alert: true,
+  //     announcement: false,
+  //     badge: true,
+  //     carPlay: false,
+  //     criticalAlert: false,
+  //     provisional: false,
+  //     sound: true,
+  //   );
 
-    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-      print('User granted permission');
-      // Now we can proceed to subscribe
-      messaging.subscribeToTopic("allShopNowNowUsers");
-      messaging.subscribeToTopic(SessionManager.getUserId().toString());
-    } else {
-      print('User declined or has not yet responded to the permission request');
-    }
-  }
+  //   if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+  //     print('User granted permission');
+  //     // Now we can proceed to subscribe
+  //     messaging.subscribeToTopic("allShopNowNowUsers");
+  //     messaging.subscribeToTopic(SessionManager.getUserId().toString());
+  //   } else {
+  //     print('User declined or has not yet responded to the permission request');
+  //   }
+  // }
 
   void registerNotification() async {}
 
@@ -77,7 +77,7 @@ class _HomePageState extends ConsumerState<HomePage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    getToken();
+    // getToken();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       ref.read(getContactProvider.notifier).getContact();
       ref.read(getQuickGuideProvider.notifier).getQuickGuide();
@@ -100,8 +100,9 @@ class _HomePageState extends ConsumerState<HomePage> {
         noIcon: true,
         child: Padding(
           padding: const EdgeInsets.only(
-            left: kRegularPadding, right: kRegularPadding, top: kMediumPadding
-          ),
+              left: kRegularPadding,
+              right: kRegularPadding,
+              top: kMediumPadding),
           child: Column(
             children: [
               SearchTextInputNoIcon(
@@ -246,35 +247,35 @@ class _HomePageState extends ConsumerState<HomePage> {
                   },
                   loading: () => const SpinKitDemo()),
               YBox(kMacroPadding),
-              !Platform.isAndroid && !Platform.isIOS
-                  ? Column(
-                      children: [
-                        Text(
-                          downloadApp,
-                          textAlign: TextAlign.center,
-                          style: textTheme.headlineMedium!.copyWith(
-                              color: kDarkColor300,
-                              fontWeight: FontWeight.w500),
-                        ),
-                        YBox(kSmallPadding),
-                        Row(
-                          children: [
-                            AppleGoogleWidget(
-                              icon: AssetPaths.appleLogo,
-                              text: downloadOn,
-                              subText: appStore,
-                            ),
-                            XBox(kRegularPadding),
-                            AppleGoogleWidget(
-                              icon: AssetPaths.googleLogo,
-                              text: getIt,
-                              subText: googlePlay,
-                            )
-                          ],
-                        )
-                      ],
-                    )
-                  : const SizedBox(height: 0),
+              // !Platform.isAndroid && !Platform.isIOS
+              //     ?
+              Column(
+                children: [
+                  Text(
+                    downloadApp,
+                    textAlign: TextAlign.center,
+                    style: textTheme.headlineMedium!.copyWith(
+                        color: kDarkColor300, fontWeight: FontWeight.w500),
+                  ),
+                  YBox(kSmallPadding),
+                  Row(
+                    children: [
+                      AppleGoogleWidget(
+                        icon: AssetPaths.appleLogo,
+                        text: downloadOn,
+                        subText: appStore,
+                      ),
+                      XBox(kRegularPadding),
+                      AppleGoogleWidget(
+                        icon: AssetPaths.googleLogo,
+                        text: getIt,
+                        subText: googlePlay,
+                      )
+                    ],
+                  )
+                ],
+              )
+              // : const SizedBox(height: 0),
             ],
           ),
         ));

@@ -10,10 +10,10 @@ import 'package:shopnownow/utils/constants.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-options: DefaultFirebaseOptions.currentPlatform).catchError((e){
-  print(" Error : ${e.toString()}");
-});
+//   await Firebase.initializeApp(
+// options: DefaultFirebaseOptions.currentPlatform).catchError((e){
+//   print(" Error : ${e.toString()}");
+// });
   Env.setEnvironment(EnvState.test);
   SessionManager.initSharedPreference().then((value) => runApp(const MyApp()));
 }

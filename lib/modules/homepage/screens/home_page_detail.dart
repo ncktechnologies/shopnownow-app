@@ -320,7 +320,7 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
         bottomSheet: Container(
           height: 250,
           alignment: Alignment.bottomCenter,
-          margin: EdgeInsets.only(bottom: kRegularPadding),
+          margin: const EdgeInsets.only(bottom: kRegularPadding),
           child: LayoutBuilder(
             builder: (context, constraint){
               if (constraint.maxWidth > 600) {

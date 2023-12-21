@@ -317,74 +317,170 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
           overlaySearchEntry = null;
         },
         resizeToAvoidBottomInset: false,
-        bottomSheet: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: kRegularPadding),
-          child: InkWellNoShadow(
-            onTap: () {
-              overlayEntry?.remove();
-              overlaySearchEntry?.remove();
-              overlayEntry = null;
-              overlaySearchEntry = null;
-            },
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Divider(
-                  thickness: 2,
-                  color: k200,
-                ),
-                YBox(kRegularPadding),
-                Text(
-                  "$minOrder₦${widget.menuItems.band!.minimum}",
-                  style: textTheme.headlineMedium!.copyWith(color: kOrange500),
-                ),
-                YBox(kMediumPadding),
-                PaymentRow(
-                    text: subTotal,
-                    subText:
-                        (productList.fold<int>(0, (previousValue, element) {
-                      return (previousValue +
-                          (int.parse(
-                                  element.price?.replaceAll(".00", "") ?? "0") *
-                              element.quantity!));
-                    }).toString())),
-                YBox(kRegularPadding),
-                LargeButton(
-                    title: checkout,
-                    onPressed: productList.isEmpty
-                        ? () {
-                            showErrorBar(context, "Please add a Product");
-                          }
-                        : () {
-                            if (double.parse(widget.menuItems.band!.minimum!) >
-                                double.parse((productList.fold<int>(0,
+        bottomSheet: Container(
+          height: 250,
+          alignment: Alignment.bottomCenter,
+          margin: EdgeInsets.only(bottom: kRegularPadding),
+          child: LayoutBuilder(
+            builder: (context, constraint){
+              if (constraint.maxWidth > 600) {
+                return SizedBox(
+                  width: 800,
+                  child: Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: kRegularPadding),
+                    child: InkWellNoShadow(
+                      onTap: () {
+                        overlayEntry?.remove();
+                        overlaySearchEntry?.remove();
+                        overlayEntry = null;
+                        overlaySearchEntry = null;
+                      },
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Divider(
+                            thickness: 2,
+                            color: k200,
+                          ),
+                          YBox(kRegularPadding),
+                          Text(
+                            "$minOrder₦${widget.menuItems.band!.minimum}",
+                            style: textTheme.headlineMedium!
+                                .copyWith(color: kOrange500),
+                          ),
+                          YBox(kMediumPadding),
+                          PaymentRow(
+                              text: subTotal,
+                              subText: (productList.fold<int>(0,
+                                  (previousValue, element) {
+                                return (previousValue +
+                                    (int.parse(
+                                            element.price?.replaceAll(".00", "") ??
+                                                "0") *
+                                        element.quantity!));
+                              }).toString())),
+                          YBox(kRegularPadding),
+                          LargeButton(
+                              title: checkout,
+                              onPressed: productList.isEmpty
+                                  ? () {
+                                      showErrorBar(context, "Please add a Product");
+                                    }
+                                  : () {
+                                      if (double.parse(
+                                              widget.menuItems.band!.minimum!) >
+                                          double.parse((productList.fold<int>(0,
+                                              (previousValue, element) {
+                                            return (previousValue +
+                                                (int.parse(element.price
+                                                            ?.replaceAll(
+                                                                ".00", "") ??
+                                                        "0") *
+                                                    element.quantity!));
+                                          }).toString()))) {
+                                        showErrorBar(context,
+                                            "The minimum order is ₦${widget.menuItems.band!.minimum}");
+                                      } else {
+                                        overlayEntry?.remove();
+                                        overlaySearchEntry?.remove();
+                                        overlayEntry = null;
+                                        overlaySearchEntry = null;
+                                        pushTo(
+                                          CheckOut(
+                                            productList: productList,
+                                            band: widget.menuItems.band,
+                                            tax: widget.menuItems.tax,
+                                          ),
+                                        );
+                                      }
+                                    }),
+                          YBox(kRegularPadding),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              }else{
+                return Padding(
+                  padding:
+                  const EdgeInsets.symmetric(horizontal: kRegularPadding),
+                  child: InkWellNoShadow(
+                    onTap: () {
+                      overlayEntry?.remove();
+                      overlaySearchEntry?.remove();
+                      overlayEntry = null;
+                      overlaySearchEntry = null;
+                    },
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Divider(
+                          thickness: 2,
+                          color: k200,
+                        ),
+                        YBox(kRegularPadding),
+                        Text(
+                          "$minOrder₦${widget.menuItems.band!.minimum}",
+                          style: textTheme.headlineMedium!
+                              .copyWith(color: kOrange500),
+                        ),
+                        YBox(kMediumPadding),
+                        PaymentRow(
+                            text: subTotal,
+                            subText: (productList.fold<int>(0,
                                     (previousValue, element) {
                                   return (previousValue +
-                                      (int.parse(element.price
-                                                  ?.replaceAll(".00", "") ??
+                                      (int.parse(
+                                          element.price?.replaceAll(".00", "") ??
                                               "0") *
                                           element.quantity!));
-                                }).toString()))) {
-                              showErrorBar(context,
-                                  "The minimum order is ₦${widget.menuItems.band!.minimum}");
-                            } else {
-                              overlayEntry?.remove();
-                              overlaySearchEntry?.remove();
-                              overlayEntry = null;
-                              overlaySearchEntry = null;
-                              pushTo(
-                                CheckOut(
-                                  productList: productList,
-                                  band: widget.menuItems.band,
-                                  tax: widget.menuItems.tax,
-                                ),
-                              );
+                                }).toString())),
+                        YBox(kRegularPadding),
+                        LargeButton(
+                            title: checkout,
+                            onPressed: productList.isEmpty
+                                ? () {
+                              showErrorBar(context, "Please add a Product");
                             }
-                          }),
-                YBox(kRegularPadding),
-              ],
-            ),
+                                : () {
+                              if (double.parse(
+                                  widget.menuItems.band!.minimum!) >
+                                  double.parse((productList.fold<int>(0,
+                                          (previousValue, element) {
+                                        return (previousValue +
+                                            (int.parse(element.price
+                                                ?.replaceAll(
+                                                ".00", "") ??
+                                                "0") *
+                                                element.quantity!));
+                                      }).toString()))) {
+                                showErrorBar(context,
+                                    "The minimum order is ₦${widget.menuItems.band!.minimum}");
+                              } else {
+                                overlayEntry?.remove();
+                                overlaySearchEntry?.remove();
+                                overlayEntry = null;
+                                overlaySearchEntry = null;
+                                pushTo(
+                                  CheckOut(
+                                    productList: productList,
+                                    band: widget.menuItems.band,
+                                    tax: widget.menuItems.tax,
+                                  ),
+                                );
+                              }
+                            }),
+                        YBox(kRegularPadding),
+                      ],
+                    ),
+                  ),
+                );
+              }
+            },
+
           ),
         ),
         appBar: AppBar(
@@ -426,222 +522,462 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
           title: Image.asset(AssetPaths.logo, height: 40),
           centerTitle: true,
         ),
-        body: SafeArea(
-          child: GestureDetector(
-            onTap: () {
-              overlayEntry?.remove();
-              overlaySearchEntry?.remove();
-              overlayEntry = null;
-              overlaySearchEntry = null;
-            },
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: kRegularPadding),
-              child: Column(
-                children: [
-                  YBox(kMediumPadding),
-                  InkWellNoShadow(
-                    onTap: () {
-                      if (overlayEntry == null) {
-                        _showOverlay(context);
-                      } else {
-                        setState(() {
-                          overlayEntry?.remove();
-                          overlaySearchEntry?.remove();
-                          overlayEntry = null;
-                          overlaySearchEntry = null;
-                        });
-                      }
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.all(kRegularPadding),
-                      decoration: BoxDecoration(
-                          color: kSecondaryColor,
-                          borderRadius: BorderRadius.circular(kMacroPadding)),
-                      child: Row(
-                        children: [
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: Container(
-                              padding: const EdgeInsets.all(8),
-                              decoration: const BoxDecoration(
-                                  shape: BoxShape.circle, color: kPrimaryWhite),
-                              child: SvgPicture.network(
-                                widget.menuItems.thumbnail ?? "",
-                                fit: BoxFit.scaleDown,
-                                height: kRegularPadding,
-                                width: kRegularPadding,
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: Text(
-                              categoryName?.name ?? "",
-                              style: textTheme.displayLarge!.copyWith(
-                                fontWeight: FontWeight.w500,
-                                color: kPrimaryColor,
-                                fontSize: 14,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                          XBox(25),
-                          const Icon(
-                            Icons.keyboard_arrow_down,
-                            size: 25,
-                            color: kPrimaryColor,
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                  YBox(kRegularPadding),
-                  SearchTextInputNoIcon(
-                    prefixIcon: SvgPicture.asset(
-                      AssetPaths.search,
-                      fit: BoxFit.scaleDown,
-                    ),
-                    controller: controller,
-                    icon: _searching
-                        ? SizedBox(
-                            width: 40,
-                            child: Container(
-                                margin: const EdgeInsets.only(
-                                    right: kMediumPadding),
-                                child: const SpinKitDemo(
-                                  size: 30,
-                                )),
-                          )
-                        : YBox(0),
-                    onChanged: (inputValue) {
-                      if (_debounce?.isActive ?? false) _debounce?.cancel();
-                      _debounce = Timer(const Duration(seconds: 1), () {
-                        if (inputValue != null &&
-                            inputValue.trim().isNotEmpty) {
-                          onSearchTextChanged(inputValue ?? "");
-                          setState(() {
-                            _searching = true;
-                          });
+        body: LayoutBuilder(
+            builder: (BuildContext context, BoxConstraints constraints) {
+            if (constraints.maxWidth > 600) {
+              return Center(
+        child: SizedBox(
+          width: 600,
+          child:SafeArea(
+            child: GestureDetector(
+              onTap: () {
+                overlayEntry?.remove();
+                overlaySearchEntry?.remove();
+                overlayEntry = null;
+                overlaySearchEntry = null;
+              },
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: kRegularPadding),
+                child: Column(
+                  children: [
+                    YBox(kMediumPadding),
+                    InkWellNoShadow(
+                      onTap: () {
+                        if (overlayEntry == null) {
+                          _showOverlay(context);
                         } else {
-                          overlaySearchEntry?.remove();
-                          overlaySearchEntry = null;
                           setState(() {
-                            _searching = false;
+                            overlayEntry?.remove();
+                            overlaySearchEntry?.remove();
+                            overlayEntry = null;
+                            overlaySearchEntry = null;
                           });
                         }
-
-                        setState(() {});
-                      });
-                    },
-                    // onChanged: (val) {
-                    //   if (val!.isEmpty) {
-                    //     overlaySearchEntry?.remove();
-                    //     overlaySearchEntry = null;
-                    //   } else {
-                    //     onSearchTextChanged(val ?? "");
-                    //   }
-                    // },
-                    hintText: searchText,
-                  ),
-                  productList.isEmpty
-                      ? YBox(0)
-                      : Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.all(kRegularPadding),
+                        decoration: BoxDecoration(
+                            color: kSecondaryColor,
+                            borderRadius: BorderRadius.circular(kMacroPadding)),
+                        child: Row(
                           children: [
-                            Text(
-                              shoppingList,
-                              style: textTheme.displayLarge!.copyWith(
-                                fontWeight: FontWeight.w500,
-                                fontSize: 14,
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: Container(
+                                padding: const EdgeInsets.all(8),
+                                decoration: const BoxDecoration(
+                                    shape: BoxShape.circle, color: kPrimaryWhite),
+                                child:
+                                widget.menuItems.thumbnail!
+                                    .split(".")
+                                    .last ==
+                                    "svg"
+                                    ?
+                                SvgPicture.network(
+                                  widget.menuItems.thumbnail ?? "",
+                                  fit: BoxFit.scaleDown,
+                                  height: kRegularPadding,
+                                  width: kRegularPadding,
+                                ) : Image.network(
+                                  widget.menuItems.thumbnail ?? "",
+                                  height: kRegularPadding,
+                                  width: kRegularPadding,
+                                ),
                               ),
                             ),
-                            Consumer(builder: (context, ref, _) {
-                              var widget = InkWellNoShadow(
-                                onTap: () {
-                                  List<ProductRequest> prodRequest = [];
-                                  for (var element in productList) {
-                                    setState(() {
-                                      prodRequest.add(ProductRequest(
-                                          id: element.id!,
-                                          quantity: element.quantity!));
-                                    });
-                                  }
-                                  ref
-                                      .read(addToListProvider.notifier)
-                                      .addToList(
-                                          request: AddProductRequest(
-                                              products: prodRequest),
-                                          then: (val) {
-                                            showSuccessBar(context, val);
-                                          });
-                                },
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: kRegularPadding,
-                                      vertical: kPadding),
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(500),
-                                      color: kLightPurple200),
-                                  child: Text(
-                                    saveList,
-                                    style: textTheme.bodyLarge!.copyWith(
-                                        fontSize: 14, color: kLightBlue400),
-                                  ),
+                            Expanded(
+                              child: Text(
+                                categoryName?.name ?? "",
+                                style: textTheme.displayLarge!.copyWith(
+                                  fontWeight: FontWeight.w500,
+                                  color: kPrimaryColor,
+                                  fontSize: 14,
                                 ),
-                              );
-                              return ref.watch(addToListProvider).when(
-                                  done: (data) => widget,
-                                  error: (val) => widget,
-                                  loading: () => const SpinKitDemo());
-                            })
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                            XBox(25),
+                            const Icon(
+                              Icons.keyboard_arrow_down,
+                              size: 25,
+                              color: kPrimaryColor,
+                            )
                           ],
                         ),
-                  YBox(productList.isEmpty ? 0 : kMicroPadding),
-                  productList.isEmpty
-                      ? Container(
-                          width: double.infinity,
-                          height: screenSize.height,
-                          color: kPrimaryWhite,
-                          child: EmptyHomeProduct(
-                            text: noProd,
-                            subText: addItem,
-                          ))
-                      : Expanded(
-                          child: ListView(
-                            // crossAxisAlignment: CrossAxisAlignment.start,
-                            // mainAxisSize: MainAxisSize.min,
-                            children: List.generate(
-                              productList.length,
-                              (index) => HomeCartList(
-                                product: productList[index],
-                                subtractTap: () {
-                                  if (productList[index].quantity != 1) {
-                                    setState(() {
-                                      productList[index].quantity =
-                                          productList[index].quantity! - 1;
-                                    });
-                                  }
-                                },
-                                addTap: () {
-                                  setState(() {
-                                    productList[index].quantity =
-                                        productList[index].quantity! + 1;
-                                  });
-                                },
-                                category: categoryName!,
-                                onTap: () {
-                                  setState(() {
-                                    productList.removeAt(index);
-                                  });
-                                },
-                              ),
-                            ).toList(),
+                      ),
+                    ),
+                    YBox(kRegularPadding),
+                    SearchTextInputNoIcon(
+                      prefixIcon: SvgPicture.asset(
+                        AssetPaths.search,
+                        fit: BoxFit.scaleDown,
+                      ),
+                      controller: controller,
+                      icon: _searching
+                          ? SizedBox(
+                        width: 40,
+                        child: Container(
+                            margin: const EdgeInsets.only(
+                                right: kMediumPadding),
+                            child: const SpinKitDemo(
+                              size: 30,
+                            )),
+                      )
+                          : YBox(0),
+                      onChanged: (inputValue) {
+                        if (_debounce?.isActive ?? false) _debounce?.cancel();
+                        _debounce = Timer(const Duration(seconds: 1), () {
+                          if (inputValue != null &&
+                              inputValue.trim().isNotEmpty) {
+                            onSearchTextChanged(inputValue ?? "");
+                            setState(() {
+                              _searching = true;
+                            });
+                          } else {
+                            overlaySearchEntry?.remove();
+                            overlaySearchEntry = null;
+                            setState(() {
+                              _searching = false;
+                            });
+                          }
+
+                          setState(() {});
+                        });
+                      },
+                      // onChanged: (val) {
+                      //   if (val!.isEmpty) {
+                      //     overlaySearchEntry?.remove();
+                      //     overlaySearchEntry = null;
+                      //   } else {
+                      //     onSearchTextChanged(val ?? "");
+                      //   }
+                      // },
+                      hintText: searchText,
+                    ),
+                    productList.isEmpty
+                        ? YBox(0)
+                        : Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          shoppingList,
+                          style: textTheme.displayLarge!.copyWith(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 14,
                           ),
                         ),
-                  YBox(170),
-                ],
+                        Consumer(builder: (context, ref, _) {
+                          var widget = InkWellNoShadow(
+                            onTap: () {
+                              List<ProductRequest> prodRequest = [];
+                              for (var element in productList) {
+                                setState(() {
+                                  prodRequest.add(ProductRequest(
+                                      id: element.id!,
+                                      quantity: element.quantity!));
+                                });
+                              }
+                              ref
+                                  .read(addToListProvider.notifier)
+                                  .addToList(
+                                  request: AddProductRequest(
+                                      products: prodRequest),
+                                  then: (val) {
+                                    showSuccessBar(context, val);
+                                  });
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: kRegularPadding,
+                                  vertical: kPadding),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(500),
+                                  color: kLightPurple200),
+                              child: Text(
+                                saveList,
+                                style: textTheme.bodyLarge!.copyWith(
+                                    fontSize: 14, color: kLightBlue400),
+                              ),
+                            ),
+                          );
+                          return ref.watch(addToListProvider).when(
+                              done: (data) => widget,
+                              error: (val) => widget,
+                              loading: () => const SpinKitDemo());
+                        })
+                      ],
+                    ),
+                    YBox(productList.isEmpty ? 0 : kMicroPadding),
+                    productList.isEmpty
+                        ? Container(
+                        width: double.infinity,
+                        height: screenSize.height / 2,
+                        color: kPrimaryWhite,
+                        child: EmptyHomeProduct(
+                          text: noProd,
+                          subText: addItem,
+                        ))
+                        : Expanded(
+                      child: ListView(
+                        // crossAxisAlignment: CrossAxisAlignment.start,
+                        // mainAxisSize: MainAxisSize.min,
+                        children: List.generate(
+                          productList.length,
+                              (index) => HomeCartList(
+                            product: productList[index],
+                            subtractTap: () {
+                              if (productList[index].quantity != 1) {
+                                setState(() {
+                                  productList[index].quantity =
+                                      productList[index].quantity! - 1;
+                                });
+                              }
+                            },
+                            addTap: () {
+                              setState(() {
+                                productList[index].quantity =
+                                    productList[index].quantity! + 1;
+                              });
+                            },
+                            category: categoryName!,
+                            onTap: () {
+                              setState(() {
+                                productList.removeAt(index);
+                              });
+                            },
+                          ),
+                        ).toList(),
+                      ),
+                    ),
+                    YBox(170),
+                  ],
+                ),
               ),
             ),
           ),
+        ),
+              );
+            }else{
+              return SafeArea(
+        child: GestureDetector(
+          onTap: () {
+            overlayEntry?.remove();
+            overlaySearchEntry?.remove();
+            overlayEntry = null;
+            overlaySearchEntry = null;
+          },
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: kRegularPadding),
+            child: Column(
+              children: [
+                YBox(kMediumPadding),
+                InkWellNoShadow(
+                  onTap: () {
+                    if (overlayEntry == null) {
+                      _showOverlay(context);
+                    } else {
+                      setState(() {
+                        overlayEntry?.remove();
+                        overlaySearchEntry?.remove();
+                        overlayEntry = null;
+                        overlaySearchEntry = null;
+                      });
+                    }
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.all(kRegularPadding),
+                    decoration: BoxDecoration(
+                        color: kSecondaryColor,
+                        borderRadius: BorderRadius.circular(kMacroPadding)),
+                    child: Row(
+                      children: [
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: const BoxDecoration(
+                                shape: BoxShape.circle, color: kPrimaryWhite),
+                            child: SvgPicture.network(
+                              widget.menuItems.thumbnail ?? "",
+                              fit: BoxFit.scaleDown,
+                              height: kRegularPadding,
+                              width: kRegularPadding,
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: Text(
+                            categoryName?.name ?? "",
+                            style: textTheme.displayLarge!.copyWith(
+                              fontWeight: FontWeight.w500,
+                              color: kPrimaryColor,
+                              fontSize: 14,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                        XBox(25),
+                        const Icon(
+                          Icons.keyboard_arrow_down,
+                          size: 25,
+                          color: kPrimaryColor,
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+                YBox(kRegularPadding),
+                SearchTextInputNoIcon(
+                  prefixIcon: SvgPicture.asset(
+                    AssetPaths.search,
+                    fit: BoxFit.scaleDown,
+                  ),
+                  controller: controller,
+                  icon: _searching
+                      ? SizedBox(
+                    width: 40,
+                    child: Container(
+                        margin: const EdgeInsets.only(
+                            right: kMediumPadding),
+                        child: const SpinKitDemo(
+                          size: 30,
+                        )),
+                  )
+                      : YBox(0),
+                  onChanged: (inputValue) {
+                    if (_debounce?.isActive ?? false) _debounce?.cancel();
+                    _debounce = Timer(const Duration(seconds: 1), () {
+                      if (inputValue != null &&
+                          inputValue.trim().isNotEmpty) {
+                        onSearchTextChanged(inputValue ?? "");
+                        setState(() {
+                          _searching = true;
+                        });
+                      } else {
+                        overlaySearchEntry?.remove();
+                        overlaySearchEntry = null;
+                        setState(() {
+                          _searching = false;
+                        });
+                      }
+
+                      setState(() {});
+                    });
+                  },
+                  // onChanged: (val) {
+                  //   if (val!.isEmpty) {
+                  //     overlaySearchEntry?.remove();
+                  //     overlaySearchEntry = null;
+                  //   } else {
+                  //     onSearchTextChanged(val ?? "");
+                  //   }
+                  // },
+                  hintText: searchText,
+                ),
+                productList.isEmpty
+                    ? YBox(0)
+                    : Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      shoppingList,
+                      style: textTheme.displayLarge!.copyWith(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 14,
+                      ),
+                    ),
+                    Consumer(builder: (context, ref, _) {
+                      var widget = InkWellNoShadow(
+                        onTap: () {
+                          List<ProductRequest> prodRequest = [];
+                          for (var element in productList) {
+                            setState(() {
+                              prodRequest.add(ProductRequest(
+                                  id: element.id!,
+                                  quantity: element.quantity!));
+                            });
+                          }
+                          ref
+                              .read(addToListProvider.notifier)
+                              .addToList(
+                              request: AddProductRequest(
+                                  products: prodRequest),
+                              then: (val) {
+                                showSuccessBar(context, val);
+                              });
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: kRegularPadding,
+                              vertical: kPadding),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(500),
+                              color: kLightPurple200),
+                          child: Text(
+                            saveList,
+                            style: textTheme.bodyLarge!.copyWith(
+                                fontSize: 14, color: kLightBlue400),
+                          ),
+                        ),
+                      );
+                      return ref.watch(addToListProvider).when(
+                          done: (data) => widget,
+                          error: (val) => widget,
+                          loading: () => const SpinKitDemo());
+                    })
+                  ],
+                ),
+                YBox(productList.isEmpty ? 0 : kMicroPadding),
+                productList.isEmpty
+                    ? Container(
+                    width: double.infinity,
+                    height: screenSize.height,
+                    color: kPrimaryWhite,
+                    child: EmptyHomeProduct(
+                      text: noProd,
+                      subText: addItem,
+                    ))
+                    : Expanded(
+                  child: ListView(
+                    // crossAxisAlignment: CrossAxisAlignment.start,
+                    // mainAxisSize: MainAxisSize.min,
+                    children: List.generate(
+                      productList.length,
+                          (index) => HomeCartList(
+                        product: productList[index],
+                        subtractTap: () {
+                          if (productList[index].quantity != 1) {
+                            setState(() {
+                              productList[index].quantity =
+                                  productList[index].quantity! - 1;
+                            });
+                          }
+                        },
+                        addTap: () {
+                          setState(() {
+                            productList[index].quantity =
+                                productList[index].quantity! + 1;
+                          });
+                        },
+                        category: categoryName!,
+                        onTap: () {
+                          setState(() {
+                            productList.removeAt(index);
+                          });
+                        },
+                      ),
+                    ).toList(),
+                  ),
+                ),
+                YBox(170),
+              ],
+            ),
+          ),
+        ),
+              );
+            }
+            }
+
         ),
       ),
     );

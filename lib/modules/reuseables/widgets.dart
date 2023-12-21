@@ -110,9 +110,12 @@ class InitialPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: const Drawer(child: DrawerScaffoldContainer()),
+
+      drawer: const Drawer(child: DrawerScaffoldContainer(), ),
       // resizeToAvoidBottomInset: noScroll ? false : true,
+
       appBar: AppBar(
+
         leading: Builder(
           builder: (context) => InkWellNoShadow(
             onTap: () => Scaffold.of(context).openDrawer(),
@@ -153,7 +156,7 @@ class InitialPage extends StatelessWidget {
         builder: (BuildContext context, BoxConstraints constraints) {
           if (constraints.maxWidth > 600) {
             return Center(
-              child: Container(
+              child: SizedBox(
                 width: 800,
                 child: SafeArea(
                   child: noScroll
@@ -187,176 +190,179 @@ class DrawerScaffoldContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: kPrimaryWhite,
-      padding: const EdgeInsets.only(
-        left: kMediumPadding,
-        right: kMediumPadding,
-        top: 70,
-      ),
-      child: ListView(
-        // crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
+        return Container(
+          color: kPrimaryWhite,
+          padding: const EdgeInsets.only(
+            left: kMediumPadding,
+            right: kMediumPadding,
+            top: 70,
+          ),
+          child: ListView(
+            // crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                menu,
-                style: textTheme.displayLarge!
-                    .copyWith(color: kPurple50, fontSize: 28),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(right: kMacroPadding),
-                child: InkWellNoShadow(
-                  onTap: () {
-                    Scaffold.of(context).closeDrawer();
-                  },
-                  child: const Icon(
-                    Icons.close,
-                    color: kGrey600,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    menu,
+                    style: textTheme.displayLarge!
+                        .copyWith(color: kPurple50, fontSize: 28),
                   ),
-                ),
-              ),
-            ],
-          ),
-          YBox(kLargePadding),
-          DrawerContainer(
-            text: home,
-            onTap: () {
-              Scaffold.of(context).closeDrawer();
-              pushToAndClearStack(const HomePage());
-            },
-          ),
-          SessionManager.getToken() != null
-              ? DrawerContainer(
-                  text: profile,
-                  onTap: () {
-                    Scaffold.of(context).closeDrawer();
-                    pushToAndClearStack(const Profile());
-                  },
-                )
-              : YBox(0),
-          SessionManager.getToken() != null
-              ? DrawerContainer(
-                  text: wallet,
-                  onTap: () {
-                    Scaffold.of(context).closeDrawer();
-                    pushToAndClearStack(const MyWallet());
-                  },
-                )
-              : YBox(0),
-          SessionManager.getToken() != null
-              ? DrawerContainer(
-                  text: orders,
-                  onTap: () {
-                    Scaffold.of(context).closeDrawer();
-                    pushToAndClearStack(const OrderHistory());
-                  },
-                )
-              : YBox(0),
-          SessionManager.getToken() != null
-              ? DrawerContainer(
-                  text: savedList,
-                  onTap: () {
-                    Scaffold.of(context).closeDrawer();
-                    pushToAndClearStack(const SavedList());
-                  },
-                )
-              : YBox(0),
-          DrawerContainer(
-            text: specialRequest,
-            onTap: () {
-              Scaffold.of(context).closeDrawer();
-              pushToAndClearStack(const SpecialRequest());
-            },
-          ),
-          SessionManager.getToken() != null
-              ? const Padding(
-                  padding: EdgeInsets.only(right: kMacroPadding),
-                  child: Divider(
-                    color: kDividerColor,
-                    thickness: 1,
-                    height: 0,
-                  ),
-                )
-              : YBox(0),
-          YBox(SessionManager.getToken() != null ? kRegularPadding : 0),
-          DrawerContainer(
-            text: quickGuide,
-            onTap: () {
-              Scaffold.of(context).closeDrawer();
-              pushToAndClearStack(const QuickGuide());
-            },
-          ),
-          DrawerContainer(
-            text: share,
-            onTap: () {},
-          ),
-          DrawerContainer(
-            text: helpCenter,
-            onTap: () {
-              Scaffold.of(context).closeDrawer();
-              pushToAndClearStack(const HelpCenter());
-            },
-          ),
-          YBox(kMacroPadding),
-          const Padding(
-            padding: EdgeInsets.only(right: kMacroPadding),
-            child: Divider(
-              color: kDividerColor,
-              thickness: 1,
-            ),
-          ),
-          YBox(kFullPadding),
-          SessionManager.getToken() != null
-              ? InkWellNoShadow(
-                  onTap: () {
-                    Scaffold.of(context).closeDrawer();
-                    pushToAndClearStack(const LogIn());
-                  },
-                  child: Container(
-                    margin: const EdgeInsets.only(bottom: kMediumPadding),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          signOut,
-                          style: textTheme.displayLarge!
-                              .copyWith(color: kPurple50),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(right: kMacroPadding),
-                          child: SvgPicture.asset(AssetPaths.downArrow),
-                        )
-                      ],
+                  Padding(
+                    padding: const EdgeInsets.only(right: kMacroPadding),
+                    child: InkWellNoShadow(
+                      onTap: () {
+                        Scaffold.of(context).closeDrawer();
+                      },
+                      child: const Icon(
+                        Icons.close,
+                        color: kGrey600,
+                      ),
                     ),
                   ),
-                )
-              : Row(
-                  children: [
-                    Expanded(
-                        child: LargeButton(
-                      onPressed: () {
-                        Scaffold.of(context).closeDrawer();
-                        pushToAndClearStack(const LogIn());
-                      },
-                      title: logIn,
-                      outlineButton: true,
-                    )),
-                    XBox(kRegularPadding),
-                    Expanded(
-                        child: LargeButton(
-                      onPressed: () {
-                        Scaffold.of(context).closeDrawer();
-                        pushToAndClearStack(const SignUp());
-                      },
-                      title: signUp,
-                    )),
-                  ],
-                )
-        ],
-      ),
-    );
+                ],
+              ),
+              YBox(kLargePadding),
+              DrawerContainer(
+                text: home,
+                onTap: () {
+                  Scaffold.of(context).closeDrawer();
+                  pushToAndClearStack(const HomePage());
+                },
+              ),
+              SessionManager.getToken() != null
+                  ? DrawerContainer(
+                text: profile,
+                onTap: () {
+                  Scaffold.of(context).closeDrawer();
+                  pushToAndClearStack(const Profile());
+                },
+              )
+                  : YBox(0),
+              SessionManager.getToken() != null
+                  ? DrawerContainer(
+                text: wallet,
+                onTap: () {
+                  Scaffold.of(context).closeDrawer();
+                  pushToAndClearStack(const MyWallet());
+                },
+              )
+                  : YBox(0),
+              SessionManager.getToken() != null
+                  ? DrawerContainer(
+                text: orders,
+                onTap: () {
+                  Scaffold.of(context).closeDrawer();
+                  pushToAndClearStack(const OrderHistory());
+                },
+              )
+                  : YBox(0),
+              SessionManager.getToken() != null
+                  ? DrawerContainer(
+                text: savedList,
+                onTap: () {
+                  Scaffold.of(context).closeDrawer();
+                  pushToAndClearStack(const SavedList());
+                },
+              )
+                  : YBox(0),
+              DrawerContainer(
+                text: specialRequest,
+                onTap: () {
+                  Scaffold.of(context).closeDrawer();
+                  pushToAndClearStack(const SpecialRequest());
+                },
+              ),
+              SessionManager.getToken() != null
+                  ? const Padding(
+                padding: EdgeInsets.only(right: kMacroPadding),
+                child: Divider(
+                  color: kDividerColor,
+                  thickness: 1,
+                  height: 0,
+                ),
+              )
+                  : YBox(0),
+              YBox(SessionManager.getToken() != null ? kRegularPadding : 0),
+              DrawerContainer(
+                text: quickGuide,
+                onTap: () {
+                  Scaffold.of(context).closeDrawer();
+                  pushToAndClearStack(const QuickGuide());
+                },
+              ),
+              DrawerContainer(
+                text: share,
+                onTap: () {},
+              ),
+              DrawerContainer(
+                text: helpCenter,
+                onTap: () {
+                  Scaffold.of(context).closeDrawer();
+                  pushToAndClearStack(const HelpCenter());
+                },
+              ),
+              YBox(kMacroPadding),
+              const Padding(
+                padding: EdgeInsets.only(right: kMacroPadding),
+                child: Divider(
+                  color: kDividerColor,
+                  thickness: 1,
+                ),
+              ),
+              YBox(kFullPadding),
+              SessionManager.getToken() != null
+                  ? InkWellNoShadow(
+                onTap: () {
+                  Scaffold.of(context).closeDrawer();
+                  pushToAndClearStack(const LogIn());
+                },
+                child: Container(
+                  margin: const EdgeInsets.only(bottom: kMediumPadding),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        signOut,
+                        style: textTheme.displayLarge!
+                            .copyWith(color: kPurple50),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(right: kMacroPadding),
+                        child: SvgPicture.asset(AssetPaths.downArrow),
+                      )
+                    ],
+                  ),
+                ),
+              )
+                  : Row(
+                children: [
+                  Expanded(
+                      child: LargeButton(
+                        onPressed: () {
+                          Scaffold.of(context).closeDrawer();
+                          pushToAndClearStack(const LogIn());
+                        },
+                        title: logIn,
+                        outlineButton: true,
+                      )),
+                  XBox(kRegularPadding),
+                  Expanded(
+                      child: LargeButton(
+                        onPressed: () {
+                          Scaffold.of(context).closeDrawer();
+                          pushToAndClearStack(const SignUp());
+                        },
+                        title: signUp,
+                      )),
+                ],
+              )
+            ],
+          ),
+        );
+
+
   }
 }
 
@@ -369,7 +375,9 @@ class DrawerContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWellNoShadow(
+
+    return
+      InkWellNoShadow(
       onTap: onTap,
       child: Container(
         margin: const EdgeInsets.only(bottom: kMediumPadding),

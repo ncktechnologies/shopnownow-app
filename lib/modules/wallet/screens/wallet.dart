@@ -165,7 +165,7 @@ class _MyWalletState extends ConsumerState<MyWallet> {
                             .copyWith(fontSize: 18, color: kBlack600),
                       ),
                       Text(
-                        "50pts = ₦10.00 ",
+                        "1pts = ₦1 ",
                         style: textTheme.headlineMedium!
                             .copyWith(fontSize: 10, color: kBlack600),
                       ),

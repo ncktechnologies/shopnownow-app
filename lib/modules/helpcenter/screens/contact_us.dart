@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_tawkto/flutter_tawk.dart';
 import 'package:shopnownow/modules/reuseables/size_boxes.dart';
 import 'package:shopnownow/modules/reuseables/widgets.dart';
 import 'package:shopnownow/utils/assets_path.dart';
 import 'package:shopnownow/utils/constants.dart';
 import 'package:shopnownow/utils/strings.dart';
 import 'package:shopnownow/utils/text_field_comp.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+import '../../../app/helpers/session_manager.dart';
 
 class ContactUs extends StatelessWidget {
   const ContactUs({Key? key}) : super(key: key);
@@ -71,16 +75,33 @@ class ContactUs extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                ContactWidget(
-                  icon: AssetPaths.email,
-                  text: "hello@chopnownow.com",
-                ),ContactWidget(
-                  icon: AssetPaths.whatsappLogo,
-                  text: "090 9074 3953",
-                ),ContactWidget(
-                  icon: AssetPaths.liveChat,
-                  text: "Live Chat",
+                GestureDetector(
+                  onTap: () {
+                    // Your function here for email
+                  },
+                  child: ContactWidget(
+                    icon: AssetPaths.email,
+                    text: "hello@chopnownow.com",
+                  ),
                 ),
+                GestureDetector(
+                  onTap: () {
+                    openWhatsApp();
+                  },
+                  child: ContactWidget(
+                    icon: AssetPaths.whatsappLogo,
+                    text: "090 9074 3953",
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    startLiveChat();
+                  },
+                  child: ContactWidget(
+                    icon: AssetPaths.liveChat,
+                    text: "Live Chat",
+                  ),
+                )
               ],
             ),
           ),
@@ -98,18 +119,36 @@ class ContactUs extends StatelessWidget {
           // YBox(80),
           // LargeButton(title: submit, onPressed: (){}),
           // YBox(kRegularPadding),
-
         ],
       ),
     ));
   }
 }
 
+void startLiveChat() {
+  Tawk(
+    directChatLink: 'https://tawk.to/chat/62fa757e37898912e96322de/1gah5lub3',
+    visitor: TawkVisitor(
+      name: SessionManager.getFullName(),
+      email: SessionManager.getEmail(),
+    ),
+  );
+}
+
+void openWhatsApp() async {
+  const whatsappUrl =
+      "https://wa.me/08093885648"; // Replace with the actual phone number
+  if (await canLaunchUrl(Uri.parse(whatsappUrl))) {
+    await launchUrl(Uri.parse(whatsappUrl));
+  } else {}
+}
+
 class ContactWidget extends StatelessWidget {
   final String text, icon;
 
   const ContactWidget({
-    required this.icon, required this.text,
+    required this.icon,
+    required this.text,
     super.key,
   });
 
@@ -132,7 +171,10 @@ class ContactWidget extends StatelessWidget {
         ),
         Text(
           text,
-          style: textTheme.displayLarge!.copyWith(color: kDark400,  fontSize: 10,),
+          style: textTheme.displayLarge!.copyWith(
+            color: kDark400,
+            fontSize: 10,
+          ),
         )
       ],
     );

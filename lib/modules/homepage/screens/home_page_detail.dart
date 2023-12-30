@@ -127,9 +127,9 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
       return Positioned(
         left: kRegularPadding,
         right: kRegularPadding,
-        top: MediaQuery.of(context).size.height * 0.38,
+        top: MediaQuery.of(context).size.height * 0.30,
         child: Container(
-            height: searchResult.length == 1 ? 150 : 250,
+            height: searchResult.length == 1 ? 150 : 350,
             padding: const EdgeInsets.all(kSmallPadding),
             decoration: BoxDecoration(
               color: kPrimaryWhite,

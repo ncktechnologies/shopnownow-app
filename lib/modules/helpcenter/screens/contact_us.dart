@@ -6,10 +6,12 @@ import 'package:shopnownow/modules/reuseables/widgets.dart';
 import 'package:shopnownow/utils/assets_path.dart';
 import 'package:shopnownow/utils/constants.dart';
 import 'package:shopnownow/utils/strings.dart';
-import 'package:shopnownow/utils/text_field_comp.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 
 import '../../../app/helpers/session_manager.dart';
+
+InAppBrowser browser = InAppBrowser();
 
 class ContactUs extends StatelessWidget {
   const ContactUs({Key? key}) : super(key: key);
@@ -125,12 +127,18 @@ class ContactUs extends StatelessWidget {
   }
 }
 
-void startLiveChat() {
-  Tawk(
-    directChatLink: 'https://tawk.to/chat/62fa757e37898912e96322de/1gah5lub3',
-    visitor: TawkVisitor(
-      name: SessionManager.getFullName(),
-      email: SessionManager.getEmail(),
+Future<void> startLiveChat() async {
+  await browser.openUrlRequest(
+    urlRequest: URLRequest(
+        url: Uri.parse(
+            "https://tawk.to/chat/62fa757e37898912e96322de/1gah5lub3")),
+    options: InAppBrowserClassOptions(
+      inAppWebViewGroupOptions: InAppWebViewGroupOptions(
+        crossPlatform: InAppWebViewOptions(
+          useShouldOverrideUrlLoading: true,
+          mediaPlaybackRequiresUserGesture: false,
+        ),
+      ),
     ),
   );
 }

@@ -57,6 +57,7 @@ dependencies:
   flutter_tawkto: ^0.0.2
   webview_flutter: ^4.4.2
   firebase_analytics: ^10.7.4
+  flutter_inappwebview: ^5.8.0
 
 
 

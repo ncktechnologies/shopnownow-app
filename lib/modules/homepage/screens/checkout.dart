@@ -322,6 +322,7 @@ class _CheckOutState extends ConsumerState<CheckOut> {
             ),
             TextInputNoIcon(
               text: mobNo,
+              inputType: TextInputType.number,
               controller: phoneController,
               validator: (val) {
                 if (val!.isEmpty) {
@@ -337,6 +338,7 @@ class _CheckOutState extends ConsumerState<CheckOut> {
             ),
             TextInputNoIcon(
               text: emailAddress,
+              inputType: TextInputType.emailAddress,
               validator: (val) {
                 if (val!.isEmpty) {
                   return emptyField;

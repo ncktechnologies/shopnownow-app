@@ -15,7 +15,6 @@ enum EnvState { test, production }
 /// Base url here, for test and live
 String baseUrl({int version = 1}) {
   return Env.getEnvironment() == EnvState.test
-      ? "https://now.ncktech.com/api/v$version"
-      : "https://api.learnafrica.ng/api/v$version";
-
+      ? "https://api.shopnownow.co/api/v$version"
+      : "https://api.shopnownow.co/api/v$version";
 }

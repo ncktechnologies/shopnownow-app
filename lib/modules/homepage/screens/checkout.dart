@@ -915,9 +915,7 @@ class _CheckOutState extends ConsumerState<CheckOut> {
                                               recipientPhone:
                                                   phoneController.text,
                                               recipientEmail: emailController
-                                                          .text.isEmpty ||
-                                                      emailController.text ==
-                                                          null
+                                                          .text.isEmpty
                                                   ? (SessionManager
                                                               .getEmail() !=
                                                           null

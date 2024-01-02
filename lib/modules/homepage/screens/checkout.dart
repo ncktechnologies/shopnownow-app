@@ -914,8 +914,17 @@ class _CheckOutState extends ConsumerState<CheckOut> {
                                                   nameController.text,
                                               recipientPhone:
                                                   phoneController.text,
-                                              recipientEmail:
-                                                  emailController.text,
+                                              recipientEmail: emailController
+                                                          .text.isEmpty ||
+                                                      emailController.text ==
+                                                          null
+                                                  ? (SessionManager
+                                                              .getEmail() !=
+                                                          null
+                                                      ? SessionManager
+                                                          .getEmail()!
+                                                      : '')
+                                                  : emailController.text,
                                               deliveryFee: (double.parse(
                                                           subTotalCalculation()) >
                                                       widget.band!
@@ -985,14 +994,11 @@ class _CheckOutState extends ConsumerState<CheckOut> {
                                                                 });
                                                       } else {
                                                         checkOut(
-                                                            int.parse(
-                                                                finalAmountToBePaid(
-                                                                        subTotalCalculation())
-                                                                    .substring(
-                                                                        1)
-                                                                    .replaceAll(
-                                                                        ".0",
-                                                                        "")),
+                                                            (double.parse(finalAmountToBePaid(
+                                                                            subTotalCalculation()))
+                                                                        .roundToDouble() *
+                                                                    100)
+                                                                .toInt(),
                                                             val["orderId"]);
                                                       }
                                                       // "message" : data["message"],
@@ -1098,10 +1104,13 @@ class _CheckOutState extends ConsumerState<CheckOut> {
   }
 
   checkOut(int cost, int checkoutOrderId) async {
+    String email = (emailController.text.isEmpty)
+        ? (SessionManager.getEmail() != null ? SessionManager.getEmail()! : '')
+        : emailController.text;
     Charge charge = Charge()
-      ..amount = cost * 100
+      ..amount = cost
       ..reference = "${DateTime.now().millisecondsSinceEpoch}"
-      ..email = emailController.text;
+      ..email = email;
     CheckoutResponse response = await plugin.checkout(
       context,
       method: CheckoutMethod.card,

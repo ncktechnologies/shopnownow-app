@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_tawkto/flutter_tawk.dart';
+import 'package:shopnownow/app/helpers/session_manager.dart';
 import 'package:shopnownow/modules/reuseables/size_boxes.dart';
 import 'package:shopnownow/modules/reuseables/widgets.dart';
 import 'package:shopnownow/utils/assets_path.dart';
@@ -77,33 +78,25 @@ class ContactUs extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                GestureDetector(
+                ContactWidget(
+                  icon: AssetPaths.email,
+                  text: SessionManager.getContactEmail()!.split("Email@").last,
                   onTap: () {
-                    // Your function here for email
+                    openEmail();
                   },
-                  child: ContactWidget(
-                    icon: AssetPaths.email,
-                    text: "hello@chopnownow.com",
-                  ),
                 ),
-                GestureDetector(
-                  onTap: () {
-                    openWhatsApp();
-                  },
-                  child: ContactWidget(
+                ContactWidget(
                     icon: AssetPaths.whatsappLogo,
-                    text: "090 9074 3953",
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    startLiveChat();
-                  },
-                  child: ContactWidget(
+                    text: SessionManager.getContactPhone()!.split("@").last,
+                    onTap: () {
+                      openWhatsApp();
+                    }),
+                ContactWidget(
                     icon: AssetPaths.liveChat,
                     text: "Live Chat",
-                  ),
-                )
+                    onTap: () {
+                      startLiveChat();
+                    })
               ],
             ),
           ),
@@ -144,47 +137,63 @@ Future<void> startLiveChat() async {
 }
 
 void openWhatsApp() async {
-  const whatsappUrl =
-      "https://wa.me/08093885648"; // Replace with the actual phone number
+  String whatsappUrl =
+      "https://wa.me/${SessionManager.getContactPhone()!.split("@").last}"; // Replace with the actual phone number
   if (await canLaunchUrl(Uri.parse(whatsappUrl))) {
     await launchUrl(Uri.parse(whatsappUrl));
   } else {}
 }
 
+void openEmail() async {
+  final Uri emailLaunchUri = Uri(
+    scheme: 'mailto',
+    path: SessionManager.getContactPhone()!.split("@").last,
+    );
+
+  if (await canLaunchUrl(emailLaunchUri)) {
+    await launchUrl(emailLaunchUri);
+  } else {}
+}
+
 class ContactWidget extends StatelessWidget {
   final String text, icon;
+  final Function()? onTap;
 
   const ContactWidget({
     required this.icon,
     required this.text,
+    this.onTap,
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Container(
-          padding: const EdgeInsets.all(kRegularPadding),
-          decoration: const BoxDecoration(
-            shape: BoxShape.circle,
-            color: kLightRed100,
+    return InkWellNoShadow(
+      onTap: onTap,
+      child: Column(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(kRegularPadding),
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+              color: kLightRed100,
+            ),
+            child: SvgPicture.asset(
+              icon,
+              color: kPrimaryColor,
+              height: 24,
+              width: 24,
+            ),
           ),
-          child: SvgPicture.asset(
-            icon,
-            color: kPrimaryColor,
-            height: 24,
-            width: 24,
-          ),
-        ),
-        Text(
-          text,
-          style: textTheme.displayLarge!.copyWith(
-            color: kDark400,
-            fontSize: 10,
-          ),
-        )
-      ],
+          Text(
+            text,
+            style: textTheme.displayLarge!.copyWith(
+              color: kDark400,
+              fontSize: 10,
+            ),
+          )
+        ],
+      ),
     );
   }
 }

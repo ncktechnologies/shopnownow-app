@@ -134,9 +134,9 @@ class GetTimeSlotNotifier extends StateNotifier<NotifierState<GetTimeSlot>> {
   GetTimeSlotNotifier() : super(const NotifierState());
 
   void getTimeSlot(
-      {Function(List<TimeSlot>)? then, Function(String?)? error}) async {
+      {required int id,Function(List<TimeSlot>)? then, Function(String?)? error}) async {
     state = notifyLoading();
-    state = await HomePageRepository.getTimeSlot();
+    state = await HomePageRepository.getTimeSlot(id);
     if (state.status == NotifierStatus.done) {
       if (then != null) then(state.data!.timeSlots!);
     } else if (state.status == NotifierStatus.error) {

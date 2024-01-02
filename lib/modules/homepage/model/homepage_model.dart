@@ -81,32 +81,33 @@ class Band {
   String? bulkDiscountAmount;
   String? generalDiscount;
   int? discountEnabled;
+  int? freeDeliveryThreshold;
 
-  Band({
-    this.id,
-    this.name,
-    this.description,
-    this.createdAt,
-    this.updatedAt,
-    this.minimum,
-    this.bulkDiscountPercentage,
-    this.bulkDiscountAmount,
-    this.generalDiscount,
-    this.discountEnabled,
-  });
+  Band(
+      {this.id,
+      this.name,
+      this.description,
+      this.createdAt,
+      this.updatedAt,
+      this.minimum,
+      this.bulkDiscountPercentage,
+      this.bulkDiscountAmount,
+      this.generalDiscount,
+      this.discountEnabled,
+      this.freeDeliveryThreshold});
 
   factory Band.fromJson(Map<String, dynamic> json) => Band(
-        id: json["id"],
-        name: json["name"],
-        description: json["description"],
-        createdAt: DateTime.parse(json["created_at"]),
-        updatedAt: DateTime.parse(json["updated_at"]),
-        minimum: json["minimum"],
-        bulkDiscountPercentage: json["bulk_discount_percentage"],
-        bulkDiscountAmount: json["bulk_discount_amount"],
-        generalDiscount: json["general_discount"],
-        discountEnabled: json["discount_enabled"],
-      );
+      id: json["id"],
+      name: json["name"],
+      description: json["description"],
+      createdAt: DateTime.parse(json["created_at"]),
+      updatedAt: DateTime.parse(json["updated_at"]),
+      minimum: json["minimum"],
+      bulkDiscountPercentage: json["bulk_discount_percentage"],
+      bulkDiscountAmount: json["bulk_discount_amount"],
+      generalDiscount: json["general_discount"],
+      discountEnabled: json["discount_enabled"],
+      freeDeliveryThreshold: json["free_delivery_threshold"]);
 
   Map<String, dynamic> toJson() => {
         "id": id,
@@ -119,6 +120,7 @@ class Band {
         "bulk_discount_amount": bulkDiscountAmount,
         "general_discount": generalDiscount,
         "discount_enabled": discountEnabled,
+        "free_delivery_threshold": freeDeliveryThreshold
       };
 
   @override

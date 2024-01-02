@@ -123,7 +123,7 @@ class _OrderHistoryState extends ConsumerState<OrderHistory> {
                                                                   kLightGrey100),
                                                     ),
                                                     Text(
-                                                        "  ₦${data.orders![index].price}",
+                                                        "  ₦${(int.parse(data.orders![index].price!.replaceAll(".00", "")) + int.parse(data.orders![index].tax!.replaceAll(".00", "")) + int.parse(data.orders![index].deliveryFee!.replaceAll(".00", ""))).toString()}",
                                                         style: textTheme
                                                             .headlineMedium!
                                                             .copyWith(
@@ -133,7 +133,7 @@ class _OrderHistoryState extends ConsumerState<OrderHistory> {
                                                 YBox(kPadding),
                                                 Container(
                                                   padding: const EdgeInsets
-                                                          .symmetric(
+                                                      .symmetric(
                                                       horizontal: kSmallPadding,
                                                       vertical: kPadding),
                                                   decoration: BoxDecoration(
@@ -170,22 +170,22 @@ class _OrderHistoryState extends ConsumerState<OrderHistory> {
                                                 builder: (context, ref, _) {
                                               var widget = InkWellNoShadow(
                                                 onTap: () {
-
                                                   pushTo(CheckOut(
                                                     productList: data
                                                         .orders![index]
                                                         .products!,
-                                                    band: data
-                                                        .orders![index]
+                                                    band: data.orders![index]
                                                         .products![0].band,
                                                     tax: data
                                                         .orders![index]
-                                                        .products![0].category!.tax,
+                                                        .products![0]
+                                                        .category!
+                                                        .tax,
                                                   ));
                                                 },
                                                 child: Container(
                                                   padding: const EdgeInsets
-                                                          .symmetric(
+                                                      .symmetric(
                                                       horizontal: 12,
                                                       vertical: 10),
                                                   decoration: BoxDecoration(

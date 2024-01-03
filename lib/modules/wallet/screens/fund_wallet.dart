@@ -21,7 +21,7 @@ class FundWalletScreen extends ConsumerStatefulWidget {
 
 class _FundWalletScreenState extends ConsumerState<FundWalletScreen> {
   TextEditingController controller = TextEditingController();
-  var publicKey = 'pk_test_25e249297133695de0f477d314a9d2658c967446';
+  var publicKey = 'pk_test_b9037207caa1d2764171b06c1c99cecc658c7b3f';
   final plugin = PaystackPlugin();
 
   @override

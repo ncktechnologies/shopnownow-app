@@ -158,6 +158,35 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
                           margin: const EdgeInsets.only(bottom: kSmallPadding),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
+      return Positioned(
+        left: kRegularPadding,
+        right: kRegularPadding,
+        top: MediaQuery.of(context).size.height * 0.30,
+        child: Container(
+            height: searchResult.length == 1 ? 150 : 350,
+            padding: const EdgeInsets.all(kSmallPadding),
+            decoration: BoxDecoration(
+              color: kPrimaryWhite,
+              borderRadius: BorderRadius.circular(kSmallPadding),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey[200]!,
+                  spreadRadius: 0,
+                  blurRadius: 15,
+                  offset: const Offset(0, 0), // changes position of shadow
+                )
+              ],
+            ),
+            child: ListView.builder(
+                itemCount: searchResult.length,
+                itemBuilder: (context, index) {
+                  return Material(
+                    child: Container(
+                      margin: const EdgeInsets.only(bottom: kSmallPadding),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
                             children: [
                               Row(
                                 children: [

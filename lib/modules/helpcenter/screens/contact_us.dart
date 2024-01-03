@@ -1,11 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_tawkto/flutter_tawk.dart';
+import 'package:shopnownow/app/helpers/session_manager.dart';
 import 'package:shopnownow/modules/reuseables/size_boxes.dart';
 import 'package:shopnownow/modules/reuseables/widgets.dart';
 import 'package:shopnownow/utils/assets_path.dart';
 import 'package:shopnownow/utils/constants.dart';
 import 'package:shopnownow/utils/strings.dart';
-import 'package:shopnownow/utils/text_field_comp.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+
+import '../../../app/helpers/session_manager.dart';
+
+InAppBrowser browser = InAppBrowser();
 
 class ContactUs extends StatelessWidget {
   const ContactUs({Key? key}) : super(key: key);
@@ -73,14 +80,23 @@ class ContactUs extends StatelessWidget {
               children: [
                 ContactWidget(
                   icon: AssetPaths.email,
-                  text: "hello@chopnownow.com",
-                ),ContactWidget(
-                  icon: AssetPaths.whatsappLogo,
-                  text: "090 9074 3953",
-                ),ContactWidget(
-                  icon: AssetPaths.liveChat,
-                  text: "Live Chat",
+                  text: SessionManager.getContactEmail()!.split("Email@").last,
+                  onTap: () {
+                    openEmail();
+                  },
                 ),
+                ContactWidget(
+                    icon: AssetPaths.whatsappLogo,
+                    text: SessionManager.getContactPhone()!.split("@").last,
+                    onTap: () {
+                      openWhatsApp();
+                    }),
+                ContactWidget(
+                    icon: AssetPaths.liveChat,
+                    text: "Live Chat",
+                    onTap: () {
+                      startLiveChat();
+                    })
               ],
             ),
           ),
@@ -98,43 +114,86 @@ class ContactUs extends StatelessWidget {
           // YBox(80),
           // LargeButton(title: submit, onPressed: (){}),
           // YBox(kRegularPadding),
-
         ],
       ),
     ));
   }
 }
 
+Future<void> startLiveChat() async {
+  await browser.openUrlRequest(
+    urlRequest: URLRequest(
+        url: Uri.parse(
+            "https://tawk.to/chat/658d73a470c9f2407f840733/1hio8netc")),
+    options: InAppBrowserClassOptions(
+      inAppWebViewGroupOptions: InAppWebViewGroupOptions(
+        crossPlatform: InAppWebViewOptions(
+          useShouldOverrideUrlLoading: true,
+          mediaPlaybackRequiresUserGesture: false,
+        ),
+      ),
+    ),
+  );
+}
+
+void openWhatsApp() async {
+  String whatsappUrl =
+      "https://wa.me/${SessionManager.getContactPhone()!.split("@").last}"; // Replace with the actual phone number
+  if (await canLaunchUrl(Uri.parse(whatsappUrl))) {
+    await launchUrl(Uri.parse(whatsappUrl));
+  } else {}
+}
+
+void openEmail() async {
+  final Uri emailLaunchUri = Uri(
+    scheme: 'mailto',
+    path: SessionManager.getContactPhone()!.split("@").last,
+    );
+
+  if (await canLaunchUrl(emailLaunchUri)) {
+    await launchUrl(emailLaunchUri);
+  } else {}
+}
+
 class ContactWidget extends StatelessWidget {
   final String text, icon;
+  final Function()? onTap;
 
   const ContactWidget({
-    required this.icon, required this.text,
+    required this.icon,
+    required this.text,
+    this.onTap,
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Container(
-          padding: const EdgeInsets.all(kRegularPadding),
-          decoration: const BoxDecoration(
-            shape: BoxShape.circle,
-            color: kLightRed100,
+    return InkWellNoShadow(
+      onTap: onTap,
+      child: Column(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(kRegularPadding),
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+              color: kLightRed100,
+            ),
+            child: SvgPicture.asset(
+              icon,
+              color: kPrimaryColor,
+              height: 24,
+              width: 24,
+            ),
           ),
-          child: SvgPicture.asset(
-            icon,
-            color: kPrimaryColor,
-            height: 24,
-            width: 24,
-          ),
-        ),
-        Text(
-          text,
-          style: textTheme.displayLarge!.copyWith(color: kDark400,  fontSize: 10,),
-        )
-      ],
+          Text(
+            text,
+            style: textTheme.displayLarge!.copyWith(
+              color: kDark400,
+              fontSize: 10,
+            ),
+          )
+        ],
+      ),
     );
   }
 }

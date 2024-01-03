@@ -84,24 +84,12 @@ class SessionManager {
     SessionManager.prefs.setString(phoneNumber, value);
   }
 
-  static void setDateOfBirth(DateTime value) {
-    SessionManager.prefs.setString(dateOfBirth, value.toString());
-  }
-
   static void setToken(String value) {
     SessionManager.prefs.setString(token, value);
   }
 
   static void setContactEmail(String value) {
     SessionManager.prefs.setString(contactEmail, value);
-  }
-
-  static void setProfilePhoto(String value) {
-    SessionManager.prefs.setString(profilePhoto, value);
-  }
-
-  static void setGender(String value) {
-    SessionManager.prefs.setString(gender, value);
   }
 
   /// GETTERS
@@ -179,5 +167,15 @@ class SessionManager {
 
   static void clear() async {
     await prefs.clear();
+  }
+
+  static clearToken() async {
+    await prefs.remove(token);
+    await prefs.remove(userId);
+    await prefs.remove(fullName);
+    await prefs.remove(email);
+    await prefs.remove(wallet);
+    await prefs.remove(loyaltyPoints);
+    await prefs.remove(phoneNumber);
   }
 }

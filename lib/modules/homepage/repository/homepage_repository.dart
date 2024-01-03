@@ -61,9 +61,9 @@ class HomePageRepository {
         .toNotifierState();
   }
 
-  static Future<NotifierState<GetTimeSlot>> getTimeSlot() async {
+  static Future<NotifierState<GetTimeSlot>> getTimeSlot(int id) async {
     return (await ApiService<GetTimeSlot>().getCall(
-        "/user/delivery-time-slots/list",
+        "/user/delivery-time-slots/list?id$id",
         // hasToken: true,
         onReturn: (response) => logResponse(response),
         getDataFromResponse: (data) {
@@ -140,4 +140,8 @@ class HomePageRepository {
         }))
         .toNotifierState();
   }
+
+
+
+
 }

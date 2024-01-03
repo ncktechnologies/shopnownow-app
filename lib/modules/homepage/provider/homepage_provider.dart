@@ -1,3 +1,4 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shopnownow/app/helpers/notifiers.dart';
 import 'package:shopnownow/modules/homepage/model/homepage_model.dart';
@@ -35,18 +36,18 @@ final createOrderProvider = StateNotifierProvider<CreateOrderNotifier,
   return CreateOrderNotifier();
 });
 
-final processPaymentProvider = StateNotifierProvider<ProcessPaymentNotifier,
-    NotifierState<String>>((ref) {
+final processPaymentProvider =
+    StateNotifierProvider<ProcessPaymentNotifier, NotifierState<String>>((ref) {
   return ProcessPaymentNotifier();
 });
 
-final processPaymentProvider2 = StateNotifierProvider.family<ProcessPaymentNotifier,
-    NotifierState<String>, int>((ref, id) {
+final processPaymentProvider2 = StateNotifierProvider.family<
+    ProcessPaymentNotifier, NotifierState<String>, int>((ref, id) {
   return ProcessPaymentNotifier();
 });
 
-final loadCouponProvider = StateNotifierProvider<LoadCouponNotifier,
-    NotifierState<String>>((ref) {
+final loadCouponProvider =
+    StateNotifierProvider<LoadCouponNotifier, NotifierState<String>>((ref) {
   return LoadCouponNotifier();
 });
 
@@ -62,10 +63,11 @@ final getQuickGuideProvider = StateNotifierProvider<GetQuickGuideNotifier,
 
 class GetCategoriesNotifier
     extends StateNotifier<NotifierState<List<GetCategories>>> {
-  GetCategoriesNotifier() : super(NotifierState());
+  GetCategoriesNotifier() : super(const NotifierState());
 
   void getCategories(
       {Function(List<GetCategories>)? then, Function(String?)? error}) async {
+        logAnalyticsEvent('open_category');
     state = notifyLoading();
     state = await HomePageRepository.getCategories();
     if (state.status == NotifierStatus.done) {
@@ -78,7 +80,7 @@ class GetCategoriesNotifier
 
 class GetProductsBySearchNotifier
     extends StateNotifier<NotifierState<GetProductsBySearch>> {
-  GetProductsBySearchNotifier() : super(NotifierState());
+  GetProductsBySearchNotifier() : super(const NotifierState());
 
   void getProductsBySearch(
       {required String query,
@@ -97,7 +99,7 @@ class GetProductsBySearchNotifier
 }
 
 class AddToListNotifier extends StateNotifier<NotifierState<String>> {
-  AddToListNotifier() : super(NotifierState());
+  AddToListNotifier() : super(const NotifierState());
 
   void addToList(
       {required AddProductRequest request,
@@ -114,7 +116,7 @@ class AddToListNotifier extends StateNotifier<NotifierState<String>> {
 }
 
 class GetLocationsNotifier extends StateNotifier<NotifierState<GetLocation>> {
-  GetLocationsNotifier() : super(NotifierState());
+  GetLocationsNotifier() : super(const NotifierState());
 
   void getLocations(
       {Function(List<Location>)? then, Function(String?)? error}) async {
@@ -129,12 +131,12 @@ class GetLocationsNotifier extends StateNotifier<NotifierState<GetLocation>> {
 }
 
 class GetTimeSlotNotifier extends StateNotifier<NotifierState<GetTimeSlot>> {
-  GetTimeSlotNotifier() : super(NotifierState());
+  GetTimeSlotNotifier() : super(const NotifierState());
 
   void getTimeSlot(
-      {Function(List<TimeSlot>)? then, Function(String?)? error}) async {
+      {required int id,Function(List<TimeSlot>)? then, Function(String?)? error}) async {
     state = notifyLoading();
-    state = await HomePageRepository.getTimeSlot();
+    state = await HomePageRepository.getTimeSlot(id);
     if (state.status == NotifierStatus.done) {
       if (then != null) then(state.data!.timeSlots!);
     } else if (state.status == NotifierStatus.error) {
@@ -145,12 +147,13 @@ class GetTimeSlotNotifier extends StateNotifier<NotifierState<GetTimeSlot>> {
 
 class CreateOrderNotifier
     extends StateNotifier<NotifierState<Map<String, dynamic>>> {
-  CreateOrderNotifier() : super(NotifierState());
+  CreateOrderNotifier() : super(const NotifierState());
 
   void createOrder(
       {required CreateOrderRequest orderRequest,
       Function(Map<String, dynamic>)? then,
       Function(String?)? error}) async {
+    logAnalyticsEvent('begin_checkout');
     state = notifyLoading();
     state = await HomePageRepository.createOrder(orderRequest: orderRequest);
     if (state.status == NotifierStatus.done) {
@@ -162,16 +165,17 @@ class CreateOrderNotifier
 }
 
 class ProcessPaymentNotifier extends StateNotifier<NotifierState<String>> {
-  ProcessPaymentNotifier() : super(NotifierState());
+  ProcessPaymentNotifier() : super(const NotifierState());
 
   void processPayment(
       {required ProcessPaymentRequest paymentRequest,
       Function(String)? then,
-        bool noToken = false,
+      bool noToken = false,
       Function(String?)? error}) async {
+        logAnalyticsEvent('complete_payment');
     state = notifyLoading();
-    state =
-        await HomePageRepository.processPayment(paymentRequest: paymentRequest, noToken: noToken);
+    state = await HomePageRepository.processPayment(
+        paymentRequest: paymentRequest, noToken: noToken);
     if (state.status == NotifierStatus.done) {
       if (then != null) then(state.data!);
     } else if (state.status == NotifierStatus.error) {
@@ -181,15 +185,14 @@ class ProcessPaymentNotifier extends StateNotifier<NotifierState<String>> {
 }
 
 class LoadCouponNotifier extends StateNotifier<NotifierState<String>> {
-  LoadCouponNotifier() : super(NotifierState());
+  LoadCouponNotifier() : super(const NotifierState());
 
   void loadCoupon(
       {required String coupon,
       Function(String)? then,
       Function(String?)? error}) async {
     state = notifyLoading();
-    state =
-        await HomePageRepository.loadCoupon(coupon: coupon);
+    state = await HomePageRepository.loadCoupon(coupon: coupon);
     if (state.status == NotifierStatus.done) {
       if (then != null) then(state.data!);
     } else if (state.status == NotifierStatus.error) {
@@ -198,16 +201,13 @@ class LoadCouponNotifier extends StateNotifier<NotifierState<String>> {
   }
 }
 
-class GetContactNotifier extends StateNotifier<NotifierState<Map<String, dynamic>>> {
-  GetContactNotifier() : super(NotifierState());
+class GetContactNotifier
+    extends StateNotifier<NotifierState<Map<String, dynamic>>> {
+  GetContactNotifier() : super(const NotifierState());
 
-  void getContact(
-      {
-      Function()? then,
-      Function(String?)? error}) async {
+  void getContact({Function()? then, Function(String?)? error}) async {
     state = notifyLoading();
-    state =
-        await HomePageRepository.getContact();
+    state = await HomePageRepository.getContact();
     if (state.status == NotifierStatus.done) {
       if (then != null) then();
     } else if (state.status == NotifierStatus.error) {
@@ -216,20 +216,31 @@ class GetContactNotifier extends StateNotifier<NotifierState<Map<String, dynamic
   }
 }
 
-class GetQuickGuideNotifier extends StateNotifier<NotifierState<List<GetQuickGuide>>> {
-  GetQuickGuideNotifier() : super(NotifierState());
+class GetQuickGuideNotifier
+    extends StateNotifier<NotifierState<List<GetQuickGuide>>> {
+  GetQuickGuideNotifier() : super(const NotifierState());
 
-  void getQuickGuide(
-      {
-      Function()? then,
-      Function(String?)? error}) async {
+  void getQuickGuide({Function()? then, Function(String?)? error}) async {
     state = notifyLoading();
-    state =
-        await HomePageRepository.getQuickGuide();
+    state = await HomePageRepository.getQuickGuide();
     if (state.status == NotifierStatus.done) {
       if (then != null) then();
     } else if (state.status == NotifierStatus.error) {
       if (error != null) error(state.message);
     }
   }
+}
+
+Future<void> logAnalyticsEvent(String eventName) async {
+  FirebaseAnalytics analytics = FirebaseAnalytics.instance;
+  await analytics.logEvent(
+    name: eventName,
+    parameters: <String, dynamic>{
+      'string': 'string',
+      'int': 42,
+      'long': 12345678910,
+      'double': 42.0,
+      'bool': true.toString(), // Convert bool to String
+    },
+  );
 }

@@ -1,13 +1,10 @@
 
 import 'dart:io';
 
-import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shopnownow/app/helpers/service_constants.dart';
 import 'package:shopnownow/app/helpers/session_manager.dart';
-import 'package:shopnownow/firebase_options.dart';
 import 'package:shopnownow/modules/homepage/screens/homepage.dart';
 import 'package:shopnownow/modules/onboarding/splash_screen.dart';
 import 'package:shopnownow/utils/constants.dart';
@@ -15,10 +12,10 @@ import 'package:shopnownow/utils/constants.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   HttpOverrides.global = MyHttpOverrides();
-  await Firebase.initializeApp(
-options: DefaultFirebaseOptions.currentPlatform).catchError((e){
-  print(" Error : ${e.toString()}");
-});
+//   await Firebase.initializeApp(
+// options: DefaultFirebaseOptions.currentPlatform).catchError((e){
+//   print(" Error : ${e.toString()}");
+// });
   Env.setEnvironment(EnvState.test);
   SessionManager.initSharedPreference().then((value) => runApp(const MyApp()));
 }

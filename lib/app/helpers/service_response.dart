@@ -23,6 +23,8 @@ class ServiceRequest<T> {
   }
 }
 
+
+
 class ServiceResponse<T> {
   late bool status;
   final T? data;
@@ -87,6 +89,32 @@ class ApiService<T> {
       http.Response response = await http
           .get(Uri.parse(urlChange ? url : "${baseUrl()}$url"),
           headers: ApiHeaders.getHeadersForRequest(hasToken: hasToken))
+          .timeout(requestDuration);
+      if (onReturn != null) onReturn(response);
+      if (response.statusCode >= 300 && response.statusCode <= 520) {
+        throw Error.fromJson(jsonDecode(response.body));
+      } else {
+        var responseBody = jsonDecode(response.body);
+        return serveSuccess<T>(
+            data: getDataFromResponse(responseBody),
+            message: responseBody?["message"] ?? "Successful");
+      }
+    } catch (error, stack) {
+      return processServiceError<T>(error, stack);
+    }
+  }
+
+
+  Future<ServiceResponse<T>> getCallNoHeader(String url,
+      {required T Function(dynamic) getDataFromResponse,
+        Function(http.Response)? onReturn,
+        bool hasToken = false,  bool urlChange = false,}) async {
+    log(url);
+    try {
+      http.Response response = await http
+          .get(Uri.parse(urlChange ? url : "${baseUrl()}$url"),
+          // headers: ApiHeaders.getHeadersForRequest(hasToken: hasToken)
+          )
           .timeout(requestDuration);
       if (onReturn != null) onReturn(response);
       if (response.statusCode >= 300 && response.statusCode <= 520) {
@@ -281,6 +309,34 @@ class ApiService<T> {
       http.Response response = await http
           .get(Uri.parse(urlChange ? url : "${baseUrl()}$url"),
           headers: ApiHeaders.getHeadersForRequest(hasToken: hasToken))
+          .timeout(requestDuration);
+      if (onReturn != null) onReturn(response);
+      if (response.statusCode >= 300 && response.statusCode <= 520) {
+        throw Error.fromJson(jsonDecode(response.body));
+      } else {
+        var responseBody = jsonDecode(response.body);
+        return noMessageServeSuccess<T>(
+          data: getDataFromResponse(responseBody),
+        );
+      }
+    } catch (error, stack) {
+      return processServiceError<T>(error, stack);
+    }
+  }
+
+  Future<ServiceResponse<T>> getCallOnlyListNoHeader(
+      String url, {
+        required T Function(dynamic) getDataFromResponse,
+        Function(http.Response)? onReturn,
+        bool hasToken = false,
+        bool urlChange = false,
+      }) async {
+    log(url);
+    try {
+      http.Response response = await http
+          .get(Uri.parse(urlChange ? url : "${baseUrl()}$url"),
+          // headers: ApiHeaders.getHeadersForRequest(hasToken: hasToken)
+          )
           .timeout(requestDuration);
       if (onReturn != null) onReturn(response);
       if (response.statusCode >= 300 && response.statusCode <= 520) {

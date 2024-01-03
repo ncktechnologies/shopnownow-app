@@ -1,4 +1,4 @@
-import 'package:firebase_analytics/firebase_analytics.dart';
+// import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shopnownow/app/helpers/notifiers.dart';
 import 'package:shopnownow/modules/authentication/repository/auth_repository.dart';
@@ -50,7 +50,7 @@ class SignUpNotifier extends StateNotifier<NotifierState<void>> {
       required String fullName,
       Function()? then,
       Function(String?)? error}) async {
-    logAnalyticsEvent('sign_up');
+    // logAnalyticsEvent('sign_up');
     state = notifyLoading();
     state = await AuthRepository.signUp(
       email: email,
@@ -180,16 +180,16 @@ class ForgotPasswordNotifier extends StateNotifier<NotifierState<String>> {
   }
 }
 
-Future<void> logAnalyticsEvent(String eventName) async {
-  FirebaseAnalytics analytics = FirebaseAnalytics.instance;
-  await analytics.logEvent(
-    name: eventName,
-    parameters: <String, dynamic>{
-      'string': 'string',
-      'int': 42,
-      'long': 12345678910,
-      'double': 42.0,
-      'bool': true.toString(),
-    },
-  );
-}
+// Future<void> logAnalyticsEvent(String eventName) async {
+//   FirebaseAnalytics analytics = FirebaseAnalytics.instance;
+//   await analytics.logEvent(
+//     name: eventName,
+//     parameters: <String, dynamic>{
+//       'string': 'string',
+//       'int': 42,
+//       'long': 12345678910,
+//       'double': 42.0,
+//       'bool': true.toString(),
+//     },
+//   );
+// }

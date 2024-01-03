@@ -16,6 +16,7 @@ Future<void> main() async {
   SessionManager.initSharedPreference().then((value) => runApp(const MyApp()));
 }
 
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 

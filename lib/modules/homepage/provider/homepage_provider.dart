@@ -1,4 +1,4 @@
-import 'package:firebase_analytics/firebase_analytics.dart';
+// import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shopnownow/app/helpers/notifiers.dart';
 import 'package:shopnownow/modules/homepage/model/homepage_model.dart';
@@ -67,7 +67,7 @@ class GetCategoriesNotifier
 
   void getCategories(
       {Function(List<GetCategories>)? then, Function(String?)? error}) async {
-        logAnalyticsEvent('open_category');
+        // logAnalyticsEvent('open_category');
     state = notifyLoading();
     state = await HomePageRepository.getCategories();
     if (state.status == NotifierStatus.done) {
@@ -153,7 +153,7 @@ class CreateOrderNotifier
       {required CreateOrderRequest orderRequest,
       Function(Map<String, dynamic>)? then,
       Function(String?)? error}) async {
-    logAnalyticsEvent('begin_checkout');
+    // logAnalyticsEvent('begin_checkout');
     state = notifyLoading();
     state = await HomePageRepository.createOrder(orderRequest: orderRequest);
     if (state.status == NotifierStatus.done) {
@@ -172,7 +172,7 @@ class ProcessPaymentNotifier extends StateNotifier<NotifierState<String>> {
       Function(String)? then,
       bool noToken = false,
       Function(String?)? error}) async {
-        logAnalyticsEvent('complete_payment');
+        // logAnalyticsEvent('complete_payment');
     state = notifyLoading();
     state = await HomePageRepository.processPayment(
         paymentRequest: paymentRequest, noToken: noToken);
@@ -231,16 +231,16 @@ class GetQuickGuideNotifier
   }
 }
 
-Future<void> logAnalyticsEvent(String eventName) async {
-  FirebaseAnalytics analytics = FirebaseAnalytics.instance;
-  await analytics.logEvent(
-    name: eventName,
-    parameters: <String, dynamic>{
-      'string': 'string',
-      'int': 42,
-      'long': 12345678910,
-      'double': 42.0,
-      'bool': true.toString(), // Convert bool to String
-    },
-  );
-}
+// Future<void> logAnalyticsEvent(String eventName) async {
+//   FirebaseAnalytics analytics = FirebaseAnalytics.instance;
+//   await analytics.logEvent(
+//     name: eventName,
+//     parameters: <String, dynamic>{
+//       'string': 'string',
+//       'int': 42,
+//       'long': 12345678910,
+//       'double': 42.0,
+//       'bool': true.toString(), // Convert bool to String
+//     },
+//   );
+// }

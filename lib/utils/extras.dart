@@ -123,18 +123,18 @@ class Errors {
 class ApiHeaders {
   static Map<String, String> headersNoAuth() => {
         HttpHeaders.acceptHeader: "application/json",
-        HttpHeaders.connectionHeader: "keep-alive",
+        // HttpHeaders.connectionHeader: "keep-alive",
       };
 
   static Map<String, String> headersSessionAuth(String? token) => {
         HttpHeaders.acceptHeader: "application/json",
-        HttpHeaders.connectionHeader: "keep-alive",
+        // HttpHeaders.connectionHeader: "keep-alive",
         HttpHeaders.authorizationHeader: "Bearer $token"
       };
 
   static Map<String, String> headersSessionAuthNoForm(String? token) => {
         HttpHeaders.contentTypeHeader: "application/json",
-        HttpHeaders.connectionHeader: "keep-alive",
+        // HttpHeaders.connectionHeader: "keep-alive",
         HttpHeaders.authorizationHeader: "Bearer $token",
     HttpHeaders.acceptHeader: "application/json",
 
@@ -142,7 +142,7 @@ class ApiHeaders {
 
   static Map<String, String> headersSessionImageAuth(String? token) => {
         HttpHeaders.acceptHeader: "multipart/form-data",
-        HttpHeaders.connectionHeader: "keep-alive",
+        // HttpHeaders.connectionHeader: "keep-alive",
         HttpHeaders.authorizationHeader: "Bearer $token"
       };
 

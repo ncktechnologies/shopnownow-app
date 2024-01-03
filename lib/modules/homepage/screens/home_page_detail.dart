@@ -47,78 +47,75 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
       // You can return any widget you like here
       // to be displayed on the Overlay
       double screenWidth = MediaQuery.of(context).size.width;
+      double screenHeight = MediaQuery.of(context).size.height;
       bool isMobile = screenWidth < 600; // A
       return Center(
         child: SizedBox(
           width: isMobile
               ? screenWidth * 0.9
               : screenWidth * 0.6, // Adjust these values as needed
-          child: Positioned(
-            left: kRegularPadding,
-            right: kRegularPadding,
-            top: MediaQuery.of(context).size.height * 0.25,
-            child: Container(
-                padding: const EdgeInsets.all(kSmallPadding),
-                decoration: BoxDecoration(
-                  color: kPrimaryWhite,
-                  borderRadius: BorderRadius.circular(kSmallPadding),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey[200]!,
-                      spreadRadius: 0,
-                      blurRadius: 15,
-                      offset: const Offset(0, 0), // changes position of shadow
-                    )
-                  ],
-                ),
-                // width: MediaQuery.of(context).size.width * 0.8,
-                child: Column(
-                    children: widget.category
-                        .map((e) => Material(
-                              child: InkWellNoShadow(
-                                onTap: () {
-                                  setState(() {
-                                    categoryName = e;
-                                  });
-                                  overlayEntry?.remove();
-                                  overlayEntry = null;
-                                },
-                                child: Container(
-                                  margin: const EdgeInsets.only(
-                                      bottom: kSmallPadding),
-                                  child: Row(
-                                    children: [
-                                      e.thumbnail!.split(".").last == "svg"
-                                          ? SvgPicture.network(
-                                              e.thumbnail ?? "",
-                                              fit: BoxFit.scaleDown,
-                                              height: kMacroPadding,
-                                              width: kMacroPadding,
-                                            )
-                                          : Image.network(
-                                              e.thumbnail!,
-                                              height: kMacroPadding,
-                                              width: kMacroPadding,
-                                            ),
-                                      XBox(kSmallPadding),
-                                      Text(
-                                        e.name ?? "",
-                                        style: textTheme.titleMedium!.copyWith(
-                                            fontWeight: FontWeight.w500,
-                                            fontSize: 14,
-                                            color: categoryName!.name!
-                                                        .toLowerCase() ==
-                                                    e.name!.toLowerCase()
-                                                ? kPrimaryColor
-                                                : kPurple50),
-                                      )
-                                    ],
-                                  ),
+          height: isMobile ? screenHeight * 0.5 : screenHeight * 0.5,
+          child: Container(
+              padding: const EdgeInsets.all(kSmallPadding),
+              decoration: BoxDecoration(
+                color: kPrimaryWhite,
+                borderRadius: BorderRadius.circular(kSmallPadding),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey[200]!,
+                    spreadRadius: 0,
+                    blurRadius: 15,
+                    offset: const Offset(0, 0), // changes position of shadow
+                  )
+                ],
+              ),
+              // width: MediaQuery.of(context).size.width * 0.8,
+              child: Column(
+                  children: widget.category
+                      .map((e) => Material(
+                            child: InkWellNoShadow(
+                              onTap: () {
+                                setState(() {
+                                  categoryName = e;
+                                });
+                                overlayEntry?.remove();
+                                overlayEntry = null;
+                              },
+                              child: Container(
+                                margin: const EdgeInsets.only(
+                                    bottom: kSmallPadding),
+                                child: Row(
+                                  children: [
+                                    e.thumbnail!.split(".").last == "svg"
+                                        ? SvgPicture.network(
+                                            e.thumbnail ?? "",
+                                            fit: BoxFit.scaleDown,
+                                            height: kMacroPadding,
+                                            width: kMacroPadding,
+                                          )
+                                        : Image.network(
+                                            e.thumbnail!,
+                                            height: kMacroPadding,
+                                            width: kMacroPadding,
+                                          ),
+                                    XBox(kSmallPadding),
+                                    Text(
+                                      e.name ?? "",
+                                      style: textTheme.titleMedium!.copyWith(
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 14,
+                                          color: categoryName!.name!
+                                                      .toLowerCase() ==
+                                                  e.name!.toLowerCase()
+                                              ? kPrimaryColor
+                                              : kPurple50),
+                                    )
+                                  ],
                                 ),
                               ),
-                            ))
-                        .toList())),
-          ),
+                            ),
+                          ))
+                      .toList())),
         ),
       );
     });
@@ -133,172 +130,168 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
       // You can return any widget you like here
       // to be displayed on the Overlay
       double screenWidth = MediaQuery.of(context).size.width;
+      double screenHeight = MediaQuery.of(context).size.height;
+
       bool isMobile = screenWidth < 600; // A
       return Center(
         child: SizedBox(
           width: isMobile
               ? screenWidth * 0.9
               : screenWidth * 0.6, // Adjust these values as needed
-          child: Positioned(
-            left: kRegularPadding,
-            right: kRegularPadding,
-            top: MediaQuery.of(context).size.height * 0.28,
-            child: Container(
-                height: searchResult.length == 1 ? 150 : 350,
-                padding: const EdgeInsets.all(kSmallPadding),
-                decoration: BoxDecoration(
-                  color: kPrimaryWhite,
-                  borderRadius: BorderRadius.circular(kSmallPadding),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey[200]!,
-                      spreadRadius: 0,
-                      blurRadius: 15,
-                      offset: const Offset(0, 0), // changes position of shadow
-                    )
-                  ],
-                ),
-                child: ListView.builder(
-                    itemCount: searchResult.length,
-                    itemBuilder: (context, index) {
-                      return Material(
-                        child: Container(
-                          margin: const EdgeInsets.only(bottom: kSmallPadding),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  CachedNetworkImage(
+          height: isMobile ? screenHeight * 0.6 : screenHeight * 0.5,
+
+          child: Container(
+              height: searchResult.length == 1 ? 150 : 350,
+              padding: const EdgeInsets.all(kSmallPadding),
+              decoration: BoxDecoration(
+                color: kPrimaryWhite,
+                borderRadius: BorderRadius.circular(kSmallPadding),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey[200]!,
+                    spreadRadius: 0,
+                    blurRadius: 15,
+                    offset: const Offset(0, 0), // changes position of shadow
+                  )
+                ],
+              ),
+              child: ListView.builder(
+                  itemCount: searchResult.length,
+                  itemBuilder: (context, index) {
+                    return Material(
+                      child: Container(
+                        margin: const EdgeInsets.only(bottom: kSmallPadding),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                CachedNetworkImage(
+                                  height: 80,
+                                  width: 80,
+                                  imageUrl: searchResult[index].thumbnailUrl ??
+                                      "https://us.123rf.com/450wm/mathier/mathier1905/mathier190500002/mathier190500002-no-thumbnail-image-placeholder-for-forums-blogs-and-websites.jpg?ver=6",
+                                  fit: BoxFit.cover,
+                                  imageBuilder: (context, prov) {
+                                    return Container(
+                                      decoration: BoxDecoration(
+                                          border: Border.all(
+                                              width: 1, color: kLight300),
+                                          borderRadius: kBorderSmallRadius,
+                                          image: DecorationImage(
+                                              image: prov, fit: BoxFit.cover)),
+                                    );
+                                  },
+                                  errorWidget: (context, url, error) =>
+                                      Image.asset(
+                                    "assets/images/img.png",
                                     height: 80,
                                     width: 80,
-                                    imageUrl: searchResult[index]
-                                            .thumbnailUrl ??
-                                        "https://us.123rf.com/450wm/mathier/mathier1905/mathier190500002/mathier190500002-no-thumbnail-image-placeholder-for-forums-blogs-and-websites.jpg?ver=6",
                                     fit: BoxFit.cover,
-                                    imageBuilder: (context, prov) {
-                                      return Container(
-                                        decoration: BoxDecoration(
-                                            border: Border.all(
-                                                width: 1, color: kLight300),
-                                            borderRadius: kBorderSmallRadius,
-                                            image: DecorationImage(
-                                                image: prov,
-                                                fit: BoxFit.cover)),
-                                      );
-                                    },
-                                    errorWidget: (context, url, error) =>
-                                        Image.asset(
-                                      "assets/images/img.png",
-                                      height: 80,
-                                      width: 80,
-                                      fit: BoxFit.cover,
-                                    ),
                                   ),
-                                  XBox(kSmallPadding),
-                                  Expanded(
-                                      child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        searchResult[index].name ?? "",
-                                        style: textTheme.titleMedium!.copyWith(
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: 12,
+                                ),
+                                XBox(kSmallPadding),
+                                Expanded(
+                                    child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      searchResult[index].name ?? "",
+                                      style: textTheme.titleMedium!.copyWith(
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 12,
+                                      ),
+                                      softWrap: true,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                    YBox(kPadding),
+                                    Text(
+                                      widget.menuItems.name ?? "",
+                                      style: textTheme.displaySmall!.copyWith(
+                                          color: kDarkPurple, fontSize: 10),
+                                      softWrap: true,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                    YBox(kPadding),
+                                    Row(
+                                      children: [
+                                        Text(
+                                          "₦",
+                                          softWrap: true,
+                                          overflow: TextOverflow.ellipsis,
+                                          style:
+                                              textTheme.displayLarge!.copyWith(
+                                            fontSize: 10,
+                                          ),
                                         ),
-                                        softWrap: true,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                      YBox(kPadding),
-                                      Text(
-                                        widget.menuItems.name ?? "",
-                                        style: textTheme.displaySmall!.copyWith(
-                                            color: kDarkPurple, fontSize: 10),
-                                        softWrap: true,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                      YBox(kPadding),
-                                      Row(
-                                        children: [
-                                          Text(
-                                            "₦",
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(top: 8),
+                                          child: Text(
+                                            searchResult[index].price ?? "0",
                                             softWrap: true,
-                                            overflow: TextOverflow.ellipsis,
                                             style: textTheme.displayLarge!
                                                 .copyWith(
                                               fontSize: 10,
                                             ),
+                                            overflow: TextOverflow.ellipsis,
                                           ),
-                                          Padding(
-                                            padding:
-                                                const EdgeInsets.only(top: 8),
-                                            child: Text(
-                                              searchResult[index].price ?? "0",
-                                              softWrap: true,
-                                              style: textTheme.displayLarge!
-                                                  .copyWith(
-                                                fontSize: 10,
-                                              ),
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
-                                          ),
-                                        ],
-                                      )
-                                    ],
-                                  )),
-                                  InkWellNoShadow(
-                                    onTap: () {
-                                      setState(() {
-                                        productList.add(
-                                          Product(
-                                              id: searchResult[index].id!,
-                                              name: searchResult[index].name!,
-                                              quantity: 1,
-                                              price: searchResult[index].price,
-                                              thumbnailUrl: searchResult[index]
-                                                  .thumbnailUrl),
-                                        );
+                                        ),
+                                      ],
+                                    )
+                                  ],
+                                )),
+                                InkWellNoShadow(
+                                  onTap: () {
+                                    setState(() {
+                                      productList.add(
+                                        Product(
+                                            id: searchResult[index].id!,
+                                            name: searchResult[index].name!,
+                                            quantity: 1,
+                                            price: searchResult[index].price,
+                                            thumbnailUrl: searchResult[index]
+                                                .thumbnailUrl),
+                                      );
 
-                                        overlayEntry?.remove();
-                                        overlaySearchEntry?.remove();
-                                        overlayEntry = null;
-                                        overlaySearchEntry = null;
-                                      });
-                                    },
-                                    child: Container(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 12, vertical: 8),
-                                      decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(
-                                              kMicroPadding),
-                                          border: Border.all(
-                                              color: kLightAsh50, width: 1.5)),
-                                      child: Text(
-                                        addList,
-                                        style: textTheme.displayLarge!.copyWith(
-                                            color: kGrey600, fontSize: 14),
-                                      ),
+                                      overlayEntry?.remove();
+                                      overlaySearchEntry?.remove();
+                                      overlayEntry = null;
+                                      overlaySearchEntry = null;
+                                    });
+                                  },
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 12, vertical: 8),
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(
+                                            kMicroPadding),
+                                        border: Border.all(
+                                            color: kLightAsh50, width: 1.5)),
+                                    child: Text(
+                                      addList,
+                                      style: textTheme.displayLarge!.copyWith(
+                                          color: kGrey600, fontSize: 14),
                                     ),
-                                  )
-                                ],
-                              ),
-                              YBox(kSmallPadding),
-                              index == searchResult.length - 1
-                                  ? YBox(0)
-                                  : const Divider(
-                                      thickness: 1,
-                                      color: kDividerColor,
-                                    ),
-                              YBox(index == searchResult.length - 1
-                                  ? 0
-                                  : kSmallPadding),
-                            ],
-                          ),
+                                  ),
+                                )
+                              ],
+                            ),
+                            YBox(kSmallPadding),
+                            index == searchResult.length - 1
+                                ? YBox(0)
+                                : const Divider(
+                                    thickness: 1,
+                                    color: kDividerColor,
+                                  ),
+                            YBox(index == searchResult.length - 1
+                                ? 0
+                                : kSmallPadding),
+                          ],
                         ),
-                      );
-                    })),
-          ),
+                      ),
+                    );
+                  })),
         ),
       );
     });

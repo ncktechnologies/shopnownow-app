@@ -1,4 +1,4 @@
-import 'package:firebase_analytics/firebase_analytics.dart';
+// import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shopnownow/app/helpers/notifiers.dart';
 import 'package:shopnownow/app/helpers/session_manager.dart';
@@ -103,7 +103,7 @@ class FundWalletNotifier extends StateNotifier<NotifierState<String>> {
       required String reference,
       Function()? then,
       Function(String?)? error}) async {
-    logAnalyticsEvent('fund_wallet');
+    // logAnalyticsEvent('fund_wallet');
     state = notifyLoading();
     state =
         await WalletRepository.fundWallet(amount: amount, reference: reference);
@@ -115,16 +115,16 @@ class FundWalletNotifier extends StateNotifier<NotifierState<String>> {
   }
 }
 
-Future<void> logAnalyticsEvent(String eventName) async {
-  FirebaseAnalytics analytics = FirebaseAnalytics.instance;
-  await analytics.logEvent(
-    name: eventName,
-    parameters: <String, dynamic>{
-      'string': 'string',
-      'int': 42,
-      'long': 12345678910,
-      'double': 42.0,
-      'bool': true.toString(),
-    },
-  );
-}
+// Future<void> logAnalyticsEvent(String eventName) async {
+//   FirebaseAnalytics analytics = FirebaseAnalytics.instance;
+//   await analytics.logEvent(
+//     name: eventName,
+//     parameters: <String, dynamic>{
+//       'string': 'string',
+//       'int': 42,
+//       'long': 12345678910,
+//       'double': 42.0,
+//       'bool': true.toString(),
+//     },
+//   );
+// }

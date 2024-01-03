@@ -124,160 +124,174 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
     overlaySearchEntry = OverlayEntry(builder: (context) {
       // You can return any widget you like here
       // to be displayed on the Overlay
-      return Positioned(
-        left: kRegularPadding,
-        right: kRegularPadding,
-        top: MediaQuery.of(context).size.height * 0.30,
-        child: Container(
-            height: searchResult.length == 1 ? 150 : 350,
-            padding: const EdgeInsets.all(kSmallPadding),
-            decoration: BoxDecoration(
-              color: kPrimaryWhite,
-              borderRadius: BorderRadius.circular(kSmallPadding),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey[200]!,
-                  spreadRadius: 0,
-                  blurRadius: 15,
-                  offset: const Offset(0, 0), // changes position of shadow
-                )
-              ],
-            ),
-            child: ListView.builder(
-                itemCount: searchResult.length,
-                itemBuilder: (context, index) {
-                  return Material(
-                    child: Container(
-                      margin: const EdgeInsets.only(bottom: kSmallPadding),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
+      double screenWidth = MediaQuery.of(context).size.width;
+      bool isMobile = screenWidth < 600; // A
+      return Center(
+        child: SizedBox(
+          width: isMobile
+              ? screenWidth * 0.9
+              : screenWidth * 0.6, // Adjust these values as needed
+          child: Positioned(
+            left: kRegularPadding,
+            right: kRegularPadding,
+            top: MediaQuery.of(context).size.height * 0.28,
+            child: Container(
+                height: searchResult.length == 1 ? 150 : 350,
+                padding: const EdgeInsets.all(kSmallPadding),
+                decoration: BoxDecoration(
+                  color: kPrimaryWhite,
+                  borderRadius: BorderRadius.circular(kSmallPadding),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey[200]!,
+                      spreadRadius: 0,
+                      blurRadius: 15,
+                      offset: const Offset(0, 0), // changes position of shadow
+                    )
+                  ],
+                ),
+                child: ListView.builder(
+                    itemCount: searchResult.length,
+                    itemBuilder: (context, index) {
+                      return Material(
+                        child: Container(
+                          margin: const EdgeInsets.only(bottom: kSmallPadding),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              CachedNetworkImage(
-                                height: 80,
-                                width: 80,
-                                imageUrl: searchResult[index].thumbnailUrl ??
-                                    "https://us.123rf.com/450wm/mathier/mathier1905/mathier190500002/mathier190500002-no-thumbnail-image-placeholder-for-forums-blogs-and-websites.jpg?ver=6",
-                                fit: BoxFit.cover,
-                                imageBuilder: (context, prov) {
-                                  return Container(
-                                    decoration: BoxDecoration(
-                                        border: Border.all(
-                                            width: 1, color: kLight300),
-                                        borderRadius: kBorderSmallRadius,
-                                        image: DecorationImage(
-                                            image: prov, fit: BoxFit.cover)),
-                                  );
-                                },
-                                errorWidget: (context, url, error) =>
-                                    Image.asset(
-                                  "assets/images/img.png",
-                                  height: 80,
-                                  width: 80,
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                              XBox(kSmallPadding),
-                              Expanded(
-                                  child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                              Row(
                                 children: [
-                                  Text(
-                                    searchResult[index].name ?? "",
-                                    style: textTheme.titleMedium!.copyWith(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 12,
+                                  CachedNetworkImage(
+                                    height: 80,
+                                    width: 80,
+                                    imageUrl: searchResult[index]
+                                            .thumbnailUrl ??
+                                        "https://us.123rf.com/450wm/mathier/mathier1905/mathier190500002/mathier190500002-no-thumbnail-image-placeholder-for-forums-blogs-and-websites.jpg?ver=6",
+                                    fit: BoxFit.cover,
+                                    imageBuilder: (context, prov) {
+                                      return Container(
+                                        decoration: BoxDecoration(
+                                            border: Border.all(
+                                                width: 1, color: kLight300),
+                                            borderRadius: kBorderSmallRadius,
+                                            image: DecorationImage(
+                                                image: prov,
+                                                fit: BoxFit.cover)),
+                                      );
+                                    },
+                                    errorWidget: (context, url, error) =>
+                                        Image.asset(
+                                      "assets/images/img.png",
+                                      height: 80,
+                                      width: 80,
+                                      fit: BoxFit.cover,
                                     ),
-                                    softWrap: true,
-                                    overflow: TextOverflow.ellipsis,
                                   ),
-                                  YBox(kPadding),
-                                  Text(
-                                    widget.menuItems.name ?? "",
-                                    style: textTheme.displaySmall!.copyWith(
-                                        color: kDarkPurple, fontSize: 10),
-                                    softWrap: true,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  YBox(kPadding),
-                                  Row(
+                                  XBox(kSmallPadding),
+                                  Expanded(
+                                      child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        "₦",
+                                        searchResult[index].name ?? "",
+                                        style: textTheme.titleMedium!.copyWith(
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 12,
+                                        ),
                                         softWrap: true,
                                         overflow: TextOverflow.ellipsis,
-                                        style: textTheme.displayLarge!.copyWith(
-                                          fontSize: 10,
-                                        ),
                                       ),
-                                      Padding(
-                                        padding: const EdgeInsets.only(top: 8),
-                                        child: Text(
-                                          searchResult[index].price ?? "0",
-                                          softWrap: true,
-                                          style:
-                                              textTheme.displayLarge!.copyWith(
-                                            fontSize: 10,
+                                      YBox(kPadding),
+                                      Text(
+                                        widget.menuItems.name ?? "",
+                                        style: textTheme.displaySmall!.copyWith(
+                                            color: kDarkPurple, fontSize: 10),
+                                        softWrap: true,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      YBox(kPadding),
+                                      Row(
+                                        children: [
+                                          Text(
+                                            "₦",
+                                            softWrap: true,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: textTheme.displayLarge!
+                                                .copyWith(
+                                              fontSize: 10,
+                                            ),
                                           ),
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                      ),
+                                          Padding(
+                                            padding:
+                                                const EdgeInsets.only(top: 8),
+                                            child: Text(
+                                              searchResult[index].price ?? "0",
+                                              softWrap: true,
+                                              style: textTheme.displayLarge!
+                                                  .copyWith(
+                                                fontSize: 10,
+                                              ),
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ),
+                                        ],
+                                      )
                                     ],
+                                  )),
+                                  InkWellNoShadow(
+                                    onTap: () {
+                                      setState(() {
+                                        productList.add(
+                                          Product(
+                                              id: searchResult[index].id!,
+                                              name: searchResult[index].name!,
+                                              quantity: 1,
+                                              price: searchResult[index].price,
+                                              thumbnailUrl: searchResult[index]
+                                                  .thumbnailUrl),
+                                        );
+
+                                        overlayEntry?.remove();
+                                        overlaySearchEntry?.remove();
+                                        overlayEntry = null;
+                                        overlaySearchEntry = null;
+                                      });
+                                    },
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 12, vertical: 8),
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(
+                                              kMicroPadding),
+                                          border: Border.all(
+                                              color: kLightAsh50, width: 1.5)),
+                                      child: Text(
+                                        addList,
+                                        style: textTheme.displayLarge!.copyWith(
+                                            color: kGrey600, fontSize: 14),
+                                      ),
+                                    ),
                                   )
                                 ],
-                              )),
-                              InkWellNoShadow(
-                                onTap: () {
-                                  setState(() {
-                                    productList.add(
-                                      Product(
-                                          id: searchResult[index].id!,
-                                          name: searchResult[index].name!,
-                                          quantity: 1,
-                                          price: searchResult[index].price,
-                                          thumbnailUrl:
-                                              searchResult[index].thumbnailUrl),
-                                    );
-
-                                    overlayEntry?.remove();
-                                    overlaySearchEntry?.remove();
-                                    overlayEntry = null;
-                                    overlaySearchEntry = null;
-                                  });
-                                },
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 12, vertical: 8),
-                                  decoration: BoxDecoration(
-                                      borderRadius:
-                                          BorderRadius.circular(kMicroPadding),
-                                      border: Border.all(
-                                          color: kLightAsh50, width: 1.5)),
-                                  child: Text(
-                                    addList,
-                                    style: textTheme.displayLarge!.copyWith(
-                                        color: kGrey600, fontSize: 14),
-                                  ),
-                                ),
-                              )
+                              ),
+                              YBox(kSmallPadding),
+                              index == searchResult.length - 1
+                                  ? YBox(0)
+                                  : const Divider(
+                                      thickness: 1,
+                                      color: kDividerColor,
+                                    ),
+                              YBox(index == searchResult.length - 1
+                                  ? 0
+                                  : kSmallPadding),
                             ],
                           ),
-                          YBox(kSmallPadding),
-                          index == searchResult.length - 1
-                              ? YBox(0)
-                              : const Divider(
-                                  thickness: 1,
-                                  color: kDividerColor,
-                                ),
-                          YBox(index == searchResult.length - 1
-                              ? 0
-                              : kSmallPadding),
-                        ],
-                      ),
-                    ),
-                  );
-                })),
+                        ),
+                      );
+                    })),
+          ),
+        ),
       );
     });
 
@@ -317,74 +331,171 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
           overlaySearchEntry = null;
         },
         resizeToAvoidBottomInset: false,
-        bottomSheet: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: kRegularPadding),
-          child: InkWellNoShadow(
-            onTap: () {
-              overlayEntry?.remove();
-              overlaySearchEntry?.remove();
-              overlayEntry = null;
-              overlaySearchEntry = null;
+        bottomSheet: Container(
+          height: 250,
+          alignment: Alignment.bottomCenter,
+          margin: const EdgeInsets.only(bottom: kRegularPadding),
+          child: LayoutBuilder(
+            builder: (context, constraint) {
+              if (constraint.maxWidth > 600) {
+                return SizedBox(
+                  width: 800,
+                  child: Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: kRegularPadding),
+                    child: InkWellNoShadow(
+                      onTap: () {
+                        overlayEntry?.remove();
+                        overlaySearchEntry?.remove();
+                        overlayEntry = null;
+                        overlaySearchEntry = null;
+                      },
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Divider(
+                            thickness: 2,
+                            color: k200,
+                          ),
+                          YBox(kRegularPadding),
+                          Text(
+                            "$minOrder₦${widget.menuItems.band!.minimum}",
+                            style: textTheme.headlineMedium!
+                                .copyWith(color: kOrange500),
+                          ),
+                          YBox(kMediumPadding),
+                          PaymentRow(
+                              text: subTotal,
+                              subText: (productList.fold<int>(0,
+                                  (previousValue, element) {
+                                return (previousValue +
+                                    (int.parse(element.price
+                                                ?.replaceAll(".00", "") ??
+                                            "0") *
+                                        element.quantity!));
+                              }).toString())),
+                          YBox(kRegularPadding),
+                          LargeButton(
+                              title: checkout,
+                              onPressed: productList.isEmpty
+                                  ? () {
+                                      showErrorBar(
+                                          context, "Please add a Product");
+                                    }
+                                  : () {
+                                      if (double.parse(
+                                              widget.menuItems.band!.minimum!) >
+                                          double.parse((productList.fold<int>(0,
+                                              (previousValue, element) {
+                                            return (previousValue +
+                                                (int.parse(element.price
+                                                            ?.replaceAll(
+                                                                ".00", "") ??
+                                                        "0") *
+                                                    element.quantity!));
+                                          }).toString()))) {
+                                        showErrorBar(context,
+                                            "The minimum order is ₦${widget.menuItems.band!.minimum}");
+                                      } else {
+                                        overlayEntry?.remove();
+                                        overlaySearchEntry?.remove();
+                                        overlayEntry = null;
+                                        overlaySearchEntry = null;
+                                        pushTo(
+                                          CheckOut(
+                                            productList: productList,
+                                            band: widget.menuItems.band,
+                                            tax: widget.menuItems.tax,
+                                          ),
+                                        );
+                                      }
+                                    }),
+                          YBox(kRegularPadding),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              } else {
+                return Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: kRegularPadding),
+                  child: InkWellNoShadow(
+                    onTap: () {
+                      overlayEntry?.remove();
+                      overlaySearchEntry?.remove();
+                      overlayEntry = null;
+                      overlaySearchEntry = null;
+                    },
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Divider(
+                          thickness: 2,
+                          color: k200,
+                        ),
+                        YBox(kRegularPadding),
+                        Text(
+                          "$minOrder₦${widget.menuItems.band!.minimum}",
+                          style: textTheme.headlineMedium!
+                              .copyWith(color: kOrange500),
+                        ),
+                        YBox(kMediumPadding),
+                        PaymentRow(
+                            text: subTotal,
+                            subText: (productList.fold<int>(0,
+                                (previousValue, element) {
+                              return (previousValue +
+                                  (int.parse(element.price
+                                              ?.replaceAll(".00", "") ??
+                                          "0") *
+                                      element.quantity!));
+                            }).toString())),
+                        YBox(kRegularPadding),
+                        LargeButton(
+                            title: checkout,
+                            onPressed: productList.isEmpty
+                                ? () {
+                                    showErrorBar(
+                                        context, "Please add a Product");
+                                  }
+                                : () {
+                                    if (double.parse(
+                                            widget.menuItems.band!.minimum!) >
+                                        double.parse((productList.fold<int>(0,
+                                            (previousValue, element) {
+                                          return (previousValue +
+                                              (int.parse(element.price
+                                                          ?.replaceAll(
+                                                              ".00", "") ??
+                                                      "0") *
+                                                  element.quantity!));
+                                        }).toString()))) {
+                                      showErrorBar(context,
+                                          "The minimum order is ₦${widget.menuItems.band!.minimum}");
+                                    } else {
+                                      overlayEntry?.remove();
+                                      overlaySearchEntry?.remove();
+                                      overlayEntry = null;
+                                      overlaySearchEntry = null;
+                                      pushTo(
+                                        CheckOut(
+                                          productList: productList,
+                                          band: widget.menuItems.band,
+                                          tax: widget.menuItems.tax,
+                                        ),
+                                      );
+                                    }
+                                  }),
+                        YBox(kRegularPadding),
+                      ],
+                    ),
+                  ),
+                );
+              }
             },
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Divider(
-                  thickness: 2,
-                  color: k200,
-                ),
-                YBox(kRegularPadding),
-                Text(
-                  "$minOrder₦${widget.menuItems.band!.minimum}",
-                  style: textTheme.headlineMedium!.copyWith(color: kOrange500),
-                ),
-                YBox(kMediumPadding),
-                PaymentRow(
-                    text: subTotal,
-                    subText:
-                        (productList.fold<int>(0, (previousValue, element) {
-                      return (previousValue +
-                          (int.parse(
-                                  element.price?.replaceAll(".00", "") ?? "0") *
-                              element.quantity!));
-                    }).toString())),
-                YBox(kRegularPadding),
-                LargeButton(
-                    title: checkout,
-                    onPressed: productList.isEmpty
-                        ? () {
-                            showErrorBar(context, "Please add a Product");
-                          }
-                        : () {
-                            if (double.parse(widget.menuItems.band!.minimum!) >
-                                double.parse((productList.fold<int>(0,
-                                    (previousValue, element) {
-                                  return (previousValue +
-                                      (int.parse(element.price
-                                                  ?.replaceAll(".00", "") ??
-                                              "0") *
-                                          element.quantity!));
-                                }).toString()))) {
-                              showErrorBar(context,
-                                  "The minimum order is ₦${widget.menuItems.band!.minimum}");
-                            } else {
-                              overlayEntry?.remove();
-                              overlaySearchEntry?.remove();
-                              overlayEntry = null;
-                              overlaySearchEntry = null;
-                              pushTo(
-                                CheckOut(
-                                  productList: productList,
-                                  band: widget.menuItems.band,
-                                  tax: widget.menuItems.tax,
-                                ),
-                              );
-                            }
-                          }),
-                YBox(kRegularPadding),
-              ],
-            ),
           ),
         ),
         appBar: AppBar(
@@ -426,223 +537,476 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
           title: Image.asset(AssetPaths.logo, height: 40),
           centerTitle: true,
         ),
-        body: SafeArea(
-          child: GestureDetector(
-            onTap: () {
-              overlayEntry?.remove();
-              overlaySearchEntry?.remove();
-              overlayEntry = null;
-              overlaySearchEntry = null;
-            },
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: kRegularPadding),
-              child: Column(
-                children: [
-                  YBox(kMediumPadding),
-                  InkWellNoShadow(
+        body: LayoutBuilder(
+            builder: (BuildContext context, BoxConstraints constraints) {
+          if (constraints.maxWidth > 600) {
+            return Center(
+              child: SizedBox(
+                width: 600,
+                child: SafeArea(
+                  child: GestureDetector(
                     onTap: () {
-                      if (overlayEntry == null) {
-                        _showOverlay(context);
-                      } else {
-                        setState(() {
-                          overlayEntry?.remove();
-                          overlaySearchEntry?.remove();
-                          overlayEntry = null;
-                          overlaySearchEntry = null;
-                        });
-                      }
+                      overlayEntry?.remove();
+                      overlaySearchEntry?.remove();
+                      overlayEntry = null;
+                      overlaySearchEntry = null;
                     },
-                    child: Container(
-                      padding: const EdgeInsets.all(kRegularPadding),
-                      decoration: BoxDecoration(
-                          color: kSecondaryColor,
-                          borderRadius: BorderRadius.circular(kMacroPadding)),
-                      child: Row(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: kRegularPadding),
+                      child: Column(
                         children: [
-                          Align(
-                            alignment: Alignment.centerLeft,
+                          YBox(kMediumPadding),
+                          InkWellNoShadow(
+                            onTap: () {
+                              if (overlayEntry == null) {
+                                _showOverlay(context);
+                              } else {
+                                setState(() {
+                                  overlayEntry?.remove();
+                                  overlaySearchEntry?.remove();
+                                  overlayEntry = null;
+                                  overlaySearchEntry = null;
+                                });
+                              }
+                            },
                             child: Container(
-                              padding: const EdgeInsets.all(8),
-                              decoration: const BoxDecoration(
-                                  shape: BoxShape.circle, color: kPrimaryWhite),
-                              child: SvgPicture.network(
-                                widget.menuItems.thumbnail ?? "",
-                                fit: BoxFit.scaleDown,
-                                height: kRegularPadding,
-                                width: kRegularPadding,
+                              padding: const EdgeInsets.all(kRegularPadding),
+                              decoration: BoxDecoration(
+                                  color: kSecondaryColor,
+                                  borderRadius:
+                                      BorderRadius.circular(kMacroPadding)),
+                              child: Row(
+                                children: [
+                                  Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Container(
+                                      padding: const EdgeInsets.all(8),
+                                      decoration: const BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: kPrimaryWhite),
+                                      child: widget.menuItems.thumbnail!
+                                                  .split(".")
+                                                  .last ==
+                                              "svg"
+                                          ? SvgPicture.network(
+                                              widget.menuItems.thumbnail ?? "",
+                                              fit: BoxFit.scaleDown,
+                                              height: kRegularPadding,
+                                              width: kRegularPadding,
+                                            )
+                                          : Image.network(
+                                              widget.menuItems.thumbnail ?? "",
+                                              height: kRegularPadding,
+                                              width: kRegularPadding,
+                                            ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Text(
+                                      categoryName?.name ?? "",
+                                      style: textTheme.displayLarge!.copyWith(
+                                        fontWeight: FontWeight.w500,
+                                        color: kPrimaryColor,
+                                        fontSize: 14,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                  XBox(25),
+                                  const Icon(
+                                    Icons.keyboard_arrow_down,
+                                    size: 25,
+                                    color: kPrimaryColor,
+                                  )
+                                ],
                               ),
                             ),
                           ),
-                          Expanded(
-                            child: Text(
-                              categoryName?.name ?? "",
-                              style: textTheme.displayLarge!.copyWith(
-                                fontWeight: FontWeight.w500,
-                                color: kPrimaryColor,
-                                fontSize: 14,
-                              ),
-                              textAlign: TextAlign.center,
+                          YBox(kRegularPadding),
+                          SearchTextInputNoIcon(
+                            prefixIcon: SvgPicture.asset(
+                              AssetPaths.search,
+                              fit: BoxFit.scaleDown,
                             ),
+                            controller: controller,
+                            icon: _searching
+                                ? SizedBox(
+                                    width: 40,
+                                    child: Container(
+                                        margin: const EdgeInsets.only(
+                                            right: kMediumPadding),
+                                        child: const SpinKitDemo(
+                                          size: 30,
+                                        )),
+                                  )
+                                : YBox(0),
+                            onChanged: (inputValue) {
+                              if (_debounce?.isActive ?? false)
+                                _debounce?.cancel();
+                              _debounce = Timer(const Duration(seconds: 1), () {
+                                if (inputValue != null &&
+                                    inputValue.trim().isNotEmpty) {
+                                  onSearchTextChanged(inputValue ?? "");
+                                  setState(() {
+                                    _searching = true;
+                                  });
+                                } else {
+                                  overlaySearchEntry?.remove();
+                                  overlaySearchEntry = null;
+                                  setState(() {
+                                    _searching = false;
+                                  });
+                                }
+
+                                setState(() {});
+                              });
+                            },
+                            // onChanged: (val) {
+                            //   if (val!.isEmpty) {
+                            //     overlaySearchEntry?.remove();
+                            //     overlaySearchEntry = null;
+                            //   } else {
+                            //     onSearchTextChanged(val ?? "");
+                            //   }
+                            // },
+                            hintText: searchText,
                           ),
-                          XBox(25),
-                          const Icon(
-                            Icons.keyboard_arrow_down,
-                            size: 25,
-                            color: kPrimaryColor,
-                          )
+                          productList.isEmpty
+                              ? YBox(0)
+                              : Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      shoppingList,
+                                      style: textTheme.displayLarge!.copyWith(
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                    Consumer(builder: (context, ref, _) {
+                                      var widget = InkWellNoShadow(
+                                        onTap: () {
+                                          List<ProductRequest> prodRequest = [];
+                                          for (var element in productList) {
+                                            setState(() {
+                                              prodRequest.add(ProductRequest(
+                                                  id: element.id!,
+                                                  quantity: element.quantity!));
+                                            });
+                                          }
+                                          ref
+                                              .read(addToListProvider.notifier)
+                                              .addToList(
+                                                  request: AddProductRequest(
+                                                      products: prodRequest),
+                                                  then: (val) {
+                                                    showSuccessBar(
+                                                        context, val);
+                                                  });
+                                        },
+                                        child: Container(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: kRegularPadding,
+                                              vertical: kPadding),
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(500),
+                                              color: kLightPurple200),
+                                          child: Text(
+                                            saveList,
+                                            style: textTheme.bodyLarge!
+                                                .copyWith(
+                                                    fontSize: 14,
+                                                    color: kLightBlue400),
+                                          ),
+                                        ),
+                                      );
+                                      return ref.watch(addToListProvider).when(
+                                          done: (data) => widget,
+                                          error: (val) => widget,
+                                          loading: () => const SpinKitDemo());
+                                    })
+                                  ],
+                                ),
+                          YBox(productList.isEmpty ? 0 : kMicroPadding),
+                          productList.isEmpty
+                              ? Container(
+                                  width: double.infinity,
+                                  height: screenSize.height / 2,
+                                  color: kPrimaryWhite,
+                                  child: EmptyHomeProduct(
+                                    text: noProd,
+                                    subText: addItem,
+                                  ))
+                              : Expanded(
+                                  child: ListView(
+                                    // crossAxisAlignment: CrossAxisAlignment.start,
+                                    // mainAxisSize: MainAxisSize.min,
+                                    children: List.generate(
+                                      productList.length,
+                                      (index) => HomeCartList(
+                                        product: productList[index],
+                                        subtractTap: () {
+                                          if (productList[index].quantity !=
+                                              1) {
+                                            setState(() {
+                                              productList[index].quantity =
+                                                  productList[index].quantity! -
+                                                      1;
+                                            });
+                                          }
+                                        },
+                                        addTap: () {
+                                          setState(() {
+                                            productList[index].quantity =
+                                                productList[index].quantity! +
+                                                    1;
+                                          });
+                                        },
+                                        category: categoryName!,
+                                        onTap: () {
+                                          setState(() {
+                                            productList.removeAt(index);
+                                          });
+                                        },
+                                      ),
+                                    ).toList(),
+                                  ),
+                                ),
+                          YBox(170),
                         ],
                       ),
                     ),
                   ),
-                  YBox(kRegularPadding),
-                  SearchTextInputNoIcon(
-                    prefixIcon: SvgPicture.asset(
-                      AssetPaths.search,
-                      fit: BoxFit.scaleDown,
-                    ),
-                    controller: controller,
-                    icon: _searching
-                        ? SizedBox(
-                            width: 40,
-                            child: Container(
-                                margin: const EdgeInsets.only(
-                                    right: kMediumPadding),
-                                child: const SpinKitDemo(
-                                  size: 30,
-                                )),
-                          )
-                        : YBox(0),
-                    onChanged: (inputValue) {
-                      if (_debounce?.isActive ?? false) _debounce?.cancel();
-                      _debounce = Timer(const Duration(seconds: 1), () {
-                        if (inputValue != null &&
-                            inputValue.trim().isNotEmpty) {
-                          onSearchTextChanged(inputValue ?? "");
-                          setState(() {
-                            _searching = true;
-                          });
-                        } else {
-                          overlaySearchEntry?.remove();
-                          overlaySearchEntry = null;
-                          setState(() {
-                            _searching = false;
-                          });
-                        }
-
-                        setState(() {});
-                      });
-                    },
-                    // onChanged: (val) {
-                    //   if (val!.isEmpty) {
-                    //     overlaySearchEntry?.remove();
-                    //     overlaySearchEntry = null;
-                    //   } else {
-                    //     onSearchTextChanged(val ?? "");
-                    //   }
-                    // },
-                    hintText: searchText,
-                  ),
-                  productList.isEmpty
-                      ? YBox(0)
-                      : Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              shoppingList,
-                              style: textTheme.displayLarge!.copyWith(
-                                fontWeight: FontWeight.w500,
-                                fontSize: 14,
-                              ),
-                            ),
-                            Consumer(builder: (context, ref, _) {
-                              var widget = InkWellNoShadow(
-                                onTap: () {
-                                  List<ProductRequest> prodRequest = [];
-                                  for (var element in productList) {
-                                    setState(() {
-                                      prodRequest.add(ProductRequest(
-                                          id: element.id!,
-                                          quantity: element.quantity!));
-                                    });
-                                  }
-                                  ref
-                                      .read(addToListProvider.notifier)
-                                      .addToList(
-                                          request: AddProductRequest(
-                                              products: prodRequest),
-                                          then: (val) {
-                                            showSuccessBar(context, val);
-                                          });
-                                },
+                ),
+              ),
+            );
+          } else {
+            return SafeArea(
+              child: GestureDetector(
+                onTap: () {
+                  overlayEntry?.remove();
+                  overlaySearchEntry?.remove();
+                  overlayEntry = null;
+                  overlaySearchEntry = null;
+                },
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: kRegularPadding),
+                  child: Column(
+                    children: [
+                      YBox(kMediumPadding),
+                      InkWellNoShadow(
+                        onTap: () {
+                          if (overlayEntry == null) {
+                            _showOverlay(context);
+                          } else {
+                            setState(() {
+                              overlayEntry?.remove();
+                              overlaySearchEntry?.remove();
+                              overlayEntry = null;
+                              overlaySearchEntry = null;
+                            });
+                          }
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.all(kRegularPadding),
+                          decoration: BoxDecoration(
+                              color: kSecondaryColor,
+                              borderRadius:
+                                  BorderRadius.circular(kMacroPadding)),
+                          child: Row(
+                            children: [
+                              Align(
+                                alignment: Alignment.centerLeft,
                                 child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: kRegularPadding,
-                                      vertical: kPadding),
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(500),
-                                      color: kLightPurple200),
-                                  child: Text(
-                                    saveList,
-                                    style: textTheme.bodyLarge!.copyWith(
-                                        fontSize: 14, color: kLightBlue400),
+                                  padding: const EdgeInsets.all(8),
+                                  decoration: const BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: kPrimaryWhite),
+                                  child: SvgPicture.network(
+                                    widget.menuItems.thumbnail ?? "",
+                                    fit: BoxFit.scaleDown,
+                                    height: kRegularPadding,
+                                    width: kRegularPadding,
                                   ),
                                 ),
-                              );
-                              return ref.watch(addToListProvider).when(
-                                  done: (data) => widget,
-                                  error: (val) => widget,
-                                  loading: () => const SpinKitDemo());
-                            })
-                          ],
-                        ),
-                  YBox(productList.isEmpty ? 0 : kMicroPadding),
-                  productList.isEmpty
-                      ? Container(
-                          width: double.infinity,
-                          height: screenSize.height,
-                          color: kPrimaryWhite,
-                          child: EmptyHomeProduct(
-                            text: noProd,
-                            subText: addItem,
-                          ))
-                      : Expanded(
-                          child: ListView(
-                            // crossAxisAlignment: CrossAxisAlignment.start,
-                            // mainAxisSize: MainAxisSize.min,
-                            children: List.generate(
-                              productList.length,
-                              (index) => HomeCartList(
-                                product: productList[index],
-                                subtractTap: () {
-                                  if (productList[index].quantity != 1) {
-                                    setState(() {
-                                      productList[index].quantity =
-                                          productList[index].quantity! - 1;
-                                    });
-                                  }
-                                },
-                                addTap: () {
-                                  setState(() {
-                                    productList[index].quantity =
-                                        productList[index].quantity! + 1;
-                                  });
-                                },
-                                category: categoryName!,
-                                onTap: () {
-                                  setState(() {
-                                    productList.removeAt(index);
-                                  });
-                                },
                               ),
-                            ).toList(),
+                              Expanded(
+                                child: Text(
+                                  categoryName?.name ?? "",
+                                  style: textTheme.displayLarge!.copyWith(
+                                    fontWeight: FontWeight.w500,
+                                    color: kPrimaryColor,
+                                    fontSize: 14,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                              XBox(25),
+                              const Icon(
+                                Icons.keyboard_arrow_down,
+                                size: 25,
+                                color: kPrimaryColor,
+                              )
+                            ],
                           ),
                         ),
-                  YBox(170),
-                ],
+                      ),
+                      YBox(kRegularPadding),
+                      SearchTextInputNoIcon(
+                        prefixIcon: SvgPicture.asset(
+                          AssetPaths.search,
+                          fit: BoxFit.scaleDown,
+                        ),
+                        controller: controller,
+                        icon: _searching
+                            ? SizedBox(
+                                width: 40,
+                                child: Container(
+                                    margin: const EdgeInsets.only(
+                                        right: kMediumPadding),
+                                    child: const SpinKitDemo(
+                                      size: 30,
+                                    )),
+                              )
+                            : YBox(0),
+                        onChanged: (inputValue) {
+                          if (_debounce?.isActive ?? false) _debounce?.cancel();
+                          _debounce = Timer(const Duration(seconds: 1), () {
+                            if (inputValue != null &&
+                                inputValue.trim().isNotEmpty) {
+                              onSearchTextChanged(inputValue ?? "");
+                              setState(() {
+                                _searching = true;
+                              });
+                            } else {
+                              overlaySearchEntry?.remove();
+                              overlaySearchEntry = null;
+                              setState(() {
+                                _searching = false;
+                              });
+                            }
+
+                            setState(() {});
+                          });
+                        },
+                        // onChanged: (val) {
+                        //   if (val!.isEmpty) {
+                        //     overlaySearchEntry?.remove();
+                        //     overlaySearchEntry = null;
+                        //   } else {
+                        //     onSearchTextChanged(val ?? "");
+                        //   }
+                        // },
+                        hintText: searchText,
+                      ),
+                      productList.isEmpty
+                          ? YBox(0)
+                          : Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  shoppingList,
+                                  style: textTheme.displayLarge!.copyWith(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                                Consumer(builder: (context, ref, _) {
+                                  var widget = InkWellNoShadow(
+                                    onTap: () {
+                                      List<ProductRequest> prodRequest = [];
+                                      for (var element in productList) {
+                                        setState(() {
+                                          prodRequest.add(ProductRequest(
+                                              id: element.id!,
+                                              quantity: element.quantity!));
+                                        });
+                                      }
+                                      ref
+                                          .read(addToListProvider.notifier)
+                                          .addToList(
+                                              request: AddProductRequest(
+                                                  products: prodRequest),
+                                              then: (val) {
+                                                showSuccessBar(context, val);
+                                              });
+                                    },
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: kRegularPadding,
+                                          vertical: kPadding),
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(500),
+                                          color: kLightPurple200),
+                                      child: Text(
+                                        saveList,
+                                        style: textTheme.bodyLarge!.copyWith(
+                                            fontSize: 14, color: kLightBlue400),
+                                      ),
+                                    ),
+                                  );
+                                  return ref.watch(addToListProvider).when(
+                                      done: (data) => widget,
+                                      error: (val) => widget,
+                                      loading: () => const SpinKitDemo());
+                                })
+                              ],
+                            ),
+                      YBox(productList.isEmpty ? 0 : kMicroPadding),
+                      productList.isEmpty
+                          ? Container(
+                              width: double.infinity,
+                              height: screenSize.height,
+                              color: kPrimaryWhite,
+                              child: EmptyHomeProduct(
+                                text: noProd,
+                                subText: addItem,
+                              ))
+                          : Expanded(
+                              child: ListView(
+                                // crossAxisAlignment: CrossAxisAlignment.start,
+                                // mainAxisSize: MainAxisSize.min,
+                                children: List.generate(
+                                  productList.length,
+                                  (index) => HomeCartList(
+                                    product: productList[index],
+                                    subtractTap: () {
+                                      if (productList[index].quantity != 1) {
+                                        setState(() {
+                                          productList[index].quantity =
+                                              productList[index].quantity! - 1;
+                                        });
+                                      }
+                                    },
+                                    addTap: () {
+                                      setState(() {
+                                        productList[index].quantity =
+                                            productList[index].quantity! + 1;
+                                      });
+                                    },
+                                    category: categoryName!,
+                                    onTap: () {
+                                      setState(() {
+                                        productList.removeAt(index);
+                                      });
+                                    },
+                                  ),
+                                ).toList(),
+                              ),
+                            ),
+                      YBox(170),
+                    ],
+                  ),
+                ),
               ),
-            ),
-          ),
-        ),
+            );
+          }
+        }),
       ),
     );
   }
@@ -680,7 +1044,6 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
     });
   }
 }
-
 
 class HomeCartList extends StatefulWidget {
   final Product product;

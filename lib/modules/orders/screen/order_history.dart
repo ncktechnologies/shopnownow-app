@@ -123,7 +123,7 @@ class _OrderHistoryState extends ConsumerState<OrderHistory> {
                                                                   kLightGrey100),
                                                     ),
                                                     Text(
-                                                        "  ₦${(int.parse(data.orders![index].price!.replaceAll(".00", "")) + int.parse(data.orders![index].tax!.replaceAll(".00", "")) + int.parse(data.orders![index].deliveryFee!.replaceAll(".00", ""))).toString()}",
+                                                        "  ₦${(int.parse(data.orders![index].price!.replaceAll(".00", "")) + double.parse(data.orders![index].tax!.replaceAll(".00", "")) + int.parse(data.orders![index].deliveryFee!.replaceAll(".00", ""))).toString()}",
                                                         style: textTheme
                                                             .headlineMedium!
                                                             .copyWith(

@@ -490,19 +490,19 @@ class _CheckOutState extends ConsumerState<CheckOut> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "$minOrder₦2,500",
+                        "$minOrder₦${widget.band!.minimum}",
                         style: textTheme.headlineMedium!
                             .copyWith(color: kOrange500),
                       ),
                       YBox(kMediumPadding),
                       PaymentRow(
-                        text: subTotalCalculation(),
+                        text: subTotal,
                         subText: subTotalCalculation().toString(),
                       ),
                       PaymentRow(
                         text: "$tax(${widget.tax?.replaceAll(".00", "")}%)",
                         subText: (double.parse(subTotalCalculation()) *
-                                double.parse((int.parse(
+                                double.parse((double.parse(
                                             widget.tax!.replaceAll(".00", "")) /
                                         100)
                                     .toString()))
@@ -549,7 +549,7 @@ class _CheckOutState extends ConsumerState<CheckOut> {
                             side: MaterialStateBorderSide.resolveWith(
                               (states) => BorderSide(
                                   width: 2.0,
-                                  color: isChecked ? kPrimaryColor : kGrey700),
+                                  color: isChecked ? kPrimaryColor : kGrey400),
                             ),
                             shape: const RoundedRectangleBorder(
                               side: BorderSide(color: kPrimaryColor, width: 5),
@@ -914,15 +914,15 @@ class _CheckOutState extends ConsumerState<CheckOut> {
                                                   nameController.text,
                                               recipientPhone:
                                                   phoneController.text,
-                                              recipientEmail: emailController
-                                                          .text.isEmpty
-                                                  ? (SessionManager
-                                                              .getEmail() !=
-                                                          null
-                                                      ? SessionManager
-                                                          .getEmail()!
-                                                      : '')
-                                                  : emailController.text,
+                                              recipientEmail:
+                                                  emailController.text.isEmpty
+                                                      ? (SessionManager
+                                                                  .getEmail() !=
+                                                              null
+                                                          ? SessionManager
+                                                              .getEmail()!
+                                                          : '')
+                                                      : emailController.text,
                                               deliveryFee: (double.parse(
                                                           subTotalCalculation()) >
                                                       widget.band!

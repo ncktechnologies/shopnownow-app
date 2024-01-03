@@ -290,8 +290,9 @@ class DrawerScaffoldContainer extends StatelessWidget {
           YBox(kFullPadding),
           SessionManager.getToken() != null
               ? InkWellNoShadow(
-                  onTap: () {
+                  onTap: () async {
                     Scaffold.of(context).closeDrawer();
+                    await SessionManager.clearToken();
                     pushToAndClearStack(const LogIn());
                   },
                   child: Container(

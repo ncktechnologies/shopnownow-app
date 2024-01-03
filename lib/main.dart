@@ -36,7 +36,7 @@ class MyApp extends StatelessWidget {
         navigatorObservers: <NavigatorObserver>[observer],
         navigatorKey: navigatorKey,
         debugShowCheckedModeBanner: false,
-        home: SessionManager.getToken() == null
+        home: (SessionManager.getToken() != null)
             ? const SplashScreen()
             : const HomePage(),
       ),

@@ -180,4 +180,8 @@ class SessionManager {
   static void clear() async {
     await prefs.clear();
   }
+
+  static clearToken() async {
+    await prefs.remove(token);
+  }
 }

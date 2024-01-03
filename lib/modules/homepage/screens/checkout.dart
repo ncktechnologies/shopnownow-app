@@ -479,7 +479,7 @@ class _CheckOutState extends ConsumerState<CheckOut> {
                   );
                   return ref.watch(loadCouponProvider).when(
                       done: (done) => widget,
-                      loading: () => Center(child: const SpinKitDemo()),
+                      loading: () => const Center(child: SpinKitDemo()),
                       error: (val) => widget);
                 })
               ],

@@ -110,8 +110,11 @@ class InitialPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: const Drawer(child: DrawerScaffoldContainer()),
+      drawer: const Drawer(
+        child: DrawerScaffoldContainer(),
+      ),
       // resizeToAvoidBottomInset: noScroll ? false : true,
+
       appBar: AppBar(
         leading: Builder(
           builder: (context) => InkWellNoShadow(
@@ -149,12 +152,32 @@ class InitialPage extends StatelessWidget {
         title: Image.asset(AssetPaths.logo, height: 40),
         centerTitle: true,
       ),
-      body: SafeArea(
-        child: noScroll
-            ? child
-            : SingleChildScrollView(
-                child: child,
+      body: LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints constraints) {
+          if (constraints.maxWidth > 600) {
+            return Center(
+              child: SizedBox(
+                width: 800,
+                child: SafeArea(
+                  child: noScroll
+                      ? child
+                      : SingleChildScrollView(
+                          child: child,
+                        ),
+                ),
               ),
+            );
+          } else {
+            return SafeArea(
+              child: noScroll
+                  ? child
+                  : SingleChildScrollView(
+                      child: child,
+                    ),
+            );
+            // return _buildNormalContainer();
+          }
+        },
       ),
     );
   }
@@ -290,9 +313,8 @@ class DrawerScaffoldContainer extends StatelessWidget {
           YBox(kFullPadding),
           SessionManager.getToken() != null
               ? InkWellNoShadow(
-                  onTap: () async {
+                  onTap: () {
                     Scaffold.of(context).closeDrawer();
-                    await SessionManager.clearToken();
                     pushToAndClearStack(const LogIn());
                   },
                   child: Container(
@@ -399,7 +421,6 @@ class PageIndicator extends StatelessWidget {
 
 class OrWidget extends StatelessWidget {
   final Color? color;
-
   const OrWidget({super.key, this.color = k200});
 
   @override

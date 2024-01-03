@@ -47,71 +47,80 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
     overlayEntry = OverlayEntry(builder: (context) {
       // You can return any widget you like here
       // to be displayed on the Overlay
-      return Positioned(
-        left: kRegularPadding,
-        right: kRegularPadding,
-        top: MediaQuery.of(context).size.height * 0.25,
-        child: Container(
-            padding: const EdgeInsets.all(kSmallPadding),
-            decoration: BoxDecoration(
-              color: kPrimaryWhite,
-              borderRadius: BorderRadius.circular(kSmallPadding),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey[200]!,
-                  spreadRadius: 0,
-                  blurRadius: 15,
-                  offset: const Offset(0, 0), // changes position of shadow
-                )
-              ],
-            ),
-            // width: MediaQuery.of(context).size.width * 0.8,
-            child: Column(
-                children: widget.category
-                    .map((e) => Material(
-                          child: InkWellNoShadow(
-                            onTap: () {
-                              setState(() {
-                                categoryName = e;
-                              });
-                              overlayEntry?.remove();
-                              overlayEntry = null;
-                            },
-                            child: Container(
-                              margin:
-                                  const EdgeInsets.only(bottom: kSmallPadding),
-                              child: Row(
-                                children: [
-                                  e.thumbnail!.split(".").last == "svg"
-                                      ? SvgPicture.network(
-                                          e.thumbnail ?? "",
-                                          fit: BoxFit.scaleDown,
-                                          height: kMacroPadding,
-                                          width: kMacroPadding,
-                                        )
-                                      : Image.network(
-                                          e.thumbnail!,
-                                          height: kMacroPadding,
-                                          width: kMacroPadding,
-                                        ),
-                                  XBox(kSmallPadding),
-                                  Text(
-                                    e.name ?? "",
-                                    style: textTheme.titleMedium!.copyWith(
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 14,
-                                        color:
-                                            categoryName!.name!.toLowerCase() ==
+      double screenWidth = MediaQuery.of(context).size.width;
+      bool isMobile = screenWidth < 600; // A
+      return Center(
+        child: SizedBox(
+          width: isMobile
+              ? screenWidth * 0.9
+              : screenWidth * 0.6, // Adjust these values as needed
+          child: Positioned(
+            left: kRegularPadding,
+            right: kRegularPadding,
+            top: MediaQuery.of(context).size.height * 0.25,
+            child: Container(
+                padding: const EdgeInsets.all(kSmallPadding),
+                decoration: BoxDecoration(
+                  color: kPrimaryWhite,
+                  borderRadius: BorderRadius.circular(kSmallPadding),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey[200]!,
+                      spreadRadius: 0,
+                      blurRadius: 15,
+                      offset: const Offset(0, 0), // changes position of shadow
+                    )
+                  ],
+                ),
+                // width: MediaQuery.of(context).size.width * 0.8,
+                child: Column(
+                    children: widget.category
+                        .map((e) => Material(
+                              child: InkWellNoShadow(
+                                onTap: () {
+                                  setState(() {
+                                    categoryName = e;
+                                  });
+                                  overlayEntry?.remove();
+                                  overlayEntry = null;
+                                },
+                                child: Container(
+                                  margin: const EdgeInsets.only(
+                                      bottom: kSmallPadding),
+                                  child: Row(
+                                    children: [
+                                      e.thumbnail!.split(".").last == "svg"
+                                          ? SvgPicture.network(
+                                              e.thumbnail ?? "",
+                                              fit: BoxFit.scaleDown,
+                                              height: kMacroPadding,
+                                              width: kMacroPadding,
+                                            )
+                                          : Image.network(
+                                              e.thumbnail!,
+                                              height: kMacroPadding,
+                                              width: kMacroPadding,
+                                            ),
+                                      XBox(kSmallPadding),
+                                      Text(
+                                        e.name ?? "",
+                                        style: textTheme.titleMedium!.copyWith(
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: 14,
+                                            color: categoryName!.name!
+                                                        .toLowerCase() ==
                                                     e.name!.toLowerCase()
                                                 ? kPrimaryColor
                                                 : kPurple50),
-                                  )
-                                ],
+                                      )
+                                    ],
+                                  ),
+                                ),
                               ),
-                            ),
-                          ),
-                        ))
-                    .toList())),
+                            ))
+                        .toList())),
+          ),
+        ),
       );
     });
 

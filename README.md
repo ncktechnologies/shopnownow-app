@@ -1,6 +1,6 @@
 # shopnownow
 
-A new Flutter project.
+The ShopNowNow Platform.
 
 ## Getting Started
 

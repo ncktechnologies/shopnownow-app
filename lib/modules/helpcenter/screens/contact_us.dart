@@ -124,7 +124,7 @@ Future<void> startLiveChat() async {
   await browser.openUrlRequest(
     urlRequest: URLRequest(
         url: Uri.parse(
-            "https://tawk.to/chat/62fa757e37898912e96322de/1gah5lub3")),
+            "https://tawk.to/chat/658d73a470c9f2407f840733/1hio8netc")),
     options: InAppBrowserClassOptions(
       inAppWebViewGroupOptions: InAppWebViewGroupOptions(
         crossPlatform: InAppWebViewOptions(

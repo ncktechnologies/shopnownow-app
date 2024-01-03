@@ -140,7 +140,7 @@ class _LogInState extends State<LogIn> {
               YBox(kRegularPadding),
               InkWellNoShadow(
                 onTap: () {
-                  Navigator.pop(context);
+                      pushToAndClearStack(const HomePage());
                 },
                 child: Container(
                   width: double.infinity,

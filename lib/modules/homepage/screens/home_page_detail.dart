@@ -18,7 +18,6 @@ import 'package:shopnownow/utils/flushbar.dart';
 import 'package:shopnownow/utils/strings.dart';
 import 'package:shopnownow/utils/text_field_comp.dart';
 import 'package:shopnownow/utils/widgets.dart';
-import 'package:collection/collection.dart';
 
 class HomePageDetail extends ConsumerStatefulWidget {
   final GetCategories menuItems;
@@ -651,12 +650,13 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
                                   )
                                 : YBox(0),
                             onChanged: (inputValue) {
-                              if (_debounce?.isActive ?? false)
+                              if (_debounce?.isActive ?? false) {
                                 _debounce?.cancel();
+                              }
                               _debounce = Timer(const Duration(seconds: 1), () {
                                 if (inputValue != null &&
                                     inputValue.trim().isNotEmpty) {
-                                  onSearchTextChanged(inputValue ?? "");
+                                  onSearchTextChanged(inputValue);
                                   setState(() {
                                     _searching = true;
                                   });
@@ -887,7 +887,7 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
                           _debounce = Timer(const Duration(seconds: 1), () {
                             if (inputValue != null &&
                                 inputValue.trim().isNotEmpty) {
-                              onSearchTextChanged(inputValue ?? "");
+                              onSearchTextChanged(inputValue);
                               setState(() {
                                 _searching = true;
                               });

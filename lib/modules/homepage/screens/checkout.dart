@@ -339,7 +339,7 @@ class _CheckOutState extends ConsumerState<CheckOut> {
                 FilteringTextInputFormatter.digitsOnly,
               ],
             ),
-            SessionManager.getEmail() != null
+            SessionManager.getToken() != null
                 ? YBox(0)
                 : TextInputNoIcon(
                     text: emailAddress,

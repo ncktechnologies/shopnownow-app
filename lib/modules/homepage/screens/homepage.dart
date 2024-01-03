@@ -85,7 +85,7 @@ class _HomePageState extends ConsumerState<HomePage> {
           categories.add(element);
         }
       });
-      if ((SessionManager.getToken() != null || SessionManager.getToken()!.isNotEmpty)) {
+      if (SessionManager.getToken() != null) {
         ref.read(getProfileProvider.notifier).getProfile();
         ref.read(getWalletProvider.notifier).getWallet();
       }

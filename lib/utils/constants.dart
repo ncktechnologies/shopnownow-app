@@ -264,8 +264,10 @@ TextStyle kBodyLargeStyle = const TextStyle(
 
 
 ThemeData kThemeData = ThemeData.light(
-  useMaterial3: false
+
+  useMaterial3: false,
 ).copyWith(
+
   visualDensity: VisualDensity.adaptivePlatformDensity,
   scaffoldBackgroundColor: kPrimaryWhite,
   iconTheme: const IconThemeData(size: kIconSize, color: kPrimaryColor),

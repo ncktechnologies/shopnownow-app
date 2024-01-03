@@ -182,6 +182,22 @@ class ProcessPaymentNotifier extends StateNotifier<NotifierState<String>> {
       if (error != null) error(state.message);
     }
   }
+
+  void processPaymentWeb(
+      {required ProcessPaymentRequest paymentRequest,
+      Function(String)? then,
+      bool noToken = false,
+      Function(String?)? error}) async {
+        // logAnalyticsEvent('complete_payment');
+    state = notifyLoading();
+    state = await HomePageRepository.processPaymentWeb(
+        paymentRequest: paymentRequest, noToken: noToken);
+    if (state.status == NotifierStatus.done) {
+      if (then != null) then(state.data!);
+    } else if (state.status == NotifierStatus.error) {
+      if (error != null) error(state.message);
+    }
+  }
 }
 
 class LoadCouponNotifier extends StateNotifier<NotifierState<String>> {

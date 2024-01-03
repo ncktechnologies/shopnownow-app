@@ -107,6 +107,22 @@ class HomePageRepository {
         .toNotifierState();
   }
 
+  static Future<NotifierState<String>> processPaymentWeb(
+      {bool noToken = false,
+      required ProcessPaymentRequest paymentRequest}) async {
+    return (await ApiService<String>().postCall(
+            noToken
+                ? "/user/payment/process-payment-non-auth-web"
+                : "/user/payment/process-web",
+            ServiceRequest(serviceRequest: paymentRequest.toJson()),
+            // hasToken: true,
+            onReturn: (response) => logResponse(response),
+            getDataFromResponse: (data) {
+              return data["message"];
+            }))
+        .toNotifierState();
+  }
+
   static Future<NotifierState<String>> loadCoupon(
       {required String coupon}) async {
     return (await ApiService<String>().postCall("/user/coupons/load",

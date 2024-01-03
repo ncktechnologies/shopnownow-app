@@ -1125,7 +1125,7 @@ class _CheckOutState extends ConsumerState<CheckOut> {
         debugPrint('successful payment');
         ProcessPaymentRequest paymentRequest = ProcessPaymentRequest(
             userId: SessionManager.getUserId(),
-            amount: (cost * 100).toString(),           
+            amount: cost.toString(),
             status: "successful",
             orderId: checkoutOrderId,
             reference: DateTime.now().millisecondsSinceEpoch.toString(),
@@ -1136,7 +1136,7 @@ class _CheckOutState extends ConsumerState<CheckOut> {
           // paymentGatewayReference: response.reference!,
         );
 
-        ref.read(processPaymentProvider.notifier).processPayment(
+        ref.read(processPaymentProvider.notifier).processPaymentWeb(
             paymentRequest: paymentRequest,
             noToken: SessionManager.getToken() == null ? true : false,
             then: (val) {

@@ -526,17 +526,18 @@ class _CheckOutState extends ConsumerState<CheckOut> {
                                   ? ((double.parse(subTotalCalculation())) +
                                           (double.parse(subTotalCalculation()) *
                                               double.parse(
-                                                  (double.parse(widget.tax!.replaceAll(".00", "")) / 100)
+                                                  (double.parse(widget.tax!.replaceAll(".00", "")) /
+                                                          100)
                                                       .toString())))
-                                      .toString()
+                                      .toStringAsFixed(2)
                                   : ((double.parse(subTotalCalculation())) +
                                           double.parse(_location!.price!) +
                                           (double.parse(subTotalCalculation()) *
-                                              double.parse((double.parse(
-                                                          widget.tax!.replaceAll(".00", "")) /
-                                                      100)
-                                                  .toString())))
-                                      .toString()),
+                                              double.parse(
+                                                  (double.parse(widget.tax!.replaceAll(".00", "")) /
+                                                          100)
+                                                      .toString())))
+                                      .toStringAsFixed(2)),
                       YBox(kMediumPadding),
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -588,111 +589,116 @@ class _CheckOutState extends ConsumerState<CheckOut> {
                       YBox(kMacroPadding),
                       Consumer(builder: (context, ref, _) {
                         return ref.watch(processPaymentProvider).when(
-                            done: (data) =>
-                                Consumer(builder: (context, ref, _) {
-                                  var buttonWidget = LargeButton(
-                                      title: _location == null
-                                          ? "Pay ₦ ${((double.parse(subTotalCalculation()) + (double.parse(subTotalCalculation()) * double.parse((double.parse(widget.tax!.replaceAll(".00", "")) / 100).toString())))).toStringAsFixed(2)}"
-                                          : (double.parse(
-                                                      subTotalCalculation()) >
-                                                  widget.band!
-                                                      .freeDeliveryThreshold!
-                                                      .toDouble())
+                            done:
+                                (data) => Consumer(builder: (context, ref, _) {
+                                      var buttonWidget = LargeButton(
+                                          title: _location == null
                                               ? "Pay ₦ ${((double.parse(subTotalCalculation()) + (double.parse(subTotalCalculation()) * double.parse((double.parse(widget.tax!.replaceAll(".00", "")) / 100).toString())))).toStringAsFixed(2)}"
-                                              : "Pay ₦ ${((double.parse(subTotalCalculation()) + double.parse(_location!.price!) + (double.parse(subTotalCalculation()) * double.parse((double.parse(widget.tax!.replaceAll(".00", "")) / 100).toString())))).toStringAsFixed(2)}",
-                                      onPressed: () {
-                                        if (isChecked) {
-                                          if (formKey.currentState!
-                                              .validate()) {
-                                            List<ProductRequest> request = [];
-                                            for (var element
-                                                in widget.productList) {
-                                              setState(() {
-                                                request.add(ProductRequest(
-                                                    id: element.id!,
-                                                    quantity:
-                                                        element.quantity!));
-                                              });
-                                            }
-                                            CreateOrderRequest orderRequest =
-                                                CreateOrderRequest(
-                                              products: request,
-                                              userId: 0,
-                                              price: (int.parse(
-                                                  subTotalCalculation())),
-                                              tax: (double.parse(
-                                                          subTotalCalculation()) *
-                                                      double.parse((int.parse(
-                                                                  widget
-                                                                      .tax!
-                                                                      .replaceAll(
-                                                                          ".00",
-                                                                          "")) /
-                                                              100)
-                                                          .toString()))
-                                                  .toInt(),
-                                              status: "pending",
-                                              deliveryInfo:
-                                                  addressController.text,
-                                              paymentType: "card",
-                                              recipientName:
-                                                  nameController.text,
-                                              recipientPhone:
-                                                  phoneController.text,
-                                              recipientEmail: SessionManager
-                                                          .getEmail() !=
-                                                      null
-                                                  ? SessionManager.getEmail()!
-                                                  : emailController.text,
-                                              deliveryFee: (double.parse(
+                                              : (double.parse(
                                                           subTotalCalculation()) >
                                                       widget.band!
                                                           .freeDeliveryThreshold!
                                                           .toDouble())
-                                                  ? 0
-                                                  : int.parse(_location!.price!
-                                                      .replaceAll(".00", "")),
-                                              deliveryTimeSlot:
-                                                  timeSlot!.deliveryTime!,
-                                            );
-                                            ref
-                                                .read(createOrderProvider
-                                                    .notifier)
-                                                .createOrder(
-                                                    orderRequest: orderRequest,
-                                                    then: (val) {
-                                                      checkOut(
-                                                          (double.parse(subTotalCalculation()) >
-                                                                  widget.band!
-                                                                      .freeDeliveryThreshold!
-                                                                      .toDouble())
-                                                              ? ((double.parse(
-                                                                          subTotalCalculation()) +
-                                                                      (double.parse(subTotalCalculation()) *
-                                                                          double.parse((double.parse(widget.tax!.replaceAll(".00", "")) / 100)
-                                                                              .toString()))))
-                                                                  .toInt()
-                                                              : ((double.parse(
-                                                                          subTotalCalculation()) +
-                                                                      double.parse(_location!
-                                                                          .price!) +
-                                                                      (double.parse(subTotalCalculation()) *
-                                                                          double.parse((double.parse(widget.tax!.replaceAll(".00", "")) / 100).toString()))))
-                                                                  .toInt(),
-                                                          val["orderId"]);
-                                                    });
-                                          }
-                                        } else {
-                                          showErrorBar(context,
-                                              "Please accept the terms and conditions");
-                                        }
-                                      });
-                                  return ref.watch(createOrderProvider).when(
-                                        done: (data) => buttonWidget,
-                                        error: (val) => buttonWidget,
-                                        loading: () => const SpinKitDemo(),
-                                      );
-                                }),
+                                                  ? "Pay ₦ ${((double.parse(subTotalCalculation()) + (double.parse(subTotalCalculation()) * double.parse((double.parse(widget.tax!.replaceAll(".00", "")) / 100).toString())))).toStringAsFixed(2)}"
+                                                  : "Pay ₦ ${((double.parse(subTotalCalculation()) + double.parse(_location!.price!) + (double.parse(subTotalCalculation()) * double.parse((double.parse(widget.tax!.replaceAll(".00", "")) / 100).toString())))).toStringAsFixed(2)}",
+                                          onPressed: () {
+                                            if (isChecked) {
+                                              if (formKey.currentState!
+                                                  .validate()) {
+                                                List<ProductRequest> request =
+                                                    [];
+                                                for (var element
+                                                    in widget.productList) {
+                                                  setState(() {
+                                                    request.add(ProductRequest(
+                                                        id: element.id!,
+                                                        quantity:
+                                                            element.quantity!));
+                                                  });
+                                                }
+                                                CreateOrderRequest
+                                                    orderRequest =
+                                                    CreateOrderRequest(
+                                                  products: request,
+                                                  userId: 0,
+                                                  price: (double.parse(
+                                                          subTotalCalculation())
+                                                      .toInt()),
+                                                  tax: (double.parse(
+                                                              subTotalCalculation()) *
+                                                          double.parse((double.parse(widget
+                                                                      .tax!
+                                                                      .replaceAll(
+                                                                          ".00",
+                                                                          "")) /
+                                                                  100)
+                                                              .toString()))
+                                                      .toInt(),
+                                                  status: "pending",
+                                                  deliveryInfo:
+                                                      addressController.text,
+                                                  paymentType: "card",
+                                                  recipientName:
+                                                      nameController.text,
+                                                  recipientPhone:
+                                                      phoneController.text,
+                                                  recipientEmail: SessionManager
+                                                              .getEmail() !=
+                                                          null
+                                                      ? SessionManager
+                                                          .getEmail()!
+                                                      : emailController.text,
+                                                  deliveryFee: (double.parse(
+                                                              subTotalCalculation()) >
+                                                          widget.band!
+                                                              .freeDeliveryThreshold!
+                                                              .toDouble())
+                                                      ? 0
+                                                      : int.parse(_location!
+                                                          .price!
+                                                          .replaceAll(
+                                                              ".00", "")),
+                                                  deliveryTimeSlot:
+                                                      timeSlot!.deliveryTime!,
+                                                );
+                                                ref
+                                                    .read(createOrderProvider
+                                                        .notifier)
+                                                    .createOrder(
+                                                        orderRequest:
+                                                            orderRequest,
+                                                        then: (val) {
+                                                          checkOut(
+                                                              (double.parse(
+                                                                          subTotalCalculation()) >
+                                                                      widget
+                                                                          .band!
+                                                                          .freeDeliveryThreshold!
+                                                                          .toDouble())
+                                                                  ? ((double.parse(subTotalCalculation()) + (double.parse(subTotalCalculation()) * double.parse((double.parse(widget.tax!.replaceAll(".00", "")) / 100).toString()))) *
+                                                                          100)
+                                                                      .toInt()
+                                                                  : ((double.parse(subTotalCalculation()) +
+                                                                              double.parse(_location!.price!) +
+                                                                              (double.parse(subTotalCalculation()) * double.parse((double.parse(widget.tax!.replaceAll(".00", "")) / 100).toString()))) *
+                                                                          100)
+                                                                      .toInt(),
+                                                              val["orderId"]);
+                                                        });
+                                              }
+                                            } else {
+                                              showErrorBar(context,
+                                                  "Please accept the terms and conditions");
+                                            }
+                                          });
+                                      return ref
+                                          .watch(createOrderProvider)
+                                          .when(
+                                            done: (data) => buttonWidget,
+                                            error: (val) => buttonWidget,
+                                            loading: () => const SpinKitDemo(),
+                                          );
+                                    }),
                             loading: () => const SpinKitDemo());
                       }),
                       YBox(kRegularPadding),
@@ -1058,7 +1064,7 @@ class _CheckOutState extends ConsumerState<CheckOut> {
                           (double.parse(widget.tax!.replaceAll(".00", "")) /
                                   100)
                               .toString()))))
-              .toString())) {
+              .toStringAsFixed(2))) {
         amount = "0";
       } else {
         amount = (double.parse(
@@ -1070,7 +1076,7 @@ class _CheckOutState extends ConsumerState<CheckOut> {
                                     100)
                                 .toString()))))
             .abs()
-            .toString();
+            .toStringAsFixed(2);
       }
     } else {
       if (double.parse(SessionManager.getWallet()!.replaceAll(".00", "")) >
@@ -1081,7 +1087,7 @@ class _CheckOutState extends ConsumerState<CheckOut> {
                           (double.parse(widget.tax!.replaceAll(".00", "")) /
                                   100)
                               .toString()))))
-              .toString())) {
+              .toStringAsFixed(2))) {
         amount = "0";
       } else {
         amount = (double.parse(
@@ -1094,7 +1100,7 @@ class _CheckOutState extends ConsumerState<CheckOut> {
                                     100)
                                 .toString()))))
             .abs()
-            .toString();
+            .toStringAsFixed(2);
       }
     }
 

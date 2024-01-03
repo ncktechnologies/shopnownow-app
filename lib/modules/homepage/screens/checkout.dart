@@ -1105,10 +1105,10 @@ class _CheckOutState extends ConsumerState<CheckOut> {
   }
 
   checkOut(int cost, int checkoutOrderId) async {
+
     String email = (emailController.text.isEmpty)
         ? (SessionManager.getEmail() != null ? SessionManager.getEmail()! : '')
         : emailController.text;
-
     FlutterPaystackPlus.openPaystackPopup(
       publicKey: publicKey,
       customerEmail: email,

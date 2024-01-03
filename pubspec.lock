@@ -279,6 +279,7 @@ packages:
     source: hosted
     version: "2.0.3"
 <<<<<<< HEAD
+<<<<<<< HEAD
   flutter_paystack_plus:
     dependency: "direct main"
     description:
@@ -289,14 +290,21 @@ packages:
     version: "1.0.2"
 =======
   flutter_paystack:
+=======
+  flutter_paystack_plus:
+>>>>>>> ca03ee5 (fix)
     dependency: "direct main"
     description:
-      name: flutter_paystack
-      sha256: b2038c8f0cfa5a3bdb7b0e2016ceaedbc57e4445180ce6aea56cb0d83a016973
+      name: flutter_paystack_plus
+      sha256: "0bf06b25860f4c910d9a2e74764baf55174e1f7cae278d69254d6dfd077be4d1"
       url: "https://pub.dev"
     source: hosted
+<<<<<<< HEAD
     version: "1.0.7"
 >>>>>>> a93905b (fix)
+=======
+    version: "1.0.2"
+>>>>>>> ca03ee5 (fix)
   flutter_riverpod:
     dependency: "direct main"
     description:
@@ -508,6 +516,9 @@ packages:
     source: hosted
     version: "2.2.1"
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> ca03ee5 (fix)
   pay_with_paystack:
     dependency: transitive
     description:
@@ -516,8 +527,11 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.6"
+<<<<<<< HEAD
 =======
 >>>>>>> a93905b (fix)
+=======
+>>>>>>> ca03ee5 (fix)
   petitparser:
     dependency: transitive
     description:

@@ -1,8 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-// import 'package:flutter_paystack/flutter_paystack.dart';
-import 'package:flutter_paystack_plus/flutter_paystack_plus.dart';
+import 'package:flutter_paystack/flutter_paystack.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shopnownow/app/helpers/session_manager.dart';
 import 'package:shopnownow/app/navigators/navigators.dart';
@@ -46,7 +45,7 @@ class _CheckOutState extends ConsumerState<CheckOut> {
   TextEditingController addressController = TextEditingController();
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   var publicKey = 'pk_test_25e249297133695de0f477d314a9d2658c967446';
-  // final plugin = PaystackPlugin();
+  final plugin = PaystackPlugin();
   TextEditingController couponController = TextEditingController();
   int totalAmount = 0;
   int couponAmount = 0;
@@ -55,7 +54,7 @@ class _CheckOutState extends ConsumerState<CheckOut> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    // plugin.initialize(publicKey: publicKey);
+    plugin.initialize(publicKey: publicKey);
     totalAmount = widget.productList.fold<int>(0, (previousValue, element) {
       print(element.quantity);
       return (previousValue +
@@ -1108,79 +1107,38 @@ class _CheckOutState extends ConsumerState<CheckOut> {
     return amount;
   }
 
-
-
   checkOut(int cost, int checkoutOrderId) async {
     String email = (emailController.text.isEmpty)
         ? (SessionManager.getEmail() != null ? SessionManager.getEmail()! : '')
         : emailController.text;
-    FlutterPaystackPlus.openPaystackPopup(
-      publicKey: publicKey,
-      customerEmail: email,
-      context: context,
-      secretKey: secretKey,
-      currency: 'NGN',
-      amount: cost.toString(),
-      reference: DateTime.now().millisecondsSinceEpoch.toString(),
-      callBackUrl: "[GET IT FROM YOUR PAYSTACK DASHBOARD]",
-      onClosed: () {
-        debugPrint('Could\'nt finish payment');
-      },
-      onSuccess: () async {
-        debugPrint('successful payment');
-        ProcessPaymentRequest paymentRequest = ProcessPaymentRequest(
-          userId: SessionManager.getUserId(),
-          amount: cost.toString(),
-          status: "successful",
-          orderId: checkoutOrderId,
-          reference: DateTime.now().millisecondsSinceEpoch.toString(),
-          // reference: response.reference!,
-          paymentType: "card",
-          paymentGateway: "paystack",
-          paymentGatewayReference: DateTime.now().millisecondsSinceEpoch.toString()
-          // paymentGatewayReference: response.reference!,
-        );
-
-        ref.read(processPaymentProvider.notifier).processPayment(
-            paymentRequest: paymentRequest,
-            noToken: SessionManager.getToken() == null ? true : false,
-            then: (val) {
-              pushToAndClearStack(const HomePage());
-              showSuccessBar(context, val);
-            });
-      },
+    Charge charge = Charge()
+      ..amount = cost
+      ..reference = "${DateTime.now().millisecondsSinceEpoch}"
+      ..email = email;
+    CheckoutResponse response = await plugin.checkout(
+      context,
+      method: CheckoutMethod.card,
+      charge: charge,
     );
-    // String email = (emailController.text.isEmpty)
-    //     ? (SessionManager.getEmail() != null ? SessionManager.getEmail()! : '')
-    //     : emailController.text;
-    // Charge charge = Charge()
-    //   ..amount = cost
-    //   ..reference = "${DateTime.now().millisecondsSinceEpoch}"
-    //   ..email = email;
-    // CheckoutResponse response = await plugin.checkout(
-    //   context,
-    //   method: CheckoutMethod.card,
-    //   charge: charge,
-    // );
-    // if (response.status) {
-    //   ProcessPaymentRequest paymentRequest = ProcessPaymentRequest(
-    //     userId: SessionManager.getUserId(),
-    //     amount: cost.toString(),
-    //     status: "successful",
-    //     orderId: checkoutOrderId,
-    //     reference: response.reference!,
-    //     paymentType: "card",
-    //     paymentGateway: "paystack",
-    //     paymentGatewayReference: response.reference!,
-    //   );
-    //
-    //   ref.read(processPaymentProvider.notifier).processPayment(
-    //       paymentRequest: paymentRequest,
-    //       noToken: SessionManager.getToken() == null ? true : false,
-    //       then: (val) {
-    //         pushToAndClearStack(const HomePage());
-    //         showSuccessBar(context, val);
-    //       });
-    // }
+    if (response.status) {
+      ProcessPaymentRequest paymentRequest = ProcessPaymentRequest(
+        userId: SessionManager.getUserId(),
+        amount: (cost / 100).toString(),
+        status: "successful",
+        orderId: checkoutOrderId,
+        reference: response.reference!,
+        paymentType: "card",
+        paymentGateway: "paystack",
+        paymentGatewayReference: response.reference!,
+      );
+
+      ref.read(processPaymentProvider.notifier).processPayment(
+          paymentRequest: paymentRequest,
+          noToken: SessionManager.getToken() == null ? true : false,
+          then: (val) {
+            pushToAndClearStack(const HomePage());
+            showSuccessBar(context, val);
+          });
+    }
   }
 }

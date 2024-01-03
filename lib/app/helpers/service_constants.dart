@@ -17,4 +17,5 @@ String baseUrl({int version = 1}) {
   return Env.getEnvironment() == EnvState.test
       ? "https://api.shopnownow.co/api/v$version"
       : "https://api.shopnownow.co/api/v$version";
+
 }

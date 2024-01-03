@@ -82,7 +82,7 @@ class ApiService<T> {
       {required T Function(dynamic) getDataFromResponse,
         Function(http.Response)? onReturn,
         bool hasToken = false,  bool urlChange = false,}) async {
-    log(url);
+    log("base url${baseUrl()}");
     try {
       http.Response response = await http
           .get(Uri.parse(urlChange ? url : "${baseUrl()}$url"),

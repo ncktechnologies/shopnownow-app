@@ -278,6 +278,7 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.3"
+<<<<<<< HEAD
   flutter_paystack_plus:
     dependency: "direct main"
     description:
@@ -286,6 +287,16 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.2"
+=======
+  flutter_paystack:
+    dependency: "direct main"
+    description:
+      name: flutter_paystack
+      sha256: b2038c8f0cfa5a3bdb7b0e2016ceaedbc57e4445180ce6aea56cb0d83a016973
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.7"
+>>>>>>> a93905b (fix)
   flutter_riverpod:
     dependency: "direct main"
     description:
@@ -496,6 +507,7 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.2.1"
+<<<<<<< HEAD
   pay_with_paystack:
     dependency: transitive
     description:
@@ -504,14 +516,23 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.6"
+=======
+>>>>>>> a93905b (fix)
   petitparser:
     dependency: transitive
     description:
       name: petitparser
+<<<<<<< HEAD
       sha256: cb3798bef7fc021ac45b308f4b51208a152792445cce0448c9a4ba5879dd8750
       url: "https://pub.dev"
     source: hosted
     version: "5.4.0"
+=======
+      sha256: c15605cd28af66339f8eb6fbe0e541bfe2d1b72d5825efc6598f3e0a31b9ad27
+      url: "https://pub.dev"
+    source: hosted
+    version: "6.0.2"
+>>>>>>> a93905b (fix)
   pin_code_fields:
     dependency: "direct main"
     description:
@@ -612,10 +633,17 @@ packages:
     dependency: transitive
     description:
       name: shared_preferences_web
+<<<<<<< HEAD
       sha256: d762709c2bbe80626ecc819143013cc820fa49ca5e363620ee20a8b15a3e3daf
       url: "https://pub.dev"
     source: hosted
     version: "2.2.1"
+=======
+      sha256: "7b15ffb9387ea3e237bb7a66b8a23d2147663d391cafc5c8f37b2e7b4bde5d21"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.2.2"
+>>>>>>> a93905b (fix)
   shared_preferences_windows:
     dependency: transitive
     description:
@@ -777,10 +805,17 @@ packages:
     dependency: transitive
     description:
       name: url_launcher_web
+<<<<<<< HEAD
       sha256: "7fd2f55fe86cea2897b963e864dc01a7eb0719ecc65fcef4c1cc3d686d718bb2"
       url: "https://pub.dev"
     source: hosted
     version: "2.2.0"
+=======
+      sha256: "7286aec002c8feecc338cc33269e96b73955ab227456e9fb2a91f7fab8a358e9"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.2.2"
+>>>>>>> a93905b (fix)
   url_launcher_windows:
     dependency: transitive
     description:
@@ -889,10 +924,17 @@ packages:
     dependency: transitive
     description:
       name: xml
+<<<<<<< HEAD
       sha256: "5bc72e1e45e941d825fd7468b9b4cc3b9327942649aeb6fc5cdbf135f0a86e84"
       url: "https://pub.dev"
     source: hosted
     version: "6.3.0"
+=======
+      sha256: b015a8ad1c488f66851d762d3090a21c600e479dc75e68328c52774040cf9226
+      url: "https://pub.dev"
+    source: hosted
+    version: "6.5.0"
+>>>>>>> a93905b (fix)
   yaml:
     dependency: transitive
     description:
@@ -902,5 +944,10 @@ packages:
     source: hosted
     version: "3.1.2"
 sdks:
+<<<<<<< HEAD
   dart: ">=3.2.0-194.0.dev <4.0.0"
   flutter: ">=3.13.0"
+=======
+  dart: ">=3.2.0 <4.0.0"
+  flutter: ">=3.16.0"
+>>>>>>> a93905b (fix)

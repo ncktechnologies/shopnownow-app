@@ -1,5 +1,7 @@
 String imgPath = "assets/images/";
 String iconPath = "assets/icons/";
+String secretKey = "sk_test_7f97db22564ed0d9bc71225f4629c0ee971e2942";
+String publicKey = "pk_test_25e249297133695de0f477d314a9d2658c967446";
 String searchText = "What are you looking for?";
 String groceries = "Groceries";
 String homeCare = "Home & Body \nCare";

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_paystack/flutter_paystack.dart';
+import 'package:flutter_paystack_plus/flutter_paystack_plus.dart';
+// import 'package:flutter_paystack/flutter_paystack.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shopnownow/app/helpers/session_manager.dart';
 import 'package:shopnownow/modules/reuseables/size_boxes.dart';
@@ -22,13 +23,13 @@ class FundWalletScreen extends ConsumerStatefulWidget {
 class _FundWalletScreenState extends ConsumerState<FundWalletScreen> {
   TextEditingController controller = TextEditingController();
   var publicKey = 'pk_test_b9037207caa1d2764171b06c1c99cecc658c7b3f';
-  final plugin = PaystackPlugin();
+  // final plugin = PaystackPlugin();
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    plugin.initialize(publicKey: publicKey);
+    // plugin.initialize(publicKey: publicKey);
   }
 
   @override
@@ -77,29 +78,36 @@ class _FundWalletScreenState extends ConsumerState<FundWalletScreen> {
   }
 
   checkOut(int cost) async {
-    Charge charge = Charge()
-      ..amount = cost * 100
-      ..reference = "${DateTime.now().millisecondsSinceEpoch}"
-      ..email = SessionManager.getEmail();
-    CheckoutResponse response = await plugin.checkout(
-      context,
-      method: CheckoutMethod.card,
-      charge: charge,
-    );
-    if (response.status) {
-      ref.read(fundWalletProvider.notifier).fundWallet(
-          amount: cost.toString(),
-          reference: response.reference!,
-          then: () {
 
-            ref.read(getTransactionProvider.notifier).getTransaction();
-            ref.read(getLimitedTransactionProvider.notifier).getLimitedTransaction();
-            ref.read(getWalletProvider.notifier).getWallet(then: () {
-              Navigator.pop(context);
-              setState(() {});
+    FlutterPaystackPlus.openPaystackPopup(
+      publicKey: publicKey,
+      customerEmail: SessionManager.getEmail()!,
+      context: context,
+      secretKey: secretKey,
+      currency: 'NGN',
+      amount: cost.toString(),
+      reference: DateTime.now().millisecondsSinceEpoch.toString(),
+      callBackUrl: "[GET IT FROM YOUR PAYSTACK DASHBOARD]",
+      onClosed: () {
+        debugPrint('Could\'nt finish payment');
+      },
+      onSuccess: () async {
+        debugPrint('successful payment');
+
+        ref.read(fundWalletProvider.notifier).fundWallet(
+            amount: cost.toString(),
+            reference: DateTime.now().millisecondsSinceEpoch.toString(),
+            then: () {
+
+              ref.read(getTransactionProvider.notifier).getTransaction();
+              ref.read(getLimitedTransactionProvider.notifier).getLimitedTransaction();
+              ref.read(getWalletProvider.notifier).getWallet(then: () {
+                Navigator.pop(context);
+                setState(() {});
+              });
+
             });
-
-          });
-    }
+      },
+    );
   }
 }

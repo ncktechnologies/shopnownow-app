@@ -1125,7 +1125,7 @@ class _CheckOutState extends ConsumerState<CheckOut> {
         debugPrint('successful payment');
         ProcessPaymentRequest paymentRequest = ProcessPaymentRequest(
             userId: SessionManager.getUserId(),
-            amount: cost.toString(),
+            amount: (cost * 100).toString(),           
             status: "successful",
             orderId: checkoutOrderId,
             reference: DateTime.now().millisecondsSinceEpoch.toString(),

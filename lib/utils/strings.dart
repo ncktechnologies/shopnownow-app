@@ -54,6 +54,7 @@ String dateOrdered = "Date ordered:";
 String orderStatus = "Order Status";
 String orderReceived = "Your order has been received";
 String orderDelivered = "Order delivered successfully";
+String orderCancelled = "Order has been cancelled";
 String payDetails = "Payment Details";
 String subTotal = "Subtotal:";
 String tax = "Tax ";

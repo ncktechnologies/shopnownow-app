@@ -136,28 +136,51 @@ class _OrderHistoryState extends ConsumerState<OrderHistory> {
                                                       horizontal: kSmallPadding,
                                                       vertical: kPadding),
                                                   decoration: BoxDecoration(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              kSmallPadding),
-                                                      color: data.orders![index]
-                                                                  .status ==
-                                                              "delivered"
-                                                          ? kSuccess
-                                                          : kLight800),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            kSmallPadding),
+                                                    color: () {
+                                                      switch (data
+                                                          .orders![index]
+                                                          .status) {
+                                                        case "delivered":
+                                                          return kToastColor2
+                                                              .withOpacity(0.1);
+                                                        case "cancelled":
+                                                          return Colors.red
+                                                              .withOpacity(0.1);
+                                                        case "picked":
+                                                          return Colors.orange
+                                                              .withOpacity(0.1);
+                                                        default:
+                                                          return kGreen300
+                                                              .withOpacity(0.1);
+                                                      }
+                                                    }(),
+                                                  ),
                                                   child: Text(
                                                     data.orders![index].status!
                                                         .toTitleCase(),
                                                     style: textTheme
                                                         .headlineMedium!
                                                         .copyWith(
-                                                            fontSize: 10,
-                                                            color: data
-                                                                        .orders![
-                                                                            index]
-                                                                        .status ==
-                                                                    "delivered"
-                                                                ? kToastColor2
-                                                                : kYellow),
+                                                      fontSize: 10,
+                                                      color: () {
+                                                        switch (data
+                                                            .orders![index]
+                                                            .status) {
+                                                          case "delivered":
+                                                            return kToastColor2;
+                                                          case "cancelled":
+                                                            return Colors.red;
+                                                          case "picked":
+                                                            return Colors
+                                                                .orange;
+                                                          default:
+                                                            return kGreen300;
+                                                        }
+                                                      }(),
+                                                    ),
                                                   ),
                                                 ),
                                               ],

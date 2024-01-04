@@ -55,7 +55,8 @@ class OrderDetails extends StatelessWidget {
                             ),
                             InkWellNoShadow(
                               onTap: () {
-                                Clipboard.setData(ClipboardData(text: "${order.orderId}"));
+                                Clipboard.setData(
+                                    ClipboardData(text: "${order.orderId}"));
                                 showSuccessBar(context, "Copied");
                               },
                               child: SvgPicture.asset(
@@ -78,13 +79,37 @@ class OrderDetails extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(
                         horizontal: kSmallPadding, vertical: kPadding),
                     decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(kSmallPadding),
-                        color: order.status != "paid" ? kSuccess : kLight800),
+                      borderRadius: BorderRadius.circular(kSmallPadding),
+                      color: () {
+                        switch (order.status) {
+                          case "delivered":
+                            return kToastColor2.withOpacity(0.1);
+                          case "cancelled":
+                            return Colors.red.withOpacity(0.1);
+                          case "picked":
+                            return Colors.orange.withOpacity(0.1);
+                          default:
+                            return kGreen300.withOpacity(0.1);
+                        }
+                      }(),
+                    ),
                     child: Text(
-                      order.status != "paid"? "Delivered" : "Paid",
+                      toBeginningOfSentenceCase(order.status) ?? '',
                       style: textTheme.headlineMedium!.copyWith(
-                          fontSize: 10,
-                          color: order.status != "paid" ? kToastColor2 : kYellow),
+                        fontSize: 10,
+                        color: () {
+                          switch (order.status) {
+                            case "delivered":
+                              return kToastColor2;
+                            case "cancelled":
+                              return Colors.red;
+                            case "picked":
+                              return Colors.orange;
+                            default:
+                              return kGreen300;
+                          }
+                        }(),
+                      ),
                     ),
                   ),
                 ],
@@ -119,8 +144,9 @@ class OrderDetails extends StatelessWidget {
                         height: 44,
                         width: 2,
                         decoration: BoxDecoration(
-                            color:
-                            order.status != "paid"? kGreen300 : kTextInputBorderColor),
+                            color: order.status != "paid"
+                                ? kGreen300
+                                : kTextInputBorderColor),
                         child: Container(
                           height: 22,
                           width: 2,
@@ -132,9 +158,22 @@ class OrderDetails extends StatelessWidget {
                         height: kRegularPadding,
                         width: kRegularPadding,
                         decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color:
-                            order.status != "paid"? kGreen300 : kTextInputBorderColor),
+                          shape: BoxShape.circle,
+                          color: () {
+                            switch (order.status) {
+                              case "paid":
+                                return kTextInputBorderColor;
+                              case "picked":
+                                return Colors.orange;
+                              case "delivered":
+                                return kGreen300;
+                              case "cancelled":
+                                return Colors.red;
+                              default:
+                                return kTextInputBorderColor;
+                            }
+                          }(),
+                        ),
                       )
                     ],
                   ),
@@ -159,27 +198,34 @@ class OrderDetails extends StatelessWidget {
                         ),
                         YBox(kMacroPadding),
                         Text(
-                          orderDelivered,
+                          order.status == 'cancelled'
+                              ? orderCancelled
+                              : orderDelivered,
                           style: textTheme.displaySmall!.copyWith(
                               fontWeight: FontWeight.w500,
-                              color: order.status != "paid"?kDarkColor300 : kLight700),
+                              color: order.status != "paid"
+                                  ? kDarkColor300
+                                  : kLight700),
                         ),
                         YBox(kPadding),
-                        order.status != "paid"
+                        order.status == "delivered"
                             ? Text(
-
-                          DateFormat("dd MMM, yyyy").format(order.updatedAt!),
+                                DateFormat("dd MMM, yyyy")
+                                    .format(order.updatedAt!),
                                 style: textTheme.displaySmall!.copyWith(
                                     fontWeight: FontWeight.w500,
                                     color: kToastColor2,
                                     fontSize: 10),
                               )
                             : Text(
-                                "Pending",
+                                "${order.status == 'paid' ? 'Pending' : toBeginningOfSentenceCase(order.status)}",
                                 style: textTheme.displaySmall!.copyWith(
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 10,
-                                    color: kYellow),
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 10,
+                                  color: order.status == 'cancelled'
+                                      ? Colors.red
+                                      : kYellow,
+                                ),
                               ),
                       ],
                     ),
@@ -212,7 +258,10 @@ class OrderDetails extends StatelessWidget {
               ),
               PaymentRow(
                 text: total,
-                subText: (int.parse(order.price!.replaceAll(".00", "")) + int.parse(order.tax!.replaceAll(".00", "")) + int.parse(order.deliveryFee!.replaceAll(".00", ""))).toString(),
+                subText: (int.parse(order.price!.replaceAll(".00", "")) +
+                        int.parse(order.tax!.replaceAll(".00", "")) +
+                        int.parse(order.deliveryFee!.replaceAll(".00", "")))
+                    .toString(),
               ),
               YBox(kSmallPadding),
               const Divider(
@@ -266,21 +315,19 @@ class OrderDetails extends StatelessWidget {
                           imageBuilder: (context, prov) {
                             return Container(
                               decoration: BoxDecoration(
-                                  border: Border.all(
-                                      width: 1.5, color: kGrey700),
-                                  borderRadius: BorderRadius.circular(
-                                      10),
+                                  border:
+                                      Border.all(width: 1.5, color: kGrey700),
+                                  borderRadius: BorderRadius.circular(10),
                                   image: DecorationImage(
                                       image: prov, fit: BoxFit.cover)),
                             );
                           },
-                          errorWidget: (context, url, error) =>
-                              Image.asset(
-                                "assets/images/img.png",
-                                height: 80,
-                                width: 80,
-                                fit: BoxFit.cover,
-                              ),
+                          errorWidget: (context, url, error) => Image.asset(
+                            "assets/images/img.png",
+                            height: 80,
+                            width: 80,
+                            fit: BoxFit.cover,
+                          ),
                         ),
                         XBox(kSmallPadding),
                         Expanded(
@@ -289,25 +336,22 @@ class OrderDetails extends StatelessWidget {
                             children: [
                               Text(
                                 order.products![index].name!,
-                                style: textTheme.headlineMedium!.copyWith(
-                                  color: kDarkColor300
-                                ),
+                                style: textTheme.headlineMedium!
+                                    .copyWith(color: kDarkColor300),
                               ),
                               YBox(kRegularPadding),
-                              Text(
-                                "X${order.products![index].quantity}",
-                                style: textTheme.bodyLarge
-                              ),
-
-
+                              Text("X${order.products![index].quantity}",
+                                  style: textTheme.bodyLarge),
                             ],
                           ),
                         ),
-                        Text("₦ ${order.products![index].price}", style: textTheme.displayLarge!.copyWith(
-                          color: kDarkPurple,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600
-                        ),)
+                        Text(
+                          "₦ ${order.products![index].price}",
+                          style: textTheme.displayLarge!.copyWith(
+                              color: kDarkPurple,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600),
+                        )
                       ],
                     ),
                     YBox(kRegularPadding)

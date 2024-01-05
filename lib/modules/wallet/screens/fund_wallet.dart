@@ -92,10 +92,9 @@ class _FundWalletScreenState extends ConsumerState<FundWalletScreen> {
           amount: cost.toString(),
           reference: response.reference!,
           then: () {
+
             ref.read(getTransactionProvider.notifier).getTransaction();
-            ref
-                .read(getLimitedTransactionProvider.notifier)
-                .getLimitedTransaction();
+            ref.read(getLimitedTransactionProvider.notifier).getLimitedTransaction();
             ref.read(getWalletProvider.notifier).getWallet(then: () {
               Navigator.pop(context);
               setState(() {});

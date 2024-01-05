@@ -111,7 +111,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                 onChanged: (val) {
                   onSearchTextChanged(val ?? "");
                 },
-                hintText: searchText,
+                hintText: searchCategoryText,
               ),
               YBox(kMicroPadding),
               ref.watch(getCategoriesProvider).when(

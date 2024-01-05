@@ -3,6 +3,7 @@ String iconPath = "assets/icons/";
 String publicKey = "pk_test_25e249297133695de0f477d314a9d2658c967446";
 String secretKey = "sk_test_7f97db22564ed0d9bc71225f4629c0ee971e2942";
 String searchText = "What are you looking for?";
+String searchCategoryText = "Please choose a category";
 String groceries = "Groceries";
 String homeCare = "Home & Body \nCare";
 String alcohol = "Alcoholic \nDrinks";

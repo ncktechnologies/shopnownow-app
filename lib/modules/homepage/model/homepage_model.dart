@@ -159,6 +159,7 @@ class Product {
   String? unitOfMeasurement;
   int? availability;
   int? categoryId;
+  int? bandId;
   DateTime? createdAt;
   DateTime? updatedAt;
   int? quantity;
@@ -171,6 +172,7 @@ class Product {
       this.thumbnailUrl,
       this.price,
       this.unitOfMeasurement,
+        this.bandId,
       this.availability,
       this.categoryId,
       this.createdAt,
@@ -186,6 +188,7 @@ class Product {
         price: json["price"],
         unitOfMeasurement: json["unit_of_measurement"],
         availability: json["availability"],
+        bandId: json["band_id"],
         categoryId: json["category_id"],
         quantity: json["quantity"],
         createdAt: DateTime.parse(json["created_at"]),
@@ -206,13 +209,14 @@ class Product {
         "category_id": categoryId,
         "created_at": createdAt!.toIso8601String(),
         "updated_at": updatedAt!.toIso8601String(),
+    "band_id" : bandId,
         "band": band!.toJson(),
         "category": category!.toJson(),
       };
 
   @override
   String toString() {
-    return 'Product{id: $id, quantity:$quantity, name: $name, thumbnailUrl: $thumbnailUrl, price: $price, unitOfMeasurement: $unitOfMeasurement, availability: $availability, categoryId: $categoryId, createdAt: $createdAt, updatedAt: $updatedAt}';
+    return 'Product{id: $id, name: $name, thumbnailUrl: $thumbnailUrl, price: $price, unitOfMeasurement: $unitOfMeasurement, availability: $availability, categoryId: $categoryId, bandId: $bandId, createdAt: $createdAt, updatedAt: $updatedAt, quantity: $quantity, band: $band, category: $category}';
   }
 }
 

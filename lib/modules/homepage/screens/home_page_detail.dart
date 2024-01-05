@@ -18,7 +18,6 @@ import 'package:shopnownow/utils/flushbar.dart';
 import 'package:shopnownow/utils/strings.dart';
 import 'package:shopnownow/utils/text_field_comp.dart';
 import 'package:shopnownow/utils/widgets.dart';
-import 'package:collection/collection.dart';
 
 class HomePageDetail extends ConsumerStatefulWidget {
   final GetCategories menuItems;
@@ -73,6 +72,7 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
                             onTap: () {
                               setState(() {
                                 categoryName = e;
+                                controller.clear();
                               });
                               overlayEntry?.remove();
                               overlayEntry = null;
@@ -229,23 +229,55 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
                               )),
                               InkWellNoShadow(
                                 onTap: () {
-                                  setState(() {
-                                    productList.add(
-                                      Product(
-                                          id: searchResult[index].id!,
-                                          name: searchResult[index].name!,
-                                          quantity: 1,
-                                          price: searchResult[index].price,
-                                          thumbnailUrl:
-                                              searchResult[index].thumbnailUrl),
-                                    );
+                                  if(productList.isEmpty){
+                                    setState(() {
+                                      productList.add(
+                                        Product(
+                                            id: searchResult[index].id!,
+                                            name: searchResult[index].name!,
+                                            quantity: 1,
+                                            bandId: searchResult[index].bandId!,
+                                            price: searchResult[index].price,
+                                            thumbnailUrl: searchResult[index]
+                                                .thumbnailUrl),
+                                      );
 
-                                    overlayEntry?.remove();
-                                    overlaySearchEntry?.remove();
-                                    overlayEntry = null;
-                                    overlaySearchEntry = null;
-                                  });
-                                },
+                                      overlayEntry?.remove();
+                                      overlaySearchEntry?.remove();
+                                      overlayEntry = null;
+                                      overlaySearchEntry = null;
+                                    });
+                                  }else{
+                                  if (productList.first.bandId ==
+                                      searchResult[index].bandId) {
+                                    setState(() {
+                                      productList.add(
+                                        Product(
+                                            id: searchResult[index].id!,
+                                            name: searchResult[index].name!,
+                                            quantity: 1,
+                                            bandId: searchResult[index].bandId,
+                                            price: searchResult[index].price,
+                                            thumbnailUrl: searchResult[index]
+                                                .thumbnailUrl),
+                                      );
+
+                                      overlayEntry?.remove();
+                                      overlaySearchEntry?.remove();
+                                      overlayEntry = null;
+                                      overlaySearchEntry = null;
+                                    });
+                                  }else{
+                                    showErrorBar(context, "This Category does not have the same Band as the previous category and can't be added to list.");
+                                    setState(() {
+                                      overlayEntry?.remove();
+                                      overlaySearchEntry?.remove();
+                                      overlayEntry = null;
+                                      overlaySearchEntry = null;
+                                    });
+
+                                  }
+                                }},
                                 child: Container(
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 12, vertical: 8),
@@ -664,9 +696,11 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
             _searching = false;
           });
           for (var element in val) {
+
             setState(() {
               searchResult.add(element);
               if (searchResult.isNotEmpty) {
+                print(searchResult);
                 if (overlaySearchEntry == null) {
                   _searching = false;
                   _showSearchOverlay(context);
@@ -680,7 +714,6 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
     });
   }
 }
-
 
 class HomeCartList extends StatefulWidget {
   final Product product;

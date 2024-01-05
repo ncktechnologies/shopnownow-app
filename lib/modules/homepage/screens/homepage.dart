@@ -99,8 +99,9 @@ class _HomePageState extends ConsumerState<HomePage> {
         noIcon: true,
         child: Padding(
           padding: const EdgeInsets.only(
-            left: kRegularPadding, right: kRegularPadding, top: kMediumPadding
-          ),
+              left: kRegularPadding,
+              right: kRegularPadding,
+              top: kMediumPadding),
           child: Column(
             children: [
               SearchTextInputNoIcon(
@@ -112,7 +113,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                 onChanged: (val) {
                   onSearchTextChanged(val ?? "");
                 },
-                hintText: searchText,
+                hintText: searchCategoryText,
               ),
               YBox(kMicroPadding),
               ref.watch(getCategoriesProvider).when(

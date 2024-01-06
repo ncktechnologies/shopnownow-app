@@ -163,6 +163,7 @@ class Product {
   DateTime? createdAt;
   DateTime? updatedAt;
   int? quantity;
+  String? categoryName;
   Band? band;
   Category? category;
 
@@ -174,6 +175,7 @@ class Product {
       this.unitOfMeasurement,
         this.bandId,
       this.availability,
+        this.categoryName,
       this.categoryId,
       this.createdAt,
       this.updatedAt,

@@ -27,6 +27,7 @@ class SessionManager {
   static String instagram = "instagram";
   static String facebook = "facebook";
   static String twitter = "x";
+  static String faq = "faq";
 
   /// Sessions
   static String sessionToken = "session_token";
@@ -92,6 +93,9 @@ class SessionManager {
     SessionManager.prefs.setString(contactEmail, value);
   }
 
+  static void setFaq(String value) {
+    SessionManager.prefs.setString(faq, value);
+  }
   /// GETTERS
   static int? getUserId() {
     return SessionManager.prefs.getInt(userId);
@@ -163,6 +167,9 @@ class SessionManager {
 
   static String? getGender() {
     return SessionManager.prefs.getString(gender);
+  }
+  static String? getFaq() {
+    return SessionManager.prefs.getString(faq);
   }
 
   static void clear() async {

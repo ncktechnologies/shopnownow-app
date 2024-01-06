@@ -142,6 +142,7 @@ class HomePageRepository {
                 getDataFromResponse: (data) {
                   SessionManager.setPrivacy(data["privacy_policy"]);
                   SessionManager.setTerms(data["terms_and_conditions"]);
+                  SessionManager.setFaq(data["faq"]);
                   SessionManager.setInstagram(
                       data["contact_data"].toString().split(";").first);
                   SessionManager.setFacebook(

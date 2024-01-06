@@ -206,7 +206,8 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
                                     ),
                                     YBox(kPadding),
                                     Text(
-                                      widget.menuItems.name ?? "",
+                                      // widget.menuItems.name ?? "",
+                                      categoryName!.name ?? "",
                                       style: textTheme.displaySmall!.copyWith(
                                           color: kDarkPurple, fontSize: 10),
                                       softWrap: true,
@@ -249,6 +250,7 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
                                             id: searchResult[index].id!,
                                             name: searchResult[index].name!,
                                             quantity: 1,
+                                            categoryName: categoryName!.name,
                                             price: searchResult[index].price,
                                             thumbnailUrl: searchResult[index]
                                                 .thumbnailUrl),
@@ -767,7 +769,8 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
                                                     1;
                                           });
                                         },
-                                        category: categoryName!,
+                                        category:
+                                            productList[index].categoryName!,
                                         onTap: () {
                                           setState(() {
                                             productList.removeAt(index);
@@ -991,7 +994,7 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
                                             productList[index].quantity! + 1;
                                       });
                                     },
-                                    category: categoryName!,
+                                    category: productList[index].categoryName!,
                                     onTap: () {
                                       setState(() {
                                         productList.removeAt(index);
@@ -1049,7 +1052,8 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
 
 class HomeCartList extends StatefulWidget {
   final Product product;
-  final GetCategories category;
+  // final GetCategories category;
+  final String category;
   final Function() onTap, addTap, subtractTap;
 
   const HomeCartList(
@@ -1110,7 +1114,7 @@ class _HomeCartListState extends State<HomeCartList> {
                 ),
                 YBox(kPadding),
                 Text(
-                  widget.category.name ?? "",
+                  widget.category,
                   style: textTheme.displaySmall!
                       .copyWith(color: kDarkPurple, fontSize: 10),
                   softWrap: true,

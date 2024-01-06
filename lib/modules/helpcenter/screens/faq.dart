@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:shopnownow/app/helpers/session_manager.dart';
 import 'package:shopnownow/modules/reuseables/size_boxes.dart';
 import 'package:shopnownow/modules/reuseables/widgets.dart';
 import 'package:shopnownow/utils/constants.dart';
@@ -13,16 +16,19 @@ class FAQ extends StatefulWidget {
 
 class _FAQState extends State<FAQ> {
   List<bool> isChecked = [];
+  List<dynamic> faqList = [];
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    isChecked = List.generate(6, (index) => false);
+   faqList = jsonDecode(SessionManager.getFaq()!);
+    isChecked = List.generate(faqList.length, (index) => false);
   }
 
   @override
   Widget build(BuildContext context) {
+  print(jsonDecode(SessionManager.getFaq()!));
     return InitialPage(
         child: Padding(
       padding: const EdgeInsets.symmetric(horizontal: kRegularPadding),
@@ -73,7 +79,7 @@ class _FAQState extends State<FAQ> {
           ),
           YBox(kMediumPadding),
           ...List.generate(
-              6,
+              faqList.length,
               (index) => InkWellNoShadow(
                     onTap: () {
                       for (int i = 0; i < isChecked.length; i++) {
@@ -92,12 +98,13 @@ class _FAQState extends State<FAQ> {
                           border: Border.all(color: kLight500, width: 1),
                           borderRadius: kBorderRadius),
                       child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                "$faq ${index + 1}",
+                                "${faqList[index]["question"]}",
                                 style: textTheme.displayLarge!.copyWith(
                                   fontWeight: FontWeight.w400,
                                   color: isChecked[index] ? kPrimaryColor : kDarkColor200 ,
@@ -117,7 +124,7 @@ class _FAQState extends State<FAQ> {
                                   padding: const EdgeInsets.only(
                                       top: kRegularPadding),
                                   child: Text(
-                                    "When you create your squad, you’ll have to pick a team name. You can edit your team's name at any point until the next matchday. To get started, you’ll need to pick a squad of 11 players.",
+                                    "${faqList[index]["answer"]}",
                                     style: textTheme.headlineMedium!
                                         .copyWith(color: kDark300),
                                   ),

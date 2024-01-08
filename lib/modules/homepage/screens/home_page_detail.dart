@@ -370,7 +370,7 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
                 ),
                 YBox(kRegularPadding),
                 Text(
-                  "$minOrder₦${widget.menuItems.band!.minimum}",
+                  "$minOrder₦${categoryName!.band!.minimum}",
                   style: textTheme.headlineMedium!.copyWith(color: kOrange500),
                 ),
                 YBox(kMediumPadding),
@@ -391,7 +391,7 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
                             showErrorBar(context, "Please add a Product");
                           }
                         : () {
-                            if (double.parse(widget.menuItems.band!.minimum!) >
+                            if (double.parse(categoryName!.band!.minimum!) >
                                 double.parse((productList.fold<int>(0,
                                     (previousValue, element) {
                                   return (previousValue +
@@ -401,7 +401,7 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
                                           element.quantity!));
                                 }).toString()))) {
                               showErrorBar(context,
-                                  "The minimum order is ₦${widget.menuItems.band!.minimum}");
+                                  "The minimum order is ₦${categoryName!.band!.minimum}");
                             } else {
                               overlayEntry?.remove();
                               overlaySearchEntry?.remove();
@@ -410,8 +410,8 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
                               pushTo(
                                 CheckOut(
                                   productList: productList,
-                                  band: widget.menuItems.band,
-                                  tax: widget.menuItems.tax,
+                                  band: categoryName!.band,
+                                  tax: categoryName!.tax,
                                 ),
                               );
                             }
@@ -500,7 +500,7 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
                               decoration: const BoxDecoration(
                                   shape: BoxShape.circle, color: kPrimaryWhite),
                               child: SvgPicture.network(
-                                widget.menuItems.thumbnail ?? "",
+                                categoryName!.thumbnail ?? "",
                                 fit: BoxFit.scaleDown,
                                 height: kRegularPadding,
                                 width: kRegularPadding,

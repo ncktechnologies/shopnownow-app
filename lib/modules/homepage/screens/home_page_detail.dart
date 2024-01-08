@@ -361,26 +361,48 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
 //                                       style: textTheme.displayLarge!.copyWith(
 //                                           color: kGrey600, fontSize: 14),
 // =======
-                                          Padding(
-                                            padding:
-                                                const EdgeInsets.only(top: 8),
-                                            child: Text(
-                                              searchResult[index].price ?? "0",
-                                              softWrap: true,
-                                              style: textTheme.displayLarge!
-                                                  .copyWith(
-                                                fontSize: 10,
-                                              ),
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
-                                          ),
-                                        ],
-                                      )
-                                    ],
-                                  )),
-                                  InkWellNoShadow(
-                                    onTap: () {
-                                      if (productList.isEmpty) {
+                                        // Padding(
+                                        //   padding:
+                                        //       const EdgeInsets.only(top: 8),
+                                        //   child: Text(
+                                        //     searchResult[index].price ?? "0",
+                                        //     softWrap: true,
+                                        //     style: textTheme.displayLarge!
+                                        //         .copyWith(
+                                        //       fontSize: 10,
+                                        //     ),
+                                        //     overflow: TextOverflow.ellipsis,
+                                        //   ),
+                                        // ),
+                                      ],
+                                    )
+                                  ],
+                                )),
+                                InkWellNoShadow(
+                                  onTap: () {
+                                    if (productList.isEmpty) {
+                                      setState(() {
+                                        productList.add(
+                                          Product(
+                                              id: searchResult[index].id!,
+                                              name: searchResult[index].name!,
+                                              quantity: 1,
+                                              categoryName: categoryName!.name,
+                                              bandId:
+                                                  searchResult[index].bandId!,
+                                              price: searchResult[index].price,
+                                              thumbnailUrl: searchResult[index]
+                                                  .thumbnailUrl),
+                                        );
+
+                                        overlayEntry?.remove();
+                                        overlaySearchEntry?.remove();
+                                        overlayEntry = null;
+                                        overlaySearchEntry = null;
+                                      });
+                                    } else {
+                                      if (productList.first.bandId ==
+                                          searchResult[index].bandId) {
                                         setState(() {
                                           productList.add(
                                             Product(
@@ -390,7 +412,7 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
                                                 categoryName:
                                                     categoryName!.name,
                                                 bandId:
-                                                    searchResult[index].bandId!,
+                                                    searchResult[index].bandId,
                                                 price:
                                                     searchResult[index].price,
                                                 thumbnailUrl:
@@ -404,61 +426,35 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
                                           overlaySearchEntry = null;
                                         });
                                       } else {
-                                        if (productList.first.bandId ==
-                                            searchResult[index].bandId) {
-                                          setState(() {
-                                            productList.add(
-                                              Product(
-                                                  id: searchResult[index].id!,
-                                                  name:
-                                                      searchResult[index].name!,
-                                                  quantity: 1,
-                                                  categoryName:
-                                                      categoryName!.name,
-                                                  bandId: searchResult[index]
-                                                      .bandId,
-                                                  price:
-                                                      searchResult[index].price,
-                                                  thumbnailUrl:
-                                                      searchResult[index]
-                                                          .thumbnailUrl),
-                                            );
-
-                                            overlayEntry?.remove();
-                                            overlaySearchEntry?.remove();
-                                            overlayEntry = null;
-                                            overlaySearchEntry = null;
-                                          });
-                                        } else {
-                                          showErrorBar(context,
-                                              "This item is in a category that needs to be ordered and delivered separately.",
-                                              duration:
-                                                  const Duration(seconds: 4));
-                                          setState(() {
-                                            overlayEntry?.remove();
-                                            overlaySearchEntry?.remove();
-                                            overlayEntry = null;
-                                            overlaySearchEntry = null;
-                                          });
-                                        }
+                                        showErrorBar(context,
+                                            "This item is in a category that needs to be ordered and delivered separately.",
+                                            duration:
+                                                const Duration(seconds: 4));
+                                        setState(() {
+                                          overlayEntry?.remove();
+                                          overlaySearchEntry?.remove();
+                                          overlayEntry = null;
+                                          overlaySearchEntry = null;
+                                        });
                                       }
-                                    },
-                                    child: Container(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 12, vertical: 8),
-                                      decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(
-                                              kMicroPadding),
-                                          border: Border.all(
-                                              color: kLightAsh50, width: 1.5)),
-                                      child: Text(
-                                        addList,
-                                        style: textTheme.displayLarge!.copyWith(
-                                            color: kGrey600, fontSize: 14),
-                                      ),
-// >>>>>>> c506512 (fix)
+                                    }
+                                  },
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 12, vertical: 8),
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(
+                                            kMicroPadding),
+                                        border: Border.all(
+                                            color: kLightAsh50, width: 1.5)),
+                                    child: Text(
+                                      addList,
+                                      style: textTheme.displayLarge!.copyWith(
+                                          color: kGrey600, fontSize: 14),
                                     ),
+// >>>>>>> c506512 (fix)
                                   ),
+                                ),
                               ],
                             ),
                             YBox(kSmallPadding),
@@ -570,7 +566,7 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
                                     }
                                   : () {
                                       if (double.parse(
-                                          categoryName!.band!.minimum!) >
+                                              categoryName!.band!.minimum!) >
                                           double.parse((productList.fold<int>(0,
                                               (previousValue, element) {
                                             return (previousValue +
@@ -648,7 +644,7 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
                                   }
                                 : () {
                                     if (double.parse(
-                                        categoryName!.band!.minimum!) >
+                                            categoryName!.band!.minimum!) >
                                         double.parse((productList.fold<int>(0,
                                             (previousValue, element) {
                                           return (previousValue +
@@ -775,13 +771,13 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
                                                   .last ==
                                               "svg"
                                           ? SvgPicture.network(
-                                        categoryName!.thumbnail ?? "",
+                                              categoryName!.thumbnail ?? "",
                                               fit: BoxFit.scaleDown,
                                               height: kRegularPadding,
                                               width: kRegularPadding,
                                             )
                                           : Image.network(
-                                        categoryName!.thumbnail ?? "",
+                                              categoryName!.thumbnail ?? "",
                                               height: kRegularPadding,
                                               width: kRegularPadding,
                                             ),

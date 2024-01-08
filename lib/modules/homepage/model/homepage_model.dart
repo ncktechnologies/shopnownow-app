@@ -159,6 +159,7 @@ class Product {
   String? unitOfMeasurement;
   int? availability;
   int? categoryId;
+  int? bandId;
   DateTime? createdAt;
   DateTime? updatedAt;
   int? quantity;
@@ -170,10 +171,11 @@ class Product {
       {this.id,
       this.name,
       this.thumbnailUrl,
+      this.bandId,
+      this.categoryName,
       this.price,
       this.unitOfMeasurement,
       this.availability,
-      this.categoryName,
       this.categoryId,
       this.createdAt,
       this.updatedAt,
@@ -190,6 +192,7 @@ class Product {
         availability: json["availability"],
         categoryId: json["category_id"],
         quantity: json["quantity"],
+        bandId: json["band_id"],
         createdAt: DateTime.parse(json["created_at"]),
         updatedAt: DateTime.parse(json["updated_at"]),
         band: json["band"] == null ? null : Band.fromJson(json["band"]),
@@ -201,6 +204,7 @@ class Product {
   Map<String, dynamic> toJson() => {
         "id": id,
         "name": name,
+        "band_id": bandId,
         "thumbnail_url": thumbnailUrl,
         "price": price,
         "unit_of_measurement": unitOfMeasurement,

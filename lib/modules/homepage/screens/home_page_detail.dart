@@ -54,6 +54,7 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
           width: isMobile
               ? screenWidth * 0.9
               : screenWidth * 0.6, // Adjust these values as needed
+// <<<<<<< HEAD
           height: isMobile ? screenHeight * 0.5 : screenHeight * 0.5,
           child: Container(
               padding: const EdgeInsets.all(kSmallPadding),
@@ -111,6 +112,70 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
                                               : kPurple50),
                                     )
                                   ],
+// =======
+//           child: Positioned(
+//             left: kRegularPadding,
+//             right: kRegularPadding,
+//             top: MediaQuery.of(context).size.height * 0.25,
+//             child: Container(
+//                 padding: const EdgeInsets.all(kSmallPadding),
+//                 decoration: BoxDecoration(
+//                   color: kPrimaryWhite,
+//                   borderRadius: BorderRadius.circular(kSmallPadding),
+//                   boxShadow: [
+//                     BoxShadow(
+//                       color: Colors.grey[200]!,
+//                       spreadRadius: 0,
+//                       blurRadius: 15,
+//                       offset: const Offset(0, 0), // changes position of shadow
+//                     )
+//                   ],
+//                 ),
+//                 // width: MediaQuery.of(context).size.width * 0.8,
+//                 child: Column(
+//                     children: widget.category
+//                         .map((e) => Material(
+//                               child: InkWellNoShadow(
+//                                 onTap: () {
+//                                   setState(() {
+//                                     categoryName = e;
+//                                     controller.clear();
+//                                   });
+//                                   overlayEntry?.remove();
+//                                   overlayEntry = null;
+//                                 },
+//                                 child: Container(
+//                                   margin: const EdgeInsets.only(
+//                                       bottom: kSmallPadding),
+//                                   child: Row(
+//                                     children: [
+//                                       e.thumbnail!.split(".").last == "svg"
+//                                           ? SvgPicture.network(
+//                                               e.thumbnail ?? "",
+//                                               fit: BoxFit.scaleDown,
+//                                               height: kMacroPadding,
+//                                               width: kMacroPadding,
+//                                             )
+//                                           : Image.network(
+//                                               e.thumbnail!,
+//                                               height: kMacroPadding,
+//                                               width: kMacroPadding,
+//                                             ),
+//                                       XBox(kSmallPadding),
+//                                       Text(
+//                                         e.name ?? "",
+//                                         style: textTheme.titleMedium!.copyWith(
+//                                             fontWeight: FontWeight.w500,
+//                                             fontSize: 14,
+//                                             color: categoryName!.name!
+//                                                         .toLowerCase() ==
+//                                                     e.name!.toLowerCase()
+//                                                 ? kPrimaryColor
+//                                                 : kPurple50),
+//                                       )
+//                                     ],
+//                                   ),
+// >>>>>>> c506512 (fix)
                                 ),
                               ),
                             ),
@@ -225,11 +290,30 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
                                             fontSize: 10,
                                           ),
                                         ),
+// <<<<<<< HEAD
                                         Padding(
                                           padding:
                                               const EdgeInsets.only(top: 8),
                                           child: Text(
                                             searchResult[index].price ?? "0",
+// =======
+//                                         softWrap: true,
+//                                         overflow: TextOverflow.ellipsis,
+//                                       ),
+//                                       YBox(kPadding),
+//                                       Text(
+//                                         categoryName!.name ?? "",
+//                                         style: textTheme.displaySmall!.copyWith(
+//                                             color: kDarkPurple, fontSize: 10),
+//                                         softWrap: true,
+//                                         overflow: TextOverflow.ellipsis,
+//                                       ),
+//                                       YBox(kPadding),
+//                                       Row(
+//                                         children: [
+//                                           Text(
+//                                             "₦",
+// >>>>>>> c506512 (fix)
                                             softWrap: true,
                                             style: textTheme.displayLarge!
                                                 .copyWith(
@@ -238,45 +322,143 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
                                             overflow: TextOverflow.ellipsis,
                                           ),
                                         ),
-                                      ],
-                                    )
-                                  ],
-                                )),
-                                InkWellNoShadow(
-                                  onTap: () {
-                                    setState(() {
-                                      productList.add(
-                                        Product(
-                                            id: searchResult[index].id!,
-                                            name: searchResult[index].name!,
-                                            quantity: 1,
-                                            categoryName: categoryName!.name,
-                                            price: searchResult[index].price,
-                                            thumbnailUrl: searchResult[index]
-                                                .thumbnailUrl),
-                                      );
+// <<<<<<< HEAD
+//                                         ),
+//                                       ],
+//                                     )
+//                                   ],
+//                                 )),
+//                                 InkWellNoShadow(
+//                                   onTap: () {
+//                                     setState(() {
+//                                       productList.add(
+//                                         Product(
+//                                             id: searchResult[index].id!,
+//                                             name: searchResult[index].name!,
+//                                             quantity: 1,
+//                                             categoryName: categoryName!.name,
+//                                             price: searchResult[index].price,
+//                                             thumbnailUrl: searchResult[index]
+//                                                 .thumbnailUrl),
+//                                       );
+//
+//                                       overlayEntry?.remove();
+//                                       overlaySearchEntry?.remove();
+//                                       overlayEntry = null;
+//                                       overlaySearchEntry = null;
+//                                     });
+//                                   },
+//                                   child: Container(
+//                                     padding: const EdgeInsets.symmetric(
+//                                         horizontal: 12, vertical: 8),
+//                                     decoration: BoxDecoration(
+//                                         borderRadius: BorderRadius.circular(
+//                                             kMicroPadding),
+//                                         border: Border.all(
+//                                             color: kLightAsh50, width: 1.5)),
+//                                     child: Text(
+//                                       addList,
+//                                       style: textTheme.displayLarge!.copyWith(
+//                                           color: kGrey600, fontSize: 14),
+// =======
+                                          Padding(
+                                            padding:
+                                                const EdgeInsets.only(top: 8),
+                                            child: Text(
+                                              searchResult[index].price ?? "0",
+                                              softWrap: true,
+                                              style: textTheme.displayLarge!
+                                                  .copyWith(
+                                                fontSize: 10,
+                                              ),
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ),
+                                        ],
+                                      )
+                                    ],
+                                  )),
+                                  InkWellNoShadow(
+                                    onTap: () {
+                                      if (productList.isEmpty) {
+                                        setState(() {
+                                          productList.add(
+                                            Product(
+                                                id: searchResult[index].id!,
+                                                name: searchResult[index].name!,
+                                                quantity: 1,
+                                                categoryName:
+                                                    categoryName!.name,
+                                                bandId:
+                                                    searchResult[index].bandId!,
+                                                price:
+                                                    searchResult[index].price,
+                                                thumbnailUrl:
+                                                    searchResult[index]
+                                                        .thumbnailUrl),
+                                          );
 
-                                      overlayEntry?.remove();
-                                      overlaySearchEntry?.remove();
-                                      overlayEntry = null;
-                                      overlaySearchEntry = null;
-                                    });
-                                  },
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 12, vertical: 8),
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(
-                                            kMicroPadding),
-                                        border: Border.all(
-                                            color: kLightAsh50, width: 1.5)),
-                                    child: Text(
-                                      addList,
-                                      style: textTheme.displayLarge!.copyWith(
-                                          color: kGrey600, fontSize: 14),
+                                          overlayEntry?.remove();
+                                          overlaySearchEntry?.remove();
+                                          overlayEntry = null;
+                                          overlaySearchEntry = null;
+                                        });
+                                      } else {
+                                        if (productList.first.bandId ==
+                                            searchResult[index].bandId) {
+                                          setState(() {
+                                            productList.add(
+                                              Product(
+                                                  id: searchResult[index].id!,
+                                                  name:
+                                                      searchResult[index].name!,
+                                                  quantity: 1,
+                                                  categoryName:
+                                                      categoryName!.name,
+                                                  bandId: searchResult[index]
+                                                      .bandId,
+                                                  price:
+                                                      searchResult[index].price,
+                                                  thumbnailUrl:
+                                                      searchResult[index]
+                                                          .thumbnailUrl),
+                                            );
+
+                                            overlayEntry?.remove();
+                                            overlaySearchEntry?.remove();
+                                            overlayEntry = null;
+                                            overlaySearchEntry = null;
+                                          });
+                                        } else {
+                                          showErrorBar(context,
+                                              "This item is in a category that needs to be ordered and delivered separately.",
+                                              duration:
+                                                  const Duration(seconds: 4));
+                                          setState(() {
+                                            overlayEntry?.remove();
+                                            overlaySearchEntry?.remove();
+                                            overlayEntry = null;
+                                            overlaySearchEntry = null;
+                                          });
+                                        }
+                                      }
+                                    },
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 12, vertical: 8),
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(
+                                              kMicroPadding),
+                                          border: Border.all(
+                                              color: kLightAsh50, width: 1.5)),
+                                      child: Text(
+                                        addList,
+                                        style: textTheme.displayLarge!.copyWith(
+                                            color: kGrey600, fontSize: 14),
+                                      ),
+// >>>>>>> c506512 (fix)
                                     ),
                                   ),
-                                )
                               ],
                             ),
                             YBox(kSmallPadding),
@@ -363,7 +545,7 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
                           ),
                           YBox(kRegularPadding),
                           Text(
-                            "$minOrder₦${widget.menuItems.band!.minimum}",
+                            "$minOrder₦${categoryName!.band!.minimum}",
                             style: textTheme.headlineMedium!
                                 .copyWith(color: kOrange500),
                           ),
@@ -388,7 +570,7 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
                                     }
                                   : () {
                                       if (double.parse(
-                                              widget.menuItems.band!.minimum!) >
+                                          categoryName!.band!.minimum!) >
                                           double.parse((productList.fold<int>(0,
                                               (previousValue, element) {
                                             return (previousValue +
@@ -399,7 +581,7 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
                                                     element.quantity!));
                                           }).toString()))) {
                                         showErrorBar(context,
-                                            "The minimum order is ₦${widget.menuItems.band!.minimum}");
+                                            "The minimum order is ₦${categoryName!.band!.minimum}");
                                       } else {
                                         overlayEntry?.remove();
                                         overlaySearchEntry?.remove();
@@ -408,8 +590,8 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
                                         pushTo(
                                           CheckOut(
                                             productList: productList,
-                                            band: widget.menuItems.band,
-                                            tax: widget.menuItems.tax,
+                                            band: categoryName!.band,
+                                            tax: categoryName!.tax,
                                           ),
                                         );
                                       }
@@ -441,7 +623,7 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
                         ),
                         YBox(kRegularPadding),
                         Text(
-                          "$minOrder₦${widget.menuItems.band!.minimum}",
+                          "$minOrder₦${categoryName!.band!.minimum}",
                           style: textTheme.headlineMedium!
                               .copyWith(color: kOrange500),
                         ),
@@ -466,7 +648,7 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
                                   }
                                 : () {
                                     if (double.parse(
-                                            widget.menuItems.band!.minimum!) >
+                                        categoryName!.band!.minimum!) >
                                         double.parse((productList.fold<int>(0,
                                             (previousValue, element) {
                                           return (previousValue +
@@ -477,7 +659,7 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
                                                   element.quantity!));
                                         }).toString()))) {
                                       showErrorBar(context,
-                                          "The minimum order is ₦${widget.menuItems.band!.minimum}");
+                                          "The minimum order is ₦${categoryName!.band!.minimum}");
                                     } else {
                                       overlayEntry?.remove();
                                       overlaySearchEntry?.remove();
@@ -486,8 +668,8 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
                                       pushTo(
                                         CheckOut(
                                           productList: productList,
-                                          band: widget.menuItems.band,
-                                          tax: widget.menuItems.tax,
+                                          band: categoryName!.band,
+                                          tax: categoryName!.tax,
                                         ),
                                       );
                                     }
@@ -588,18 +770,18 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
                                       decoration: const BoxDecoration(
                                           shape: BoxShape.circle,
                                           color: kPrimaryWhite),
-                                      child: widget.menuItems.thumbnail!
+                                      child: categoryName!.thumbnail!
                                                   .split(".")
                                                   .last ==
                                               "svg"
                                           ? SvgPicture.network(
-                                              widget.menuItems.thumbnail ?? "",
+                                        categoryName!.thumbnail ?? "",
                                               fit: BoxFit.scaleDown,
                                               height: kRegularPadding,
                                               width: kRegularPadding,
                                             )
                                           : Image.network(
-                                              widget.menuItems.thumbnail ?? "",
+                                        categoryName!.thumbnail ?? "",
                                               height: kRegularPadding,
                                               width: kRegularPadding,
                                             ),
@@ -832,7 +1014,7 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
                                       shape: BoxShape.circle,
                                       color: kPrimaryWhite),
                                   child: SvgPicture.network(
-                                    widget.menuItems.thumbnail ?? "",
+                                    categoryName!.thumbnail ?? "",
                                     fit: BoxFit.scaleDown,
                                     height: kRegularPadding,
                                     width: kRegularPadding,

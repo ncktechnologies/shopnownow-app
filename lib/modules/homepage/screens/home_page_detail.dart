@@ -270,7 +270,7 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
                                       overlaySearchEntry = null;
                                     });
                                   }else{
-                                    showErrorBar(context, "This Category does not have the same Band as the previous category and can't be added to list.");
+                                    showErrorBar(context, "This item is in a category that needs to be ordered and delivered separately.", duration: const Duration(seconds: 4));
                                     setState(() {
                                       overlayEntry?.remove();
                                       overlaySearchEntry?.remove();

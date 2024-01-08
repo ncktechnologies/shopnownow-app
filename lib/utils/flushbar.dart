@@ -5,7 +5,7 @@ import 'package:shopnownow/modules/reuseables/size_boxes.dart';
 import 'package:shopnownow/utils/constants.dart';
 
 /// Redesign or replace your flushbar design here
-void showErrorBar(BuildContext context, String? value) {
+void showErrorBar(BuildContext context, String? value, {Duration duration = const Duration(seconds: 2)}) {
   if (value != null) {
     Flushbar(
       message: value,
@@ -28,7 +28,7 @@ void showErrorBar(BuildContext context, String? value) {
       ),
       margin: const EdgeInsets.all(20),
       padding: const EdgeInsets.only(left: 15, right: 20, top: 15, bottom: 15),
-      duration: const Duration(seconds: 2),
+      duration: duration,
     ).show(context);
   }
 }

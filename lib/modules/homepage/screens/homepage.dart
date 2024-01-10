@@ -94,6 +94,7 @@ class _HomePageState extends ConsumerState<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    print(categories);
     return InitialPage(
         noScroll: true,
         noIcon: true,
@@ -154,25 +155,27 @@ class _HomePageState extends ConsumerState<HomePage> {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          Align(
-                                              alignment: Alignment.topRight,
-                                              child: categories[index]
-                                                          .thumbnail!
-                                                          .split(".")
-                                                          .last ==
-                                                      "svg"
-                                                  ? SvgPicture.network(
-                                                      categories[index]
-                                                          .thumbnail!,
-                                                      height: 40,
-                                                      width: 40,
-                                                    )
-                                                  : Image.network(
-                                                      categories[index]
-                                                          .thumbnail!,
-                                                      height: kLargePadding,
-                                                      width: kLargePadding,
-                                                    )),
+                                          categories[index].thumbnail == null
+                                              ? YBox(0)
+                                              : Align(
+                                                  alignment: Alignment.topRight,
+                                                  child: categories[index]
+                                                              .thumbnail!
+                                                              .split(".")
+                                                              .last ==
+                                                          "svg"
+                                                      ? SvgPicture.network(
+                                                          categories[index]
+                                                              .thumbnail!,
+                                                          height: 40,
+                                                          width: 40,
+                                                        )
+                                                      : Image.network(
+                                                          categories[index]
+                                                              .thumbnail!,
+                                                          height: kLargePadding,
+                                                          width: kLargePadding,
+                                                        )),
                                           Text(
                                             categories[index].name ?? "",
                                             style: textTheme.displayLarge!,

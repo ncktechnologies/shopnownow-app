@@ -82,18 +82,20 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
                                   const EdgeInsets.only(bottom: kSmallPadding),
                               child: Row(
                                 children: [
-                                  e.thumbnail!.split(".").last == "svg"
-                                      ? SvgPicture.network(
-                                          e.thumbnail ?? "",
-                                          fit: BoxFit.scaleDown,
-                                          height: kMacroPadding,
-                                          width: kMacroPadding,
-                                        )
-                                      : Image.network(
-                                          e.thumbnail!,
-                                          height: kMacroPadding,
-                                          width: kMacroPadding,
-                                        ),
+                                  e.thumbnail == null
+                                      ? YBox(0)
+                                      : e.thumbnail!.split(".").last == "svg"
+                                          ? SvgPicture.network(
+                                              e.thumbnail ?? "",
+                                              fit: BoxFit.scaleDown,
+                                              height: kMacroPadding,
+                                              width: kMacroPadding,
+                                            )
+                                          : Image.network(
+                                              e.thumbnail!,
+                                              height: kMacroPadding,
+                                              width: kMacroPadding,
+                                            ),
                                   XBox(kSmallPadding),
                                   Text(
                                     e.name ?? "",
@@ -229,7 +231,7 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
                               )),
                               InkWellNoShadow(
                                 onTap: () {
-                                  if(productList.isEmpty){
+                                  if (productList.isEmpty) {
                                     setState(() {
                                       productList.add(
                                         Product(
@@ -248,38 +250,41 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
                                       overlayEntry = null;
                                       overlaySearchEntry = null;
                                     });
-                                  }else{
-                                  if (productList.first.bandId ==
-                                      searchResult[index].bandId) {
-                                    setState(() {
-                                      productList.add(
-                                        Product(
-                                            id: searchResult[index].id!,
-                                            name: searchResult[index].name!,
-                                            quantity: 1,
-                                            categoryName: categoryName!.name,
-                                            bandId: searchResult[index].bandId,
-                                            price: searchResult[index].price,
-                                            thumbnailUrl: searchResult[index]
-                                                .thumbnailUrl),
-                                      );
+                                  } else {
+                                    if (productList.first.bandId ==
+                                        searchResult[index].bandId) {
+                                      setState(() {
+                                        productList.add(
+                                          Product(
+                                              id: searchResult[index].id!,
+                                              name: searchResult[index].name!,
+                                              quantity: 1,
+                                              categoryName: categoryName!.name,
+                                              bandId:
+                                                  searchResult[index].bandId,
+                                              price: searchResult[index].price,
+                                              thumbnailUrl: searchResult[index]
+                                                  .thumbnailUrl),
+                                        );
 
-                                      overlayEntry?.remove();
-                                      overlaySearchEntry?.remove();
-                                      overlayEntry = null;
-                                      overlaySearchEntry = null;
-                                    });
-                                  }else{
-                                    showErrorBar(context, "This item is in a category that needs to be ordered and delivered separately.", duration: const Duration(seconds: 4));
-                                    setState(() {
-                                      overlayEntry?.remove();
-                                      overlaySearchEntry?.remove();
-                                      overlayEntry = null;
-                                      overlaySearchEntry = null;
-                                    });
-
+                                        overlayEntry?.remove();
+                                        overlaySearchEntry?.remove();
+                                        overlayEntry = null;
+                                        overlaySearchEntry = null;
+                                      });
+                                    } else {
+                                      showErrorBar(context,
+                                          "This item is in a category that needs to be ordered and delivered separately.",
+                                          duration: const Duration(seconds: 4));
+                                      setState(() {
+                                        overlayEntry?.remove();
+                                        overlaySearchEntry?.remove();
+                                        overlayEntry = null;
+                                        overlaySearchEntry = null;
+                                      });
+                                    }
                                   }
-                                }},
+                                },
                                 child: Container(
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 12, vertical: 8),
@@ -493,20 +498,32 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
                           borderRadius: BorderRadius.circular(kMacroPadding)),
                       child: Row(
                         children: [
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: Container(
-                              padding: const EdgeInsets.all(8),
-                              decoration: const BoxDecoration(
-                                  shape: BoxShape.circle, color: kPrimaryWhite),
-                              child: SvgPicture.network(
-                                categoryName!.thumbnail ?? "",
-                                fit: BoxFit.scaleDown,
-                                height: kRegularPadding,
-                                width: kRegularPadding,
-                              ),
-                            ),
-                          ),
+                          categoryName!.thumbnail == null
+                              ? YBox(0)
+                              : Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Container(
+                                    padding: const EdgeInsets.all(8),
+                                    decoration: const BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: kPrimaryWhite),
+                                    child: categoryName!.thumbnail!
+                                                .split(".")
+                                                .last ==
+                                            "svg"
+                                        ? SvgPicture.network(
+                                            categoryName!.thumbnail ?? "",
+                                            fit: BoxFit.scaleDown,
+                                            height: kRegularPadding,
+                                            width: kRegularPadding,
+                                          )
+                                        : Image.network(
+                                            categoryName!.thumbnail!,
+                                            height: kLargePadding,
+                                            width: kLargePadding,
+                                          ),
+                                  ),
+                                ),
                           Expanded(
                             child: Text(
                               categoryName?.name ?? "",
@@ -698,7 +715,6 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
             _searching = false;
           });
           for (var element in val) {
-
             setState(() {
               searchResult.add(element);
               if (searchResult.isNotEmpty) {

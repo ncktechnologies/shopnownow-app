@@ -83,6 +83,7 @@ class _CheckOutState extends ConsumerState<CheckOut> {
 
   @override
   Widget build(BuildContext context) {
+    print(widget.band!.bulkDiscountAmount);
     // print(double.parse(
     //     (int.parse(widget.tax!.replaceAll(".00", "")) / 100).toString()));
 
@@ -878,6 +879,8 @@ class _CheckOutState extends ConsumerState<CheckOut> {
                                           //     (double.parse(subTotalCalculation()) * double.parse((int.parse(widget.tax!.replaceAll(".00", "")) / 100).toString())))).toString()}"
                                           : "Pay ₦ ${double.parse(finalAmountToBePaid(subTotalCalculation())).toStringAsFixed(2).startsWith("-") ? double.parse(finalAmountToBePaid(subTotalCalculation())).toStringAsFixed(2).substring(1) : double.parse(finalAmountToBePaid(subTotalCalculation())).toStringAsFixed(2)}",
                                       onPressed: () {
+                                        print("final amount${finalAmountToBePaid(subTotalCalculation())}");
+                                        print("sub total calc ${subTotalCalculation()}");
                                         if (isChecked) {
                                           if (formKey.currentState!
                                               .validate()) {
@@ -931,8 +934,8 @@ class _CheckOutState extends ConsumerState<CheckOut> {
                                                       : emailController.text,
                                               deliveryFee: (double.parse(
                                                           subTotalCalculation()) >
-                                                      widget.band!
-                                                          .freeDeliveryThreshold!
+                                                      (widget.band!
+                                                          .freeDeliveryThreshold ?? 0)
                                                           .toDouble())
                                                   ? 0
                                                   : int.parse(_location!.price!
@@ -1042,9 +1045,9 @@ class _CheckOutState extends ConsumerState<CheckOut> {
           (totalAmount * (int.parse(widget.band!.generalDiscount!) / 100));
     }
 
-    if (totalAmount > int.parse(widget.band!.bulkDiscountAmount!)) {
+    if (totalAmount > int.parse(widget.band!.bulkDiscountAmount ?? "0")) {
       discount2 = (totalAmount *
-          (double.parse(widget.band!.bulkDiscountPercentage!) / 100));
+          (double.parse(widget.band!.bulkDiscountPercentage ?? "0") / 100));
     }
 
     subtotal = couponAmount > totalAmount
@@ -1056,7 +1059,8 @@ class _CheckOutState extends ConsumerState<CheckOut> {
   String finalAmountToBePaid(String subTotalPrice) {
     String amount = "0";
     if (double.parse(subTotalCalculation()) >
-        widget.band!.freeDeliveryThreshold!.toDouble()) {
+        (widget.band!.freeDeliveryThreshold ?? 0).toDouble()) {
+      print("it is greater");
       if (double.parse(SessionManager.getWallet()!.replaceAll(".00", "")) >
           double.parse(((double.parse(subTotalPrice) +
                   (double.parse(subTotalPrice) *
@@ -1065,6 +1069,7 @@ class _CheckOutState extends ConsumerState<CheckOut> {
                                   100)
                               .toString()))))
               .toStringAsFixed(2))) {
+        print("this is it");
         amount = "0";
       } else {
         amount = (double.parse(
@@ -1079,6 +1084,8 @@ class _CheckOutState extends ConsumerState<CheckOut> {
             .toStringAsFixed(2);
       }
     } else {
+      print("it is not greater");
+
       if (double.parse(SessionManager.getWallet()!.replaceAll(".00", "")) >
           double.parse(((double.parse(subTotalPrice) +
                   double.parse(_location!.price!) +

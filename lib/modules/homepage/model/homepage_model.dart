@@ -68,6 +68,11 @@ class GetCategories {
         "updated_at": updatedAt!.toIso8601String(),
         "band": band!.toJson(),
       };
+
+  @override
+  String toString() {
+    return 'GetCategories{id: $id, name: $name, tax: $tax, deliveryOption: $deliveryOption, discountOption: $discountOption, discountType: $discountType, discountValue: $discountValue, thumbnail: $thumbnail, hidden: $hidden, bandId: $bandId, createdAt: $createdAt, updatedAt: $updatedAt, band: $band}';
+  }
 }
 
 class Band {

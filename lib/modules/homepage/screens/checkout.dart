@@ -65,7 +65,7 @@ class _CheckOutState extends ConsumerState<CheckOut> {
             locationList.add(element);
           });
         }
-      });
+      }, id: widget.band!.id!);
       ref.read(getTimeSlotProvider.notifier).getTimeSlot(
           id: widget.band!.id!,
           then: (val) {

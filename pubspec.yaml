@@ -58,6 +58,8 @@ dependencies:
   firebase_analytics: ^10.7.4
   flutter_inappwebview: ^5.8.0
   flutter_paystack: ^1.0.7
+  flutter_holo_date_picker: ^1.1.0
+
 
 
 dev_dependencies:

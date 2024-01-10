@@ -1,8 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_holo_date_picker/flutter_holo_date_picker.dart';
 import 'package:flutter_paystack/flutter_paystack.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:shopnownow/app/helpers/session_manager.dart';
 import 'package:shopnownow/app/navigators/navigators.dart';
 import 'package:shopnownow/modules/homepage/model/homepage_model.dart';
@@ -43,6 +45,7 @@ class _CheckOutState extends ConsumerState<CheckOut> {
   TextEditingController phoneController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController addressController = TextEditingController();
+  TextEditingController dateController = TextEditingController();
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   var publicKey = 'pk_test_25e249297133695de0f477d314a9d2658c967446';
   final plugin = PaystackPlugin();
@@ -425,6 +428,34 @@ class _CheckOutState extends ConsumerState<CheckOut> {
                       ))
                   .toList(),
             ),
+            TextInputNoIcon(
+              text: scheduleDate,
+              hintText: selectDate,
+              read: true,
+              onTap: () async {
+                DateTime? datePicked =
+                await DatePicker.showSimpleDatePicker(
+                  context,
+                  initialDate:  DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day),
+                  firstDate:  DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day),
+                  lastDate: DateTime(3000, 12, 31),
+                  dateFormat: "dd-MMMM-yyyy",
+                  locale: DateTimePickerLocale.en_us,
+                  looping: true,
+                );
+                dateController.text =
+                    DateFormat("yyyy/dd/MM").format(datePicked!);
+              },
+              controller: dateController,
+              icon: const SizedBox(
+                  width: 40,
+                  child: Icon(
+                    weight: 3,
+                    Icons.calendar_today_outlined,
+                    color: kGrey100,
+                  )),
+            ),
+
             YBox(kLargePadding),
             Text(
               applyDiscount,
@@ -611,6 +642,7 @@ class _CheckOutState extends ConsumerState<CheckOut> {
                                                     orderRequest =
                                                     CreateOrderRequest(
                                                   products: request,
+                                                  scheduledDate: dateController.text,
                                                   discountApplied: int.parse(
                                                               subTotalCalculation()
                                                                   .replaceAll(
@@ -884,6 +916,7 @@ class _CheckOutState extends ConsumerState<CheckOut> {
                                             CreateOrderRequest orderRequest =
                                                 CreateOrderRequest(
                                               products: request,
+                                              scheduledDate: dateController.text,
                                               discountApplied: double.parse(
                                                           subTotalCalculation()) <
                                                       totalAmount.toDouble()
@@ -992,7 +1025,6 @@ class _CheckOutState extends ConsumerState<CheckOut> {
                                                                 paymentRequest:
                                                                     paymentRequest,
                                                                 then: (val) {
-                                                                  print("is there no message $val");
                                                                   pushToAndClearStack(
                                                                        HomePage(
                                                                         message: val

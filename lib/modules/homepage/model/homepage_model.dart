@@ -401,6 +401,7 @@ class CreateOrderRequest {
   int deliveryFee;
   String deliveryTimeSlot;
   int discountApplied;
+  String? scheduledDate;
 
   CreateOrderRequest(
       {this.userId,
@@ -410,6 +411,7 @@ class CreateOrderRequest {
       required this.status,
       required this.deliveryInfo,
       required this.paymentType,
+      this.scheduledDate,
       required this.recipientName,
       required this.recipientPhone,
       required this.recipientEmail,
@@ -426,6 +428,7 @@ class CreateOrderRequest {
         tax: json["tax"],
         status: json["status"],
         deliveryInfo: json["delivery_info"],
+        scheduledDate: json["scheduled_date"],
         discountApplied: json["discount_applied"],
         paymentType: json["payment_type"],
         recipientName: json["recipient_name"],
@@ -440,6 +443,7 @@ class CreateOrderRequest {
         "products": List<dynamic>.from(products.map((x) => x.toJson())),
         "price": price,
         "tax": tax,
+      if(scheduledDate != "") "scheduled_date": scheduledDate,
         "status": status,
         "delivery_info": deliveryInfo,
         "payment_type": paymentType,

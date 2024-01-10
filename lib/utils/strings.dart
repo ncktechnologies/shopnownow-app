@@ -85,6 +85,7 @@ String facebook = "Facebook";
 String checkout = "Checkout";
 String noProd = "No products found";
 String addItem = "Search and add item to list";
+String noSavedList = "No SavedList found";
 String addList = "Add to list";
 String yourItem = "Your items";
 String showLess = "Show less";

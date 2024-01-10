@@ -19,6 +19,12 @@ final addToListProvider =
   return AddToListNotifier();
 });
 
+final deleteSavedListProvider =
+StateNotifierProvider.family<DeleteSavedListNotifier, NotifierState<String>, int>((ref, id) {
+  return DeleteSavedListNotifier();
+});
+
+
 final getLocationsProvider =
     StateNotifierProvider<GetLocationsNotifier, NotifierState<GetLocation>>(
         (ref) {
@@ -199,6 +205,24 @@ class ProcessPaymentNotifier extends StateNotifier<NotifierState<String>> {
     }
   }
 }
+
+class DeleteSavedListNotifier extends StateNotifier<NotifierState<String>> {
+  DeleteSavedListNotifier() : super(const NotifierState());
+
+  void deleteSavedList(
+      {required int listId,
+        Function(String)? then,
+        Function(String?)? error}) async {
+    state = notifyLoading();
+    state = await HomePageRepository.deleteSavedList(listId: listId);
+    if (state.status == NotifierStatus.done) {
+      if (then != null) then(state.data!);
+    } else if (state.status == NotifierStatus.error) {
+      if (error != null) error(state.message);
+    }
+  }
+}
+
 
 class LoadCouponNotifier extends StateNotifier<NotifierState<String>> {
   LoadCouponNotifier() : super(const NotifierState());

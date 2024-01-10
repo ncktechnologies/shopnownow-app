@@ -17,6 +17,8 @@ import 'package:shopnownow/utils/flushbar.dart';
 import 'package:shopnownow/utils/strings.dart';
 import 'package:shopnownow/utils/text_field_comp.dart';
 import 'package:shopnownow/utils/widgets.dart';
+import 'package:intl/intl.dart';
+import 'package:flutter_holo_date_picker/flutter_holo_date_picker.dart';
 
 class CheckOut extends ConsumerStatefulWidget {
   final List<Product> productList;
@@ -43,6 +45,7 @@ class _CheckOutState extends ConsumerState<CheckOut> {
   TextEditingController phoneController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController addressController = TextEditingController();
+  TextEditingController dateController = TextEditingController();
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   TextEditingController couponController = TextEditingController();
   int totalAmount = 0;
@@ -432,6 +435,33 @@ class _CheckOutState extends ConsumerState<CheckOut> {
                       ))
                       .toList(),
                 ),
+                TextInputNoIcon(
+                  text: scheduleDate,
+                  hintText: selectDate,
+                  read: true,
+                  onTap: () async {
+                    DateTime? datePicked =
+                    await DatePicker.showSimpleDatePicker(
+                      context,
+                      initialDate:  DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day),
+                      firstDate:  DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day),
+                      lastDate: DateTime(3000, 12, 31),
+                      dateFormat: "dd-MMMM-yyyy",
+                      locale: DateTimePickerLocale.en_us,
+                      looping: true,
+                    );
+                    dateController.text =
+                        DateFormat("yyyy/dd/MM").format(datePicked!);
+                  },
+                  controller: dateController,
+                  icon: const SizedBox(
+                      width: 40,
+                      child: Icon(
+                        weight: 3,
+                        Icons.calendar_today_outlined,
+                        color: kGrey100,
+                      )),
+                ),
                 YBox(kLargePadding),
                 Text(
                   applyDiscount,
@@ -654,6 +684,7 @@ class _CheckOutState extends ConsumerState<CheckOut> {
                                           orderRequest =
                                           CreateOrderRequest(
                                             products: request,
+                                            scheduledDate: dateController.text,
                                             discountApplied: double.parse(
                                                 subTotalCalculation()) <
                                                 totalAmount.toDouble() ? 1 : 0,
@@ -705,6 +736,7 @@ class _CheckOutState extends ConsumerState<CheckOut> {
                                               .createOrder(
                                               orderRequest:
                                               orderRequest,
+
                                               then: (val) {
                                                 checkOut(
                                                     (double.parse(
@@ -969,6 +1001,7 @@ class _CheckOutState extends ConsumerState<CheckOut> {
                                           CreateOrderRequest orderRequest =
                                           CreateOrderRequest(
                                             products: request,
+                                            scheduledDate: dateController.text,
                                             discountApplied: double.parse(
                                                 subTotalCalculation()) <
                                                 totalAmount.toDouble() ? 1 : 0,
@@ -1095,7 +1128,7 @@ class _CheckOutState extends ConsumerState<CheckOut> {
                                                           .roundToDouble() *
                                                           100))
                                                           .toInt(),
-                                                      val["orderId"]);
+                                                      val["orderId"], paymentAmount:double.parse(finalAmountToBePaid(subTotalCalculation())).toString());
                                                 }
                                                 // "message" : data["message"],
                                                 // "orderId"
@@ -1210,7 +1243,7 @@ class _CheckOutState extends ConsumerState<CheckOut> {
     return amount;
   }
 
-  checkOut(int cost, int checkoutOrderId) async {
+  checkOut(int cost, int checkoutOrderId, {String? paymentAmount}) async {
     String email = (emailController.text.isEmpty)
         ? (SessionManager.getEmail() != null ? SessionManager.getEmail()! : '')
         : emailController.text;
@@ -1233,7 +1266,7 @@ class _CheckOutState extends ConsumerState<CheckOut> {
         debugPrint('successful payment');
         ProcessPaymentRequest paymentRequest = ProcessPaymentRequest(
             userId: SessionManager.getUserId(),
-            amount: (cost / 100).toString(),
+            amount: paymentAmount ?? (cost / 100).toString(),
             status: "successful",
             orderId: checkoutOrderId,
             reference: DateTime

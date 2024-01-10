@@ -396,6 +396,8 @@ class CreateOrderRequest {
   int deliveryFee;
   String deliveryTimeSlot;
   int discountApplied;
+  String? scheduledDate;
+
   CreateOrderRequest({
     this.userId,
     required this.products,
@@ -409,7 +411,8 @@ class CreateOrderRequest {
     required this.recipientEmail,
     required this.deliveryFee,
     required this.deliveryTimeSlot,
-    required this.discountApplied
+    required this.discountApplied,
+    this.scheduledDate,
   });
 
   factory CreateOrderRequest.fromJson(Map<String, dynamic> json) =>
@@ -425,6 +428,7 @@ class CreateOrderRequest {
         paymentType: json["payment_type"],
         recipientName: json["recipient_name"],
         recipientPhone: json["recipient_phone"],
+        scheduledDate: json["scheduled_date"],
         recipientEmail: json["recipient_email"],
         deliveryFee: json["delivery_fee"],
         deliveryTimeSlot: json["delivery_time_slot"],
@@ -435,6 +439,7 @@ class CreateOrderRequest {
         "products": List<dynamic>.from(products.map((x) => x.toJson())),
         "price": price,
         "tax": tax,
+    if(scheduledDate != "") "scheduled_date": scheduledDate,
         "status": status,
         "delivery_info": deliveryInfo,
         "payment_type": paymentType,

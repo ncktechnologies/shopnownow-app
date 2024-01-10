@@ -121,3 +121,5 @@ String verifyOtp = "Verify OTP";
 String resendOtp = "Resend OTP?";
 String createPassword = "Create password";
 String confirmPassword = "Confirmed Password";
+String scheduleDate = "Schedule date";
+String selectDate = "Select date";

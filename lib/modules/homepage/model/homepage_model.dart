@@ -178,9 +178,9 @@ class Product {
       this.thumbnailUrl,
       this.price,
       this.unitOfMeasurement,
-        this.bandId,
+      this.bandId,
       this.availability,
-        this.categoryName,
+      this.categoryName,
       this.categoryId,
       this.createdAt,
       this.updatedAt,
@@ -216,7 +216,7 @@ class Product {
         "category_id": categoryId,
         "created_at": createdAt!.toIso8601String(),
         "updated_at": updatedAt!.toIso8601String(),
-    "band_id" : bandId,
+        "band_id": bandId,
         "band": band!.toJson(),
         "category": category!.toJson(),
       };
@@ -400,21 +400,22 @@ class CreateOrderRequest {
   String recipientEmail;
   int deliveryFee;
   String deliveryTimeSlot;
+  int discountApplied;
 
-  CreateOrderRequest({
-    this.userId,
-    required this.products,
-    required this.price,
-    required this.tax,
-    required this.status,
-    required this.deliveryInfo,
-    required this.paymentType,
-    required this.recipientName,
-    required this.recipientPhone,
-    required this.recipientEmail,
-    required this.deliveryFee,
-    required this.deliveryTimeSlot,
-  });
+  CreateOrderRequest(
+      {this.userId,
+      required this.products,
+      required this.price,
+      required this.tax,
+      required this.status,
+      required this.deliveryInfo,
+      required this.paymentType,
+      required this.recipientName,
+      required this.recipientPhone,
+      required this.recipientEmail,
+      required this.deliveryFee,
+      required this.deliveryTimeSlot,
+      required this.discountApplied});
 
   factory CreateOrderRequest.fromJson(Map<String, dynamic> json) =>
       CreateOrderRequest(
@@ -425,6 +426,7 @@ class CreateOrderRequest {
         tax: json["tax"],
         status: json["status"],
         deliveryInfo: json["delivery_info"],
+        discountApplied: json["discount_applied"],
         paymentType: json["payment_type"],
         recipientName: json["recipient_name"],
         recipientPhone: json["recipient_phone"],
@@ -445,6 +447,7 @@ class CreateOrderRequest {
         "recipient_phone": recipientPhone,
         "recipient_email": recipientEmail,
         "delivery_fee": deliveryFee,
+        "discount_applied": discountApplied,
         "delivery_time_slot": deliveryTimeSlot,
       };
 }

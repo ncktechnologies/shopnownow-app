@@ -65,8 +65,8 @@ class HomePageRepository {
         .toNotifierState();
   }
 
-  static Future<NotifierState<GetLocation>> getLocations() async {
-    return (await ApiService<GetLocation>().getCall("/user/delivery-locations",
+  static Future<NotifierState<GetLocation>> getLocations(int id) async {
+    return (await ApiService<GetLocation>().getCall("/user/get-locations/$id",
             // hasToken: true,
             onReturn: (response) => logResponse(response),
             getDataFromResponse: (data) {

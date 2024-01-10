@@ -141,9 +141,9 @@ class GetLocationsNotifier extends StateNotifier<NotifierState<GetLocation>> {
   GetLocationsNotifier() : super(const NotifierState());
 
   void getLocations(
-      {Function(List<Location>)? then, Function(String?)? error}) async {
+      {required int id, Function(List<Location>)? then, Function(String?)? error}) async {
     state = notifyLoading();
-    state = await HomePageRepository.getLocations();
+    state = await HomePageRepository.getLocations(id);
     if (state.status == NotifierStatus.done) {
       if (then != null) then(state.data!.locations!);
     } else if (state.status == NotifierStatus.error) {

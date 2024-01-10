@@ -13,9 +13,12 @@ class SavedListNotifier extends StateNotifier<NotifierState<GetSavedList>> {
 
   void getSavedList(
       {Function()? then,
+        bool loading = true,
         bool noToken = false,
         Function(String?)? error}) async {
-    state = notifyLoading();
+    if(loading){
+      state = notifyLoading();
+    }
     state =
     await SavedListRepository.getSavedList();
     if (state.status == NotifierStatus.done) {

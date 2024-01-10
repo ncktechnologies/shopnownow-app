@@ -82,6 +82,7 @@ String instagram = "Instagram";
 String facebook = "Facebook";
 String checkout = "Checkout";
 String noProd = "No products found";
+String noSavedList = "No SavedList found";
 String addItem = "Search and add item to list";
 String addList = "Add to list";
 String yourItem = "Your items";

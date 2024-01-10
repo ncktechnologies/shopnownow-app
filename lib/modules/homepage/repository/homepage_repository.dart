@@ -50,6 +50,17 @@ class HomePageRepository {
         .toNotifierState();
   }
 
+  static Future<NotifierState<String>> deleteSavedList({required int listId }) async {
+    return (await ApiService<String>().deleteCall(
+        "/user/shopping_list/delete/$listId",
+        hasToken: true,
+        onReturn: (response) => logResponse(response),
+        getDataFromResponse: (data) {
+          return data["message"];
+        }))
+        .toNotifierState();
+  }
+
   static Future<NotifierState<GetLocation>> getLocations() async {
     return (await ApiService<GetLocation>().getCall(
         "/user/delivery-locations",

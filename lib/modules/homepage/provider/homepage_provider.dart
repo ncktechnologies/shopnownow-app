@@ -19,6 +19,11 @@ final addToListProvider =
   return AddToListNotifier();
 });
 
+final deleteSavedListProvider =
+    StateNotifierProvider.family<DeleteSavedListNotifier, NotifierState<String>, int>((ref, id) {
+  return DeleteSavedListNotifier();
+});
+
 final getLocationsProvider =
     StateNotifierProvider<GetLocationsNotifier, NotifierState<GetLocation>>(
         (ref) {
@@ -107,6 +112,23 @@ class AddToListNotifier extends StateNotifier<NotifierState<String>> {
       Function(String?)? error}) async {
     state = notifyLoading();
     state = await HomePageRepository.addToList(request: request);
+    if (state.status == NotifierStatus.done) {
+      if (then != null) then(state.data!);
+    } else if (state.status == NotifierStatus.error) {
+      if (error != null) error(state.message);
+    }
+  }
+}
+
+class DeleteSavedListNotifier extends StateNotifier<NotifierState<String>> {
+  DeleteSavedListNotifier() : super(const NotifierState());
+
+  void deleteSavedList(
+      {required int listId,
+      Function(String)? then,
+      Function(String?)? error}) async {
+    state = notifyLoading();
+    state = await HomePageRepository.deleteSavedList(listId: listId);
     if (state.status == NotifierStatus.done) {
       if (then != null) then(state.data!);
     } else if (state.status == NotifierStatus.error) {

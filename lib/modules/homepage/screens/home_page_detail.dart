@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:shopnownow/app/helpers/session_manager.dart';
 import 'package:shopnownow/app/navigators/navigators.dart';
 import 'package:shopnownow/modules/homepage/model/homepage_model.dart';
 import 'package:shopnownow/modules/homepage/provider/homepage_provider.dart';
@@ -605,6 +606,7 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
                                 fontSize: 14,
                               ),
                             ),
+                            SessionManager.getToken() == null ? YBox(0) :
                             Consumer(builder: (context, ref, _) {
                               var widget = InkWellNoShadow(
                                 onTap: () {

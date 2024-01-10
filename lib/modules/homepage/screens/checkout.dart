@@ -992,15 +992,11 @@ class _CheckOutState extends ConsumerState<CheckOut> {
                                                                 paymentRequest:
                                                                     paymentRequest,
                                                                 then: (val) {
-                                                                  showSuccessBar(
-                                                                      context,
-                                                                      val);
-                                                                  Future.delayed(const Duration(
-                                                                          seconds:
-                                                                              3))
-                                                                      .then((value) =>
-                                                                          pushToAndClearStack(
-                                                                              const HomePage()));
+                                                                  print("is there no message $val");
+                                                                  pushToAndClearStack(
+                                                                       HomePage(
+                                                                        message: val
+                                                                      ));
                                                                 });
                                                       } else {
                                                         checkOut(

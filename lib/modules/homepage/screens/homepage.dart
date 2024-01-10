@@ -18,14 +18,16 @@ import 'package:shopnownow/modules/reuseables/widgets.dart';
 import 'package:shopnownow/modules/wallet/provider/wallet_provider.dart';
 import 'package:shopnownow/utils/assets_path.dart';
 import 'package:shopnownow/utils/constants.dart';
+import 'package:shopnownow/utils/flushbar.dart';
 import 'package:shopnownow/utils/strings.dart';
 import 'package:shopnownow/utils/text_field_comp.dart';
 import 'package:shopnownow/utils/widgets.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   final bool? loggedIn;
+  final String? message;
 
-  const HomePage({Key? key, this.loggedIn = false}) : super(key: key);
+  const HomePage({Key? key, this.loggedIn = false, this.message}) : super(key: key);
 
   @override
   ConsumerState<HomePage> createState() => _HomePageState();
@@ -78,6 +80,7 @@ class _HomePageState extends ConsumerState<HomePage> {
     super.initState();
     getToken();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      widget.message == null ? null : showSuccessBar(context, widget.message);
       ref.read(getContactProvider.notifier).getContact();
       ref.read(getQuickGuideProvider.notifier).getQuickGuide();
       ref.read(getCategoriesProvider.notifier).getCategories(then: (val) {

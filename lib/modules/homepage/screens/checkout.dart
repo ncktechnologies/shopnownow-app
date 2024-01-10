@@ -1006,7 +1006,7 @@ class _CheckOutState extends ConsumerState<CheckOut> {
                                                                         .roundToDouble() *
                                                                     100))
                                                                 .toInt(),
-                                                            val["orderId"]);
+                                                            val["orderId"], paymentAmount:double.parse(finalAmountToBePaid(subTotalCalculation())).toString());
                                                       }
                                                     });
                                           }
@@ -1124,7 +1124,7 @@ class _CheckOutState extends ConsumerState<CheckOut> {
     return amount;
   }
 
-  checkOut(int cost, int checkoutOrderId) async {
+  checkOut(int cost, int checkoutOrderId, {String? paymentAmount}) async {
     String email = (emailController.text.isEmpty)
         ? (SessionManager.getEmail() != null ? SessionManager.getEmail()! : '')
         : emailController.text;
@@ -1140,7 +1140,7 @@ class _CheckOutState extends ConsumerState<CheckOut> {
     if (response.status) {
       ProcessPaymentRequest paymentRequest = ProcessPaymentRequest(
         userId: SessionManager.getUserId(),
-        amount: (cost / 100).toString(),
+        amount: paymentAmount ?? (cost / 100).toString(),
         status: "successful",
         orderId: checkoutOrderId,
         reference: response.reference!,

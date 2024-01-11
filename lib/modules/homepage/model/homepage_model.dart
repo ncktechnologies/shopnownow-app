@@ -397,9 +397,11 @@ class CreateOrderRequest {
   String deliveryTimeSlot;
   int discountApplied;
   String? scheduledDate;
+  String? couponCode;
 
   CreateOrderRequest({
     this.userId,
+    this.couponCode,
     required this.products,
     required this.price,
     required this.tax,
@@ -423,6 +425,7 @@ class CreateOrderRequest {
         price: json["price"],
         tax: json["tax"],
         status: json["status"],
+        couponCode: json["coupon_code"],
         discountApplied: json["discount_applied"],
         deliveryInfo: json["delivery_info"],
         paymentType: json["payment_type"],
@@ -440,6 +443,7 @@ class CreateOrderRequest {
         "price": price,
         "tax": tax,
     if(scheduledDate != "") "scheduled_date": scheduledDate,
+    if(couponCode != "") "coupon_code": couponCode,
         "status": status,
         "delivery_info": deliveryInfo,
         "payment_type": paymentType,

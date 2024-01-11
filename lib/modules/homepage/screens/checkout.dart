@@ -684,6 +684,7 @@ class _CheckOutState extends ConsumerState<CheckOut> {
                                           orderRequest =
                                           CreateOrderRequest(
                                             products: request,
+                                            couponCode: couponController.text,
                                             scheduledDate: dateController.text,
                                             discountApplied: double.parse(
                                                 subTotalCalculation()) <
@@ -1002,6 +1003,7 @@ class _CheckOutState extends ConsumerState<CheckOut> {
                                           CreateOrderRequest(
                                             products: request,
                                             scheduledDate: dateController.text,
+                                            couponCode: couponController.text,
                                             discountApplied: double.parse(
                                                 subTotalCalculation()) <
                                                 totalAmount.toDouble() ? 1 : 0,

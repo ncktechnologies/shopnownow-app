@@ -402,6 +402,7 @@ class CreateOrderRequest {
   String deliveryTimeSlot;
   int discountApplied;
   String? scheduledDate;
+  String? couponCode;
 
   CreateOrderRequest(
       {this.userId,
@@ -417,6 +418,7 @@ class CreateOrderRequest {
       required this.recipientEmail,
       required this.deliveryFee,
       required this.deliveryTimeSlot,
+        this.couponCode,
       required this.discountApplied});
 
   factory CreateOrderRequest.fromJson(Map<String, dynamic> json) =>
@@ -426,6 +428,7 @@ class CreateOrderRequest {
             json["products"].map((x) => ProductRequest.fromJson(x))),
         price: json["price"],
         tax: json["tax"],
+        couponCode: json["coupon_code"],
         status: json["status"],
         deliveryInfo: json["delivery_info"],
         scheduledDate: json["scheduled_date"],
@@ -444,6 +447,7 @@ class CreateOrderRequest {
         "price": price,
         "tax": tax,
       if(scheduledDate != "") "scheduled_date": scheduledDate,
+      if(couponCode != "") "coupon_code": couponCode,
         "status": status,
         "delivery_info": deliveryInfo,
         "payment_type": paymentType,

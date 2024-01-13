@@ -47,7 +47,7 @@ class _CheckOutState extends ConsumerState<CheckOut> {
   TextEditingController addressController = TextEditingController();
   TextEditingController dateController = TextEditingController();
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  var publicKey = 'pk_test_25e249297133695de0f477d314a9d2658c967446';
+  var publicKey = 'pk_live_5cd36a8da973af18baaa38ffaa526e4427f16c2d';
   final plugin = PaystackPlugin();
   TextEditingController couponController = TextEditingController();
   int totalAmount = 0;

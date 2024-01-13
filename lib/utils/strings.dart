@@ -1,7 +1,9 @@
 String imgPath = "assets/images/";
 String iconPath = "assets/icons/";
-String publicKey = "pk_test_25e249297133695de0f477d314a9d2658c967446";
-String secretKey = "sk_test_7f97db22564ed0d9bc71225f4629c0ee971e2942";
+String publicKeyTest = "pk_test_25e249297133695de0f477d314a9d2658c967446";
+String secretKeyTest = "sk_test_7f97db22564ed0d9bc71225f4629c0ee971e2942";
+String publicKey = "pk_live_5cd36a8da973af18baaa38ffaa526e4427f16c2d";
+String secretKey = "sk_live_ef1c56274b548d4fa931ba9dfd02ec5aec862443";
 String searchText = "What are you looking for?";
 String searchCategoryText = "Please choose a category";
 String groceries = "Groceries";

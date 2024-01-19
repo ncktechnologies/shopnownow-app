@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_holo_date_picker/flutter_holo_date_picker.dart';
@@ -19,6 +20,7 @@ import 'package:shopnownow/utils/flushbar.dart';
 import 'package:shopnownow/utils/strings.dart';
 import 'package:shopnownow/utils/text_field_comp.dart';
 import 'package:shopnownow/utils/widgets.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class CheckOut extends ConsumerStatefulWidget {
   final List<Product> productList;
@@ -433,11 +435,12 @@ class _CheckOutState extends ConsumerState<CheckOut> {
               hintText: selectDate,
               read: true,
               onTap: () async {
-                DateTime? datePicked =
-                await DatePicker.showSimpleDatePicker(
+                DateTime? datePicked = await DatePicker.showSimpleDatePicker(
                   context,
-                  initialDate:  DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day),
-                  firstDate:  DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day),
+                  initialDate: DateTime(DateTime.now().year,
+                      DateTime.now().month, DateTime.now().day),
+                  firstDate: DateTime(DateTime.now().year, DateTime.now().month,
+                      DateTime.now().day),
                   lastDate: DateTime(3000, 12, 31),
                   dateFormat: "dd-MMMM-yyyy",
                   locale: DateTimePickerLocale.en_us,
@@ -455,7 +458,6 @@ class _CheckOutState extends ConsumerState<CheckOut> {
                     color: kGrey100,
                   )),
             ),
-
             YBox(kLargePadding),
             Text(
               applyDiscount,
@@ -595,12 +597,23 @@ class _CheckOutState extends ConsumerState<CheckOut> {
                                   ),
                                   children: [
                                     TextSpan(
-                                        text: terms,
-                                        style: textTheme.headlineMedium!
-                                            .copyWith(
-                                                color: kPrimaryColor,
-                                                decoration:
-                                                    TextDecoration.underline)),
+                                      text: terms,
+                                      style: textTheme.headlineMedium!.copyWith(
+                                        color: kPrimaryColor,
+                                        decoration: TextDecoration.underline,
+                                      ),
+                                      recognizer: TapGestureRecognizer()
+                                        ..onTap = () async {
+                                          const url =
+                                              'https://api.shopnownow.co/terms-and-conditions';
+                                          if (await canLaunchUrl(
+                                              Uri.parse(url))) {
+                                            await launchUrl(Uri.parse(url));
+                                          } else {
+                                            throw 'Could not launch $url';
+                                          }
+                                        },
+                                    ),
                                   ],
                                 ),
                               ),
@@ -611,126 +624,123 @@ class _CheckOutState extends ConsumerState<CheckOut> {
                       YBox(kMacroPadding),
                       Consumer(builder: (context, ref, _) {
                         return ref.watch(processPaymentProvider).when(
-                            done:
-                                (data) => Consumer(builder: (context, ref, _) {
-                                      var buttonWidget = LargeButton(
-                                          title: _location == null
+                            done: (data) =>
+                                Consumer(builder: (context, ref, _) {
+                                  var buttonWidget = LargeButton(
+                                      title: _location == null
+                                          ? "Pay ₦ ${((double.parse(subTotalCalculation()) + (double.parse(subTotalCalculation()) * double.parse((double.parse(widget.tax!.replaceAll(".00", "")) / 100).toString())))).toStringAsFixed(2)}"
+                                          : (double.parse(
+                                                      subTotalCalculation()) >
+                                                  widget.band!
+                                                      .freeDeliveryThreshold!
+                                                      .toDouble())
                                               ? "Pay ₦ ${((double.parse(subTotalCalculation()) + (double.parse(subTotalCalculation()) * double.parse((double.parse(widget.tax!.replaceAll(".00", "")) / 100).toString())))).toStringAsFixed(2)}"
-                                              : (double.parse(
-                                                          subTotalCalculation()) >
-                                                      widget.band!
-                                                          .freeDeliveryThreshold!
-                                                          .toDouble())
-                                                  ? "Pay ₦ ${((double.parse(subTotalCalculation()) + (double.parse(subTotalCalculation()) * double.parse((double.parse(widget.tax!.replaceAll(".00", "")) / 100).toString())))).toStringAsFixed(2)}"
-                                                  : "Pay ₦ ${((double.parse(subTotalCalculation()) + double.parse(_location!.price!) + (double.parse(subTotalCalculation()) * double.parse((double.parse(widget.tax!.replaceAll(".00", "")) / 100).toString())))).toStringAsFixed(2)}",
-                                          onPressed: () {
-                                            if (isChecked) {
-                                              if (formKey.currentState!
-                                                  .validate()) {
-                                                List<ProductRequest> request =
-                                                    [];
-                                                for (var element
-                                                    in widget.productList) {
-                                                  setState(() {
-                                                    request.add(ProductRequest(
-                                                        id: element.id!,
-                                                        quantity:
-                                                            element.quantity!));
-                                                  });
-                                                }
-                                                CreateOrderRequest
-                                                    orderRequest =
-                                                    CreateOrderRequest(
-                                                  products: request,
-                                                  scheduledDate: dateController.text,
-                                                  couponCode: couponController.text,
-                                                  discountApplied: int.parse(
-                                                              subTotalCalculation()
-                                                                  .replaceAll(
-                                                                      ".00",
-                                                                      "")) <
-                                                          totalAmount
-                                                      ? 1
-                                                      : 0,
-                                                  userId: 0,
-                                                  price: (double.parse(
-                                                          subTotalCalculation())
-                                                      .toInt()),
-                                                  tax: (double.parse(
-                                                              subTotalCalculation()) *
-                                                          double.parse((double.parse(widget
+                                              : "Pay ₦ ${((double.parse(subTotalCalculation()) + double.parse(_location!.price!) + (double.parse(subTotalCalculation()) * double.parse((double.parse(widget.tax!.replaceAll(".00", "")) / 100).toString())))).toStringAsFixed(2)}",
+                                      onPressed: () {
+                                        if (isChecked) {
+                                          if (formKey.currentState!
+                                              .validate()) {
+                                            List<ProductRequest> request = [];
+                                            for (var element
+                                                in widget.productList) {
+                                              setState(() {
+                                                request.add(ProductRequest(
+                                                    id: element.id!,
+                                                    quantity:
+                                                        element.quantity!));
+                                              });
+                                            }
+                                            CreateOrderRequest orderRequest =
+                                                CreateOrderRequest(
+                                              products: request,
+                                              scheduledDate:
+                                                  dateController.text,
+                                              couponCode: couponController.text,
+                                              discountApplied: int.parse(
+                                                          subTotalCalculation()
+                                                              .replaceAll(
+                                                                  ".00", "")) <
+                                                      totalAmount
+                                                  ? 1
+                                                  : 0,
+                                              userId: 0,
+                                              price: (double.parse(
+                                                      subTotalCalculation())
+                                                  .toInt()),
+                                              tax: (double.parse(
+                                                          subTotalCalculation()) *
+                                                      double.parse(
+                                                          (double.parse(widget
                                                                       .tax!
                                                                       .replaceAll(
                                                                           ".00",
                                                                           "")) /
                                                                   100)
                                                               .toString()))
-                                                      .toInt(),
-                                                  status: "pending",
-                                                  deliveryInfo:
-                                                      addressController.text,
-                                                  paymentType: "card",
-                                                  recipientName:
-                                                      nameController.text,
-                                                  recipientPhone:
-                                                      phoneController.text,
-                                                  recipientEmail: SessionManager
-                                                              .getEmail() !=
-                                                          null
-                                                      ? SessionManager
-                                                          .getEmail()!
-                                                      : emailController.text,
-                                                  deliveryFee: (double.parse(
-                                                              subTotalCalculation()) >
-                                                          widget.band!
-                                                              .freeDeliveryThreshold!
-                                                              .toDouble())
-                                                      ? 0
-                                                      : int.parse(_location!
-                                                          .price!
-                                                          .replaceAll(
-                                                              ".00", "")),
-                                                  deliveryTimeSlot:
-                                                      timeSlot!.deliveryTime!,
-                                                );
-                                                ref
-                                                    .read(createOrderProvider
-                                                        .notifier)
-                                                    .createOrder(
-                                                        orderRequest:
-                                                            orderRequest,
-                                                        then: (val) {
-                                                          checkOut(
-                                                              (double.parse(
-                                                                          subTotalCalculation()) >
-                                                                      widget
-                                                                          .band!
-                                                                          .freeDeliveryThreshold!
-                                                                          .toDouble())
-                                                                  ? ((double.parse(subTotalCalculation()) + (double.parse(subTotalCalculation()) * double.parse((double.parse(widget.tax!.replaceAll(".00", "")) / 100).toString()))) *
-                                                                          100)
-                                                                      .toInt()
-                                                                  : ((double.parse(subTotalCalculation()) +
-                                                                              double.parse(_location!.price!) +
-                                                                              (double.parse(subTotalCalculation()) * double.parse((double.parse(widget.tax!.replaceAll(".00", "")) / 100).toString()))) *
-                                                                          100)
-                                                                      .toInt(),
-                                                              val["orderId"]);
-                                                        });
-                                              }
-                                            } else {
-                                              showErrorBar(context,
-                                                  "Please accept the terms and conditions");
-                                            }
-                                          });
-                                      return ref
-                                          .watch(createOrderProvider)
-                                          .when(
-                                            done: (data) => buttonWidget,
-                                            error: (val) => buttonWidget,
-                                            loading: () => const SpinKitDemo(),
-                                          );
-                                    }),
+                                                  .toInt(),
+                                              status: "pending",
+                                              deliveryInfo:
+                                                  addressController.text,
+                                              paymentType: "card",
+                                              recipientName:
+                                                  nameController.text,
+                                              recipientPhone:
+                                                  phoneController.text,
+                                              recipientEmail: SessionManager
+                                                          .getEmail() !=
+                                                      null
+                                                  ? SessionManager.getEmail()!
+                                                  : emailController.text,
+                                              deliveryFee: (double.parse(
+                                                          subTotalCalculation()) >
+                                                      widget.band!
+                                                          .freeDeliveryThreshold!
+                                                          .toDouble())
+                                                  ? 0
+                                                  : int.parse(_location!.price!
+                                                      .replaceAll(".00", "")),
+                                              deliveryTimeSlot:
+                                                  timeSlot!.deliveryTime!,
+                                            );
+                                            ref
+                                                .read(createOrderProvider
+                                                    .notifier)
+                                                .createOrder(
+                                                    orderRequest: orderRequest,
+                                                    then: (val) {
+                                                      checkOut(
+                                                          (double.parse(
+                                                                      subTotalCalculation()) >
+                                                                  widget.band!
+                                                                      .freeDeliveryThreshold!
+                                                                      .toDouble())
+                                                              ? ((double.parse(subTotalCalculation()) +
+                                                                          (double.parse(subTotalCalculation()) *
+                                                                              double.parse((double.parse(widget.tax!.replaceAll(".00", "")) / 100)
+                                                                                  .toString()))) *
+                                                                      100)
+                                                                  .toInt()
+                                                              : ((double.parse(subTotalCalculation()) +
+                                                                          double.parse(_location!
+                                                                              .price!) +
+                                                                          (double.parse(subTotalCalculation()) *
+                                                                              double.parse((double.parse(widget.tax!.replaceAll(".00", "")) / 100).toString()))) *
+                                                                      100)
+                                                                  .toInt(),
+                                                          val["orderId"]);
+                                                    });
+                                          }
+                                        } else {
+                                          showErrorBar(context,
+                                              "Please accept the terms and conditions");
+                                        }
+                                      });
+                                  return ref.watch(createOrderProvider).when(
+                                        done: (data) => buttonWidget,
+                                        error: (val) => buttonWidget,
+                                        loading: () => const SpinKitDemo(),
+                                      );
+                                }),
                             loading: () => const SpinKitDemo());
                       }),
                       YBox(kRegularPadding),
@@ -878,12 +888,23 @@ class _CheckOutState extends ConsumerState<CheckOut> {
                                   ),
                                   children: [
                                     TextSpan(
-                                        text: terms,
-                                        style: textTheme.headlineMedium!
-                                            .copyWith(
-                                                color: kPrimaryColor,
-                                                decoration:
-                                                    TextDecoration.underline)),
+                                      text: terms,
+                                      style: textTheme.headlineMedium!.copyWith(
+                                        color: kPrimaryColor,
+                                        decoration: TextDecoration.underline,
+                                      ),
+                                      recognizer: TapGestureRecognizer()
+                                        ..onTap = () async {
+                                          const url =
+                                              'https://api.shopnownow.co/terms-and-conditions';
+                                          if (await canLaunchUrl(
+                                              Uri.parse(url))) {
+                                            await launchUrl(Uri.parse(url));
+                                          } else {
+                                            throw 'Could not launch $url';
+                                          }
+                                        },
+                                    ),
                                   ],
                                 ),
                               ),
@@ -917,9 +938,10 @@ class _CheckOutState extends ConsumerState<CheckOut> {
                                             CreateOrderRequest orderRequest =
                                                 CreateOrderRequest(
                                               products: request,
-                                              scheduledDate: dateController.text,
-                                                  couponCode: couponController.text,
-                                                  discountApplied: double.parse(
+                                              scheduledDate:
+                                                  dateController.text,
+                                              couponCode: couponController.text,
+                                              discountApplied: double.parse(
                                                           subTotalCalculation()) <
                                                       totalAmount.toDouble()
                                                   ? 1
@@ -1028,9 +1050,9 @@ class _CheckOutState extends ConsumerState<CheckOut> {
                                                                     paymentRequest,
                                                                 then: (val) {
                                                                   pushToAndClearStack(
-                                                                       HomePage(
-                                                                        message: val
-                                                                      ));
+                                                                      HomePage(
+                                                                          message:
+                                                                              val));
                                                                 });
                                                       } else {
                                                         checkOut(
@@ -1040,7 +1062,11 @@ class _CheckOutState extends ConsumerState<CheckOut> {
                                                                         .roundToDouble() *
                                                                     100))
                                                                 .toInt(),
-                                                            val["orderId"], paymentAmount:double.parse(finalAmountToBePaid(subTotalCalculation())).toString());
+                                                            val["orderId"],
+                                                            paymentAmount: double.parse(
+                                                                    finalAmountToBePaid(
+                                                                        subTotalCalculation()))
+                                                                .toString());
                                                       }
                                                     });
                                           }

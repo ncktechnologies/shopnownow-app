@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:photo_view/photo_view.dart';
 import 'package:shopnownow/app/navigators/navigators.dart';
 import 'package:shopnownow/modules/homepage/model/homepage_model.dart';
 import 'package:shopnownow/modules/homepage/provider/homepage_provider.dart';
@@ -1255,25 +1256,42 @@ class _HomeCartListState extends State<HomeCartList> {
       children: [
         Row(
           children: [
-            CachedNetworkImage(
-              height: 105,
-              width: 108,
-              imageUrl: widget.product.thumbnailUrl ??
-                  "https://us.123rf.com/450wm/mathier/mathier1905/mathier190500002/mathier190500002-no-thumbnail-image-placeholder-for-forums-blogs-and-websites.jpg?ver=6",
-              fit: BoxFit.cover,
-              imageBuilder: (context, prov) {
-                return Container(
-                  decoration: BoxDecoration(
-                      border: Border.all(width: 1, color: kLight300),
-                      borderRadius: kBorderSmallRadius,
-                      image: DecorationImage(image: prov, fit: BoxFit.cover)),
-                );
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => Scaffold(
+                        appBar: AppBar(),
+                        body: PhotoView(
+                          imageProvider: NetworkImage(
+                            widget.product.thumbnailUrl ??
+                                "https://us.123rf.com/450wm/mathier/mathier1905/mathier190500002/mathier190500002-no-thumbnail-image-placeholder-for-forums-blogs-and-websites.jpg?ver=6",
+                          ),
+                        ),
+                      ),
+                    ));
               },
-              errorWidget: (context, url, error) => Image.asset(
-                "assets/images/img.png",
-                height: 80,
-                width: 80,
+              child: CachedNetworkImage(
+                height: 105,
+                width: 108,
+                imageUrl: widget.product.thumbnailUrl ??
+                    "https://us.123rf.com/450wm/mathier/mathier1905/mathier190500002/mathier190500002-no-thumbnail-image-placeholder-for-forums-blogs-and-websites.jpg?ver=6",
                 fit: BoxFit.cover,
+                imageBuilder: (context, prov) {
+                  return Container(
+                    decoration: BoxDecoration(
+                        border: Border.all(width: 1, color: kLight300),
+                        borderRadius: kBorderSmallRadius,
+                        image: DecorationImage(image: prov, fit: BoxFit.cover)),
+                  );
+                },
+                errorWidget: (context, url, error) => Image.asset(
+                  "assets/images/img.png",
+                  height: 80,
+                  width: 80,
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
             XBox(kSmallPadding),

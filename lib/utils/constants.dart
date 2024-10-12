@@ -182,21 +182,21 @@ BoxShadow kBoxShadow(Color color) => BoxShadow(
       color: color,
       spreadRadius: 5,
       blurRadius: 7,
-      offset: Offset(0, 2), // changes position of shadow
+      offset: const Offset(0, 2), // changes position of shadow
     );
 
 BoxShadow kBoxShadowMid(Color color) => BoxShadow(
       color: color,
       spreadRadius: 2,
       blurRadius: 4,
-      offset: Offset(0, 5), // changes position of shadow
+      offset: const Offset(0, 5), // changes position of shadow
     );
 
 BoxShadow kBoxShadowCondensed(Color color) => BoxShadow(
       color: color,
       spreadRadius: 1,
       blurRadius: 1,
-      offset: Offset(0, 3), // changes position of shadow
+      offset: const Offset(0, 3), // changes position of shadow
     );
 
 
@@ -258,28 +258,16 @@ TextStyle kBodyLargeStyle = const TextStyle(
 );
 
 
-
-
-
-
-
 ThemeData kThemeData = ThemeData.light().copyWith(
   visualDensity: VisualDensity.adaptivePlatformDensity,
   scaffoldBackgroundColor: kPrimaryWhite,
   iconTheme: const IconThemeData(size: kIconSize, color: kPrimaryColor),
-  // dividerColor: kLightGrey,
   primaryColor: kPrimaryColor,
   canvasColor: kPrimaryWhite,
-  backgroundColor: kPrimaryWhite,
-  // textSelectionTheme: const TextSelectionThemeData(
-  //   selectionHandleColor: kColorGreen,
-  //   cursorColor: kPrimaryColor,
-  //   selectionColor: kLightGrey,
-  // ),
   dialogBackgroundColor: kLight800,
   appBarTheme: AppBarTheme(
     color: kPrimaryWhite,
-    systemOverlayStyle: SystemUiOverlayStyle(
+    systemOverlayStyle: const SystemUiOverlayStyle(
       statusBarColor: kPrimaryWhite,
       statusBarBrightness: Brightness.light,
       statusBarIconBrightness: Brightness.dark,
@@ -297,6 +285,9 @@ ThemeData kThemeData = ThemeData.light().copyWith(
       displaySmall: kDisplaySmallTextStyle,
       titleSmall: kTitleSmallStyle,
       bodyLarge: kBodyLargeStyle, headlineMedium: kHeadlineMediumTextStyle),
+  colorScheme: ColorScheme.fromSwatch().copyWith(
+    background: kPrimaryWhite,
+  ),
 );
 
 ThemeData kThemeDataDark = ThemeData.dark().copyWith(
@@ -315,7 +306,7 @@ ThemeData kThemeDataDark = ThemeData.dark().copyWith(
   dialogBackgroundColor: kPrimaryColor,
   appBarTheme: AppBarTheme(
     color: kPrimaryColor,
-    systemOverlayStyle: SystemUiOverlayStyle(
+    systemOverlayStyle: const SystemUiOverlayStyle(
       statusBarColor: kPrimaryColor,
       statusBarBrightness: Brightness.dark,
       statusBarIconBrightness: Brightness.light,

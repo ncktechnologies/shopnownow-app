@@ -3,9 +3,12 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_holo_date_picker/flutter_holo_date_picker.dart';
-import 'package:flutter_paystack/flutter_paystack.dart';
+// import 'package:flutter_paystack/flutter_paystack.dart';
+// import 'package:pay_with_paystack/pay_with_paystack.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:paystack_for_flutter/paystack_for_flutter.dart';
 import 'package:shopnownow/app/helpers/session_manager.dart';
 import 'package:shopnownow/app/navigators/navigators.dart';
 import 'package:shopnownow/modules/homepage/model/homepage_model.dart';
@@ -50,7 +53,7 @@ class _CheckOutState extends ConsumerState<CheckOut> {
   TextEditingController dateController = TextEditingController();
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   var publicKey = 'pk_live_5cd36a8da973af18baaa38ffaa526e4427f16c2d';
-  final plugin = PaystackPlugin();
+  // final plugin = PaystackPlugin();
   TextEditingController couponController = TextEditingController();
   int totalAmount = 0;
   int couponAmount = 0;
@@ -59,7 +62,7 @@ class _CheckOutState extends ConsumerState<CheckOut> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    plugin.initialize(publicKey: publicKey);
+    // plugin.initialize(publicKey: publicKey);
     totalAmount = widget.productList.fold<int>(0, (previousValue, element) {
       return (previousValue +
           (int.parse(element.price?.replaceAll(".00", "") ?? "0") *
@@ -446,17 +449,20 @@ class _CheckOutState extends ConsumerState<CheckOut> {
                   locale: DateTimePickerLocale.en_us,
                   looping: true,
                 );
-                dateController.text =
-                    DateFormat("yyyy/dd/MM").format(datePicked!);
+                if (datePicked != null) {
+                  dateController.text =
+                      DateFormat("yyyy-MM-dd").format(datePicked);
+                }
               },
               controller: dateController,
               icon: const SizedBox(
-                  width: 40,
-                  child: Icon(
-                    weight: 3,
-                    Icons.calendar_today_outlined,
-                    color: kGrey100,
-                  )),
+                width: 40,
+                child: Icon(
+                  weight: 3,
+                  Icons.calendar_today_outlined,
+                  color: kGrey100,
+                ),
+              ),
             ),
             YBox(kLargePadding),
             Text(
@@ -605,7 +611,7 @@ class _CheckOutState extends ConsumerState<CheckOut> {
                                       recognizer: TapGestureRecognizer()
                                         ..onTap = () async {
                                           const url =
-                                              'https://api.shopnownow.co/terms-and-conditions';
+                                              'https://api.shopnownow.app/terms-and-conditions';
                                           if (await canLaunchUrl(
                                               Uri.parse(url))) {
                                             await launchUrl(Uri.parse(url));
@@ -656,7 +662,7 @@ class _CheckOutState extends ConsumerState<CheckOut> {
                                               scheduledDate:
                                                   dateController.text,
                                               couponCode: couponController.text,
-                                              discountApplied: int.parse(
+                                              discountApplied: double.parse(
                                                           subTotalCalculation()
                                                               .replaceAll(
                                                                   ".00", "")) <
@@ -896,7 +902,7 @@ class _CheckOutState extends ConsumerState<CheckOut> {
                                       recognizer: TapGestureRecognizer()
                                         ..onTap = () async {
                                           const url =
-                                              'https://api.shopnownow.co/terms-and-conditions';
+                                              'https://api.shopnownow.app/terms-and-conditions';
                                           if (await canLaunchUrl(
                                               Uri.parse(url))) {
                                             await launchUrl(Uri.parse(url));
@@ -1184,38 +1190,117 @@ class _CheckOutState extends ConsumerState<CheckOut> {
     return amount;
   }
 
+  // checkOut(int cost, int checkoutOrderId, {String? paymentAmount}) async {
+  //   String email = (emailController.text.isEmpty)
+  //       ? (SessionManager.getEmail() != null ? SessionManager.getEmail()! : '')
+  //       : emailController.text;
+
+  //   final uniqueTransRef = "${DateTime.now().millisecondsSinceEpoch}";
+
+  //   PayWithPayStack().now(
+  //     context: context,
+  //     secretKey: "sk_test_7f97db22564ed0d9bc71225f4629c0ee971e2942",
+  //     customerEmail: email,
+  //     reference: uniqueTransRef,
+  //     callbackUrl: "setup in your paystack dashboard",
+  //     currency: "NGN",
+  //     paymentChannel: ["bank", "card"],
+  //     amount: cost.toString(),
+  //     transactionCompleted: () {
+  //       ProcessPaymentRequest paymentRequest = ProcessPaymentRequest(
+  //         userId: SessionManager.getUserId(),
+  //         amount: paymentAmount ?? (cost / 100).toString(),
+  //         status: "successful",
+  //         orderId: checkoutOrderId,
+  //         reference: uniqueTransRef,
+  //         paymentType: "card",
+  //         paymentGateway: "paystack",
+  //         paymentGatewayReference: uniqueTransRef,
+  //       );
+
+  //       ref.read(processPaymentProvider.notifier).processPayment(
+  //           paymentRequest: paymentRequest,
+  //           noToken: SessionManager.getToken() == null ? true : false,
+  //           then: (val) {
+  //             print("Transaction Successful!");
+  //             pushToAndClearStack(const HomePage());
+  //             showSuccessBar(context, val);
+  //           });
+  //     },
+  //     transactionNotCompleted: () {
+  //       print("Transaction Not Successful!");
+  //     },
+  //   );
+  // }
+
   checkOut(int cost, int checkoutOrderId, {String? paymentAmount}) async {
     String email = (emailController.text.isEmpty)
         ? (SessionManager.getEmail() != null ? SessionManager.getEmail()! : '')
         : emailController.text;
-    Charge charge = Charge()
-      ..amount = cost
-      ..reference = "${DateTime.now().millisecondsSinceEpoch}"
-      ..email = email;
-    CheckoutResponse response = await plugin.checkout(
-      context,
-      method: CheckoutMethod.card,
-      charge: charge,
-    );
-    if (response.status) {
-      ProcessPaymentRequest paymentRequest = ProcessPaymentRequest(
-        userId: SessionManager.getUserId(),
-        amount: paymentAmount ?? (cost / 100).toString(),
-        status: "successful",
-        orderId: checkoutOrderId,
-        reference: response.reference!,
-        paymentType: "card",
-        paymentGateway: "paystack",
-        paymentGatewayReference: response.reference!,
-      );
 
-      ref.read(processPaymentProvider.notifier).processPayment(
-          paymentRequest: paymentRequest,
-          noToken: SessionManager.getToken() == null ? true : false,
-          then: (val) {
-            pushToAndClearStack(const HomePage());
-            showSuccessBar(context, val);
-          });
-    }
+    final uniqueTransRef = "${DateTime.now().millisecondsSinceEpoch}";
+    PaystackFlutter().pay(
+      context: context,
+      secretKey:
+          'sk_test_7f97db22564ed0d9bc71225f4629c0ee971e2942', // Your Paystack secret key
+      amount: (cost * 100) /
+          100, // The amount to be charged in the smallest currency unit
+      email: email, // The customer's email address
+      callbackUrl:
+          'https://callback.com', // The URL to which Paystack will redirect the user after the transaction
+      showProgressBar: true, // Show progress bar during the transaction
+      paymentOptions: [
+        PaymentOption.card,
+        PaymentOption.bankTransfer,
+        PaymentOption.mobileMoney
+      ],
+      currency: Currency.NGN,
+      metaData: {
+        "product_name": "Product Name",
+        "product_quantity": 1,
+        "product_price": cost
+      }, // Additional metadata to be associated with the transaction
+      onSuccess: (paystackCallback) {
+        ProcessPaymentRequest paymentRequest = ProcessPaymentRequest(
+          userId: SessionManager.getUserId(),
+          amount: (cost / 100).toString(),
+          status: "successful",
+          orderId: checkoutOrderId,
+          reference: uniqueTransRef,
+          paymentType: "card",
+          paymentGateway: "paystack",
+          paymentGatewayReference: uniqueTransRef,
+        );
+
+        ref.read(processPaymentProvider.notifier).processPayment(
+              paymentRequest: paymentRequest,
+              noToken: SessionManager.getToken() == null ? true : false,
+              then: (val) {
+                print("Transaction Successful!");
+                pushToAndClearStack(const HomePage());
+                showSuccessBar(context, val);
+              },
+            );
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content:
+                Text('Transaction Successful::::${paystackCallback.reference}'),
+            backgroundColor: Colors.blue,
+          ),
+        );
+      }, // A callback function to be called when the payment is successful
+      onCancelled: (paystackCallback) {
+        print("Transaction Not Successful!");
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+                'Transaction Failed/Not successful::::${paystackCallback.reference}'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }, // A callback function to be called when the payment is canceled
+    );
   }
 }

@@ -257,7 +257,7 @@ Future<void> logAnalyticsEvent(String eventName) async {
   FirebaseAnalytics analytics = FirebaseAnalytics.instance;
   await analytics.logEvent(
     name: eventName,
-    parameters: <String, dynamic>{
+    parameters: <String, Object>{
       'string': 'string',
       'int': 42,
       'long': 12345678910,

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:flutter_tawkto/flutter_tawk.dart';
 import 'package:shopnownow/app/helpers/session_manager.dart';
 import 'package:shopnownow/modules/reuseables/size_boxes.dart';
 import 'package:shopnownow/modules/reuseables/widgets.dart';
@@ -10,7 +9,6 @@ import 'package:shopnownow/utils/strings.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 
-import '../../../app/helpers/session_manager.dart';
 
 InAppBrowser browser = InAppBrowser();
 
@@ -123,8 +121,8 @@ class ContactUs extends StatelessWidget {
 Future<void> startLiveChat() async {
   await browser.openUrlRequest(
     urlRequest: URLRequest(
-        url: Uri.parse(
-            "https://tawk.to/chat/658d73a470c9f2407f840733/1hio8netc")),
+        url: WebUri.uri(
+            Uri.parse("https://tawk.to/chat/658d73a470c9f2407f840733/1hio8netc"))),
     options: InAppBrowserClassOptions(
       inAppWebViewGroupOptions: InAppWebViewGroupOptions(
         crossPlatform: InAppWebViewOptions(
